@@ -1,0 +1,928 @@
+\documentclass[theme=teal]{khmermath}
+\usepackage{needspace}
+\geometry{left=0.85cm, right=0.85cm, top=0.75cm, bottom=1.5cm, footskip=0.7cm}
+\usepackage{colortbl}
+\usepackage{tikz}
+\usetikzlibrary{calc,shapes,arrows,intersections,through,backgrounds,shadows,decorations.pathmorphing}
+\usepackage{fancyhdr}
+\usepackage{multicol}
+
+% -------------------------------------------------------------------------
+% Korean Math Textbook Style Color Palette & Macros
+% -------------------------------------------------------------------------
+\definecolor{koreaTeal}{RGB}{0, 150, 155}       % Primary Header Teal/Cyan
+\definecolor{koreaDarkTeal}{RGB}{0, 105, 110}   % Dark Teal Accent
+\definecolor{koreaBeige}{RGB}{247, 244, 237}     % Concept Sidebar Beige (#F7F4EE)
+\definecolor{koreaBeigeBorder}{RGB}{225, 218, 205}
+\definecolor{koreaOrange}{RGB}{235, 115, 30}     % Problem Number Orange
+\definecolor{koreaBlue}{RGB}{35, 110, 190}      % Standard Blue
+\definecolor{koreaPurple}{RGB}{125, 50, 160}    % Purple Accent
+\definecolor{koreaNumber}{RGB}{115, 125, 135}   % Problem Number Gray
+\definecolor{koreaYellow}{RGB}{255, 246, 175}   % Yellow Highlight Tint
+
+\definecolor{brandNavy}{RGB}{0, 105, 110}
+\definecolor{brandBlue}{RGB}{0, 150, 155}
+\definecolor{brandLightBlue}{RGB}{247, 244, 237}
+\definecolor{brandCrimson}{RGB}{195, 35, 60}
+\definecolor{brandCoral}{RGB}{235, 80, 75}
+\definecolor{brandGold}{RGB}{215, 130, 10}
+\definecolor{brandGoldBg}{RGB}{255, 252, 242}
+\definecolor{brandTeal}{RGB}{0, 150, 155}
+\definecolor{brandTealBg}{RGB}{244, 252, 250}
+\definecolor{subtleGray}{RGB}{246, 251, 249}
+\definecolor{cardBorder}{RGB}{220, 212, 198}
+
+% Custom Header & Footer setup (Korean Textbook Style)
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrule}{\color{koreaTeal!60}\hrule height 0.6pt\vspace{3pt}}
+
+\fancyfoot[L]{%
+  \fontsize{8.5}{8.5}\selectfont\kml \color{koreaNumber}\textbf{\thepage}\ \vline\ \color{koreaDarkTeal}\textbf{១១. ប្រព័ន្ធសមីការដឺក្រេទី១ មានពីរអញ្ញាត}%
+}
+\fancyfoot[C]{%
+  \fontsize{8.5}{8.5}\selectfont\kby \color{koreaDarkTeal}\textbf{\ding{72}\ បង្រៀនដោយ ៖ \textcolor{koreaDarkTeal}{ក្រូត រស្មី}\ \ding{72}}%
+}
+\fancyfoot[R]{%
+  \fontsize{8.5}{8.5}\selectfont\kby \color{koreaDarkTeal}\textbf{ Telegram: \textcolor{brandCrimson}{070897540}}\ \vline\ \color{koreaNumber}\textbf{\thepage}%
+}
+
+% Korean Header Banner
+\newcommand{\koreanheader}[2]{%
+  \noindent%
+  \begin{tikzpicture}[x=1cm, y=1cm]
+    \fill[koreaTeal, rounded corners=12pt] (0, 0.1) -- (0, 0.95) -- (3.8, 0.95) [rounded corners=0pt] -- (4.4, 0.1) -- cycle;
+    \node[white, font=\fontsize{11}{11}\selectfont\kml\bfseries] at (1.9, 0.52) {#1};
+    \node[anchor=west, font=\fontsize{15}{15}\selectfont\kml\bfseries, color=koreaDarkTeal] at (4.5, 0.45) {#2};
+    \node[anchor=east, font=\fontsize{8.5}{8.5}\selectfont\kby, color=gray!80] at (19.2, 0.48) {$>$ ក្លឹបសិក្សាគណិតវិទ្យា ភី ស៊ី​ អឹម};
+  \end{tikzpicture}%
+  \vspace{3pt}%
+}
+
+% Yellow Formula Highlight Box
+\newcommand{\koreahl}[1]{\colorbox{koreaYellow}{\fontsize{8.5}{8.5}\selectfont\textbf{#1}}}
+
+% General Rule Box (Teal/Emerald Theme - ជាទូទៅ)
+\newtcolorbox{khboxorange}[1][]{
+  enhanced,
+  colframe=brandNavy!40,
+  colback=brandLightBlue,
+  boxrule=0.7pt,
+  arc=5.0pt,
+  borderline west={3.5pt}{0pt}{brandNavy},
+  drop fuzzy shadow=brandNavy!15,
+  left=9pt, right=9pt, top=6pt, bottom=5pt,
+  title={\fontsize{9.5}{9.5}\selectfont\kml\color{white}\ding{72}\ ជាទូទៅ},
+  coltitle=white,
+  colbacktitle=brandNavy,
+  boxed title style={
+    boxrule=0pt,
+    arc=3.5pt,
+    left=7pt, right=7pt, top=2.5pt, bottom=2.5pt
+  },
+  attach boxed title to top left={yshift*=-\tcboxedtitleheight/2, xshift=12pt},
+  #1
+}
+
+% Practice Card Box
+\newtcolorbox{khboxpractice}[1][]{
+  enhanced,
+  colframe=brandTeal,
+  colback=brandTealBg,
+  boxrule=0.8pt,
+  arc=4pt,
+  left=8pt, right=8pt, top=5pt, bottom=5pt,
+  #1
+}
+
+% Example / Card Item Box
+\newtcolorbox{khcard}[1][]{
+  enhanced,
+  colframe=cardBorder,
+  colback=white,
+  boxrule=0.7pt,
+  arc=3.5pt,
+  left=6pt, right=6pt, top=4pt, bottom=4pt,
+  #1
+}
+
+% Section, Subsection & Header Badge Macros
+\newcommand{\khsection}[2]{%
+  \Needspace*{4.5cm}%
+  \vspace{4pt}%
+  \noindent%
+  \begin{tikzpicture}
+    \fill[rounded corners=5pt, brandNavy!7] (0,0) rectangle (19.3, 0.70);
+    \fill[rounded corners=4pt, brandNavy] (0.06, 0.06) rectangle (0.64, 0.64);
+    \node[white, font=\fontsize{10}{10}\selectfont\bfseries] at (0.35, 0.35) {#1};
+    \fill[brandGold, rounded corners=1pt] (0.74, 0.15) rectangle (0.78, 0.55);
+    \node[anchor=west, font=\fontsize{11.5}{11.5}\selectfont\kml, color=brandCrimson] at (0.85, 0.35) {\textbf{#2}};
+  \end{tikzpicture}%
+  \vspace{2pt}%
+}
+
+\newcommand{\khsubsection}[2]{%
+  \Needspace*{4.8cm}%
+  \vspace{3pt}%
+  \noindent%
+  \begin{tikzpicture}[baseline=(sub.base)]
+    \node[rounded corners=3.5pt, fill=brandBlue!12, draw=brandBlue!35, line width=0.5pt, text=brandNavy, font=\fontsize{9}{9}\selectfont\kml\bfseries, inner sep=3pt] (sub) at (0,0) {#1};
+    \node[anchor=west, font=\fontsize{10}{10}\selectfont\kml\bfseries, color=brandNavy] at (sub.east) {\ \ #2};
+  \end{tikzpicture}%
+  \vspace{2pt}%
+}
+
+\def\splitnum#1#2{%
+  \color{koreaNumber!65}#1\color{koreaOrange}#2%
+}
+\newcommand{\koreannum}[1]{%
+  \ifstrempty{#1}{}{%
+    \mbox{%
+      \fontsize{20}{20}\selectfont\bfseries%
+      \ifnum#1<10\relax%
+        \color{koreaNumber!65}0\color{koreaOrange}#1%
+      \else%
+        \expandafter\splitnum#1%
+      \fi%
+    }\,\ %
+  }%
+}
+
+% Khmer Sub-question Badge (Crimson Rounded Square)
+\newcommand{\khlabel}[1]{%
+  \tikz[baseline=-0.6ex]{%
+    \node[fill=brandCrimson, rounded corners=3.2pt, inner sep=2.2pt, minimum width=1.35em, minimum height=1.32em, text=white, font=\kml\fontsize{8}{8}\selectfont, align=center] (lbl) {\raisebox{0.2pt}{#1}};%
+  }\,\ %
+}
+
+% Step badge & Subbadge
+\newcommand{\stepbadge}[1]{%
+  \tikz[baseline=-0.6ex]{%
+    \node[fill=brandNavy, rounded corners=3pt, inner sep=2pt, minimum width=1.4em, minimum height=1.3em, text=white, font=\kml\fontsize{8}{8}\selectfont\bfseries, align=center] {ជំហានទី #1};%
+  }\,\ %
+}
+\newcommand{\subbadge}[1]{%
+  \tikz[baseline=-0.6ex]{%
+    \node[fill=brandBlue!15, draw=brandBlue!40, line width=0.4pt, rounded corners=2.5pt, inner sep=2pt, text=brandNavy, font=\kml\fontsize{7.5}{7.5}\selectfont\bfseries] {#1};%
+  }\,\ %
+}
+
+% Practice Header Badge
+\newcommand{\phead}{%
+  \noindent%
+  \tikz[baseline=-0.6ex]{%
+    \node[fill=brandTeal, rounded corners=3.5pt, inner sep=3.5pt, text=white, font=\kml\fontsize{9}{9}\selectfont] {\ding{72}\ ប្រតិបត្តិ};%
+  }\ %
+}
+
+\newcommand{\exhead}[1]{\hangindent=24pt\hangafter=1\koreannum{#1}}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{3pt}
+\setlength{\columnsep}{18pt}
+\setlength{\columnseprule}{0.5pt}
+\def\columnseprulecolor{\color{koreaTeal!40}}
+
+\begin{document}
+
+% =========================================================================
+% HEADER BANNER
+% =========================================================================
+\koreanheader{មេរៀនទី ១១}{ប្រព័ន្ធសមីការដឺក្រេទី១ មានពីរអញ្ញាត}
+
+% =========================================================================
+% ផ្នែកទី ១: ដំណោះស្រាយប្រព័ន្ធសមីការតាមក្រាហ្វិក
+% =========================================================================
+\khsection{១}{ដំណោះស្រាយប្រព័ន្ធសមីការតាមក្រាហ្វិក}
+
+\begin{khboxorange}
+  \begin{itemize}[leftmargin=12pt, itemsep=2pt, topsep=1pt, parsep=0pt]
+    \item[\color{brandNavy}\ding{228}] \textbf{ប្រព័ន្ធសមីការដឺក្រេទី១ មានពីរអញ្ញាត $x$ និង $y$ ៖} មានទម្រង់ទូទៅ $\begin{cases} ax + by = c \\ a'x + b'y = c' \end{cases}$ (ដែល $a, b$ មិនសូន្យព្រមគ្នា និង $a', b'$ មិនសូន្យព្រមគ្នា)។
+    \item[\color{brandCrimson}\ding{228}] \textbf{អត្ថន័យធរណីមាត្រ ៖} គូចម្លើយ $(x, y)$ នៃប្រព័ន្ធសមីការ គឺជាកូអរដោនេនៃចំណុចប្រសព្វ $I(x, y)$ រវាងបន្ទាត់ទាំងពីរ $(L_1): ax + by = c$ និង $(L_2): a'x + b'y = c'$ ក្នុងប្លង់កូអរដោនេ។
+    \item[\color{brandNavy}\ding{228}] \textbf{ជំហានដោះស្រាយ ៖}
+      (១) សង់បន្ទាត់តាងសមីការនីមួយៗ (រក ២ ចំណុចតាមតារាងតម្លៃលេខ), \
+      (២) រកចំណុចប្រសព្វ $I$ រវាងបន្ទាត់ទាំងពីរ, \
+      (៣) ទាញរកកូអរដោនេ $(x, y)$ នៃ $I$ ជាគូចម្លើយនៃប្រព័ន្ធ។
+  \end{itemize}
+\end{khboxorange}
+
+\vspace{2pt}
+\begin{khcard}
+  \noindent
+  \begin{minipage}[t]{0.55\linewidth}
+    \vspace{0pt}
+    \exhead{1} \textbf{ដោះស្រាយប្រព័ន្ធសមីការ ៖}\\[2pt]
+    \hspace*{24pt}$\begin{cases} 3x + y = 2 & (1) \\ x - y = 2 & (2) \end{cases}$ \quad \textbf{តាមវិធីក្រាហ្វិក ៖}\\[5pt]
+    
+    \stepbadge{១} \textbf{សង់បន្ទាត់តាងសមីការនីមួយៗ ៖}\\[3pt]
+    \noindent
+    \begin{minipage}[t]{0.485\linewidth}
+      \begin{tcolorbox}[
+        colback=brandCrimson!3, colframe=brandCrimson!40,
+        boxrule=0.6pt, arc=3.5pt,
+        left=2pt, right=2pt, top=3pt, bottom=3pt,
+        halign=center
+      ]
+        {\fontsize{7.5}{7.5}\selectfont\textcolor{brandCrimson}{\textbf{$(L_1): y = -3x + 2$}}}\\[3pt]
+        \renewcommand{\arraystretch}{1.12}
+        \begin{tabular}{|c|c|c|}
+          \hline
+          \rowcolor{brandCrimson!12} \textbf{$x$} & $0$ & $1$ \\ \hline
+          \textbf{$y$} & $2$ & $-1$ \\ \hline
+        \end{tabular}\\[3pt]
+        {\fontsize{7}{7}\selectfont បាន $A(0,2)$ និង $B(1,-1)$}
+      \end{tcolorbox}
+    \end{minipage}\hfill
+    \begin{minipage}[t]{0.485\linewidth}
+      \begin{tcolorbox}[
+        colback=brandBlue!3, colframe=brandBlue!40,
+        boxrule=0.6pt, arc=3.5pt,
+        left=2pt, right=2pt, top=3pt, bottom=3pt,
+        halign=center
+      ]
+        {\fontsize{7.5}{7.5}\selectfont\textcolor{brandBlue}{\textbf{$(L_2): y = x - 2$}}}\\[3pt]
+        \renewcommand{\arraystretch}{1.12}
+        \begin{tabular}{|c|c|c|}
+          \hline
+          \rowcolor{brandBlue!12} \textbf{$x$} & $0$ & $2$ \\ \hline
+          \textbf{$y$} & $-2$ & $0$ \\ \hline
+        \end{tabular}\\[3pt]
+        {\fontsize{7}{7}\selectfont បាន $C(0,-2)$ និង $D(2,0)$}
+      \end{tcolorbox}
+    \end{minipage}
+
+    \vspace{4pt}
+    \stepbadge{២} \textbf{កំណត់ចំណុចប្រសព្វ $I$ ៖}\\[2pt]
+    {\fontsize{8.5}{8.5}\selectfont តាមក្រាហ្វិក បន្ទាត់ $(L_1)$ និង $(L_2)$ ប្រសព្វគ្នានៅចំណុច $I(1, -1)$។}
+
+    \vspace{4pt}
+    \stepbadge{៣} \textbf{សន្និដ្ឋានចម្លើយ ៖}\\[2pt]
+    \begin{tcolorbox}[
+      colback=brandTealBg, colframe=brandNavy!40,
+      boxrule=0.6pt, arc=3pt,
+      left=6pt, right=6pt, top=3.5pt, bottom=3.5pt
+    ]
+      {\fontsize{8.5}{8.5}\selectfont \textbf{ដូចនេះ} គូចម្លើយនៃប្រព័ន្ធគឺ \textcolor{brandCrimson}{\textbf{$(x, y) = (1, -1)$}}}
+    \end{tcolorbox}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.43\linewidth}
+    \vspace{0pt}
+    \centering
+    \begin{tikzpicture}[scale=0.76]
+      % Grid
+      \draw[step=1cm, gray!20, very thin] (-3.2,-3.2) grid (3.3,3.3);
+      
+      % Axes
+      \draw[->, >=latex, thick, color=gray!75] (-3.2,0) -- (3.5,0) node[right, font=\footnotesize, color=black] {$x$};
+      \draw[->, >=latex, thick, color=gray!75] (0,-3.2) -- (0,3.5) node[above, font=\footnotesize, color=black] {$y$};
+      \node[below left=1.5pt, font=\scriptsize, color=gray!85] at (0,0) {$0$};
+      
+      % Ticks
+      \foreach \x in {-3,-2,-1,1,2,3}
+        \draw[color=gray!70] (\x, 0.08) -- (\x, -0.08) node[below, font=\fontsize{6.5}{6.5}\selectfont] {$\x$};
+      \foreach \y in {-3,-2,-1,1,2,3}
+        \draw[color=gray!70] (0.08, \y) -- (-0.08, \y) node[left, font=\fontsize{6.5}{6.5}\selectfont] {$\y$};
+
+      % Line 1: y = -3x + 2 (Crimson)
+      \draw[very thick, color=brandCrimson, domain=-0.42:1.72] plot (\x, {-3*\x + 2});
+      \node[color=brandCrimson, font=\fontsize{6.8}{6.8}\selectfont\bfseries, anchor=south] at (-0.2, 2.7) {$(L_1)$};
+      \fill[brandCrimson] (0,2) circle (2pt) node[anchor=south west, font=\fontsize{6.8}{6.8}\selectfont\bfseries, text=brandCrimson] {$A(0,2)$};
+
+      % Line 2: y = x - 2 (Blue)
+      \draw[very thick, color=brandBlue, domain=-1.15:3.25] plot (\x, {\x - 2});
+      \node[color=brandBlue, font=\fontsize{6.8}{6.8}\selectfont\bfseries, anchor=south west] at (2.8, 0.9) {$(L_2)$};
+      \fill[brandBlue] (0,-2) circle (2pt) node[anchor=north east, font=\fontsize{6.8}{6.8}\selectfont\bfseries, text=brandBlue] {$C(0,-2)$};
+      \fill[brandBlue] (2,0) circle (2pt) node[anchor=south west, font=\fontsize{6.8}{6.8}\selectfont\bfseries, text=brandBlue] {$D(2,0)$};
+
+      % Dashed drop lines to axes
+      \draw[dashed, line width=0.75pt, color=brandCrimson!70] (1,0) -- (1,-1) -- (0,-1);
+
+      % Intersection point I(1, -1)
+      \coordinate (I) at (1, -1);
+      \draw[color=brandGold, line width=1.5pt, fill=brandCrimson] (I) circle (3.2pt);
+      \node[right=3.5pt, font=\fontsize{7.5}{7.5}\selectfont\bfseries, color=brandNavy] at (I) {$I(1, -1)$};
+
+      % Callout badge placed cleanly in empty top-right quadrant
+      \coordinate (CBox) at (1.8, 2.45);
+      \node[fill=koreaYellow!95, draw=brandCrimson!70, line width=0.5pt, rounded corners=3.5pt, font=\fontsize{6.5}{6.5}\selectfont\kml, align=center, inner sep=2.5pt] at (CBox) {ចំណុចប្រសព្វ $I(1, -1)$\\[-1pt]$\implies$ \textbf{គូចម្លើយនៃប្រព័ន្ធ}};
+      \draw[->, >=latex, line width=0.75pt, color=brandCrimson] (CBox.south) to[out=-90, in=45] (1.15, -0.75);
+    \end{tikzpicture}
+  \end{minipage}
+\end{khcard}
+
+\vspace{3pt}
+\exhead{2} \textbf{ចូរដោះស្រាយប្រព័ន្ធសមីការខាងក្រោមតាមក្រាប ៖}
+\vspace{2pt}
+
+\begin{multicols}{4}
+  \noindent\khlabel{ក} $\begin{cases} 3x - y = 2 \\ 2x + y = 0 \end{cases}$
+
+  \noindent\khlabel{ខ} $\begin{cases} 3x - y = 0 \\ x + y = 4 \end{cases}$
+
+  \columnbreak
+
+  \noindent\khlabel{គ} $\begin{cases} x + y = 1 \\ 2x + 2y = 4 \end{cases}$
+
+  \noindent\khlabel{ឃ} $\begin{cases} x + 3y = 6 \\ x + 3y = -3 \end{cases}$
+
+  \columnbreak
+
+  \noindent\khlabel{ង} $\begin{cases} y = 4 - x \\ \frac{x}{2} + \frac{y}{2} = 2 \end{cases}$
+
+  \noindent\khlabel{ច} $\begin{cases} -2x + y = 3 \\ 3x - 2y = 0 \end{cases}$
+
+  \columnbreak
+
+  \noindent\khlabel{ឆ} $\begin{cases} 3x + 2y = -3 \\ -x - 2y = 7 \end{cases}$
+
+  \noindent\khlabel{ជ} $\begin{cases} \frac{1}{2}x - y = 4 \\ 2x - 3y = 2 \end{cases}$
+\end{multicols}
+
+\vspace{2pt}
+\begin{khboxpractice}
+  \exhead{3} \textbf{ចូរដោះស្រាយប្រព័ន្ធសមីការខាងក្រោមតាមក្រាប ៖} \qquad
+  $\begin{cases} 4x + 3y = 4 \\ 3x + y = -2 \end{cases}$
+\end{khboxpractice}
+
+\newpage
+
+% =========================================================================
+% ផ្នែកទី ២: ដំណោះស្រាយប្រព័ន្ធសមីការតាមវិធីជំនួស
+% =========================================================================
+\khsection{២}{ដំណោះស្រាយប្រព័ន្ធសមីការតាមវិធីជំនួស}
+
+\begin{khboxorange}
+  \begin{itemize}[leftmargin=12pt, itemsep=2pt, topsep=1pt, parsep=0pt]
+    \item[\color{brandNavy}\ding{228}] \textbf{វិធាននៃវិធីជំនួស ៖} ក្នុងប្រព័ន្ធសមីការមានពីរអញ្ញាត គេអាចគណនាតម្លៃនៃអញ្ញាតណាមួយជាអនុគមន៍នៃអញ្ញាតមួយទៀតក្នុងសមីការ $(1)$ (ឧ. ទាញរក $x = \dots$ ឬ $y = \dots$) រួចយកកន្សោមនោះទៅជំនួសក្នុងសមីការ $(2)$។
+    \item[\color{brandCrimson}\ding{228}] \textbf{ផលដែលទទួលបាន ៖} ធ្វើបែបនេះយើងនឹងបានសមីការថ្មីមួយដែលមានតែមួយអញ្ញាត រួចដោះស្រាយរកតម្លៃអញ្ញាតនោះ ហើយយកតម្លៃដែលរកឃើញទៅជំនួសរកអញ្ញាតមួយទៀត។
+  \end{itemize}
+\end{khboxorange}
+
+\vspace{2pt}
+\begin{khcard}
+  {\fontsize{9.5}{9.5}\selectfont \exhead{1} \textbf{ដោះស្រាយប្រព័ន្ធសមីការ $\begin{cases} 3x + y = 2 & (1) \\ x - y = 2 & (2) \end{cases}$ តាមវិធីក្រាហ្វិក ៖}} \\[4pt]
+  \noindent
+  \begin{minipage}[t]{0.56\linewidth}
+    \vspace{0pt}
+    \stepbadge{១} \textbf{សង់បន្ទាត់តាងសមីការនីមួយៗ ៖}\\[3pt]
+    \noindent
+    \begin{minipage}[t]{0.485\linewidth}
+      \begin{tcolorbox}[
+        colback=brandCrimson!3, colframe=brandCrimson!40,
+        boxrule=0.6pt, arc=3.5pt,
+        left=2pt, right=2pt, top=3pt, bottom=3pt,
+        halign=center
+      ]
+        {\fontsize{7.5}{7.5}\selectfont\textcolor{brandCrimson}{\textbf{$(L_1): y = -3x + 2$}}}\\[3pt]
+        \renewcommand{\arraystretch}{1.12}
+        \begin{tabular}{|c|c|c|}
+          \hline
+          \rowcolor{brandCrimson!12} \textbf{$x$} & $0$ & $1$ \\ \hline
+          \textbf{$y$} & $2$ & $-1$ \\ \hline
+        \end{tabular}\\[3pt]
+        {\fontsize{7}{7}\selectfont បាន $A(0,2)$ និង $B(1,-1)$}
+      \end{tcolorbox}
+    \end{minipage}\hfill
+    \begin{minipage}[t]{0.485\linewidth}
+      \begin{tcolorbox}[
+        colback=brandBlue!3, colframe=brandBlue!40,
+        boxrule=0.6pt, arc=3.5pt,
+        left=2pt, right=2pt, top=3pt, bottom=3pt,
+        halign=center
+      ]
+        {\fontsize{7.5}{7.5}\selectfont\textcolor{brandBlue}{\textbf{$(L_2): y = x - 2$}}}\\[3pt]
+        \renewcommand{\arraystretch}{1.12}
+        \begin{tabular}{|c|c|c|}
+          \hline
+          \rowcolor{brandBlue!12} \textbf{$x$} & $0$ & $2$ \\ \hline
+          \textbf{$y$} & $-2$ & $0$ \\ \hline
+        \end{tabular}\\[3pt]
+        {\fontsize{7}{7}\selectfont បាន $C(0,-2)$ និង $D(2,0)$}
+      \end{tcolorbox}
+    \end{minipage}
+
+    \vspace{4pt}
+    \stepbadge{២} \textbf{កំណត់ចំណុចប្រសព្វ $I$ ៖}\\[2pt]
+    {\fontsize{8.5}{8.5}\selectfont តាមក្រាហ្វិក បន្ទាត់ទាំងពីរ $(L_1)$ និង $(L_2)$ ប្រសព្វគ្នានៅចំណុច $I(1, -1)$។}
+
+    \vspace{4pt}
+    \stepbadge{៣} \textbf{សន្និដ្ឋានចម្លើយ ៖}\\[2pt]
+    \begin{tcolorbox}[
+      colback=brandTealBg, colframe=brandNavy!40,
+      boxrule=0.6pt, arc=3pt,
+      left=6pt, right=6pt, top=3.5pt, bottom=3.5pt
+    ]
+      {\fontsize{8.5}{8.5}\selectfont \textbf{ដូចនេះ} គូចម្លើយនៃប្រព័ន្ធសមីការគឺ \textcolor{brandCrimson}{\textbf{$(x, y) = (1, -1)$}}}
+    \end{tcolorbox}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.42\linewidth}
+    \vspace{0pt}
+    \centering
+    \begin{tikzpicture}[scale=0.74]
+      % Grid
+      \draw[step=1cm, gray!20, very thin] (-3.2,-3.2) grid (3.3,3.3);
+      
+      % Axes
+      \draw[->, >=latex, thick, color=gray!75] (-3.2,0) -- (3.5,0) node[right, font=\footnotesize, color=black] {$x$};
+      \draw[->, >=latex, thick, color=gray!75] (0,-3.2) -- (0,3.5) node[above, font=\footnotesize, color=black] {$y$};
+      \node[below left=1.5pt, font=\scriptsize, color=gray!85] at (0,0) {$0$};
+      
+      % Ticks
+      \foreach \x in {-3,-2,-1,1,2,3}
+        \draw[color=gray!70] (\x, 0.08) -- (\x, -0.08) node[below, font=\fontsize{6.5}{6.5}\selectfont] {$\x$};
+      \foreach \y in {-3,-2,-1,1,2,3}
+        \draw[color=gray!70] (0.08, \y) -- (-0.08, \y) node[left, font=\fontsize{6.5}{6.5}\selectfont] {$\y$};
+
+      % Line 1: y = -3x + 2 (Crimson)
+      \draw[very thick, color=brandCrimson, domain=-0.42:1.72] plot (\x, {-3*\x + 2});
+      \node[color=brandCrimson, font=\fontsize{6.8}{6.8}\selectfont\bfseries, anchor=east] at (-0.45, 3.05) {$(L_1): 3x+y=2$};
+      \fill[brandCrimson] (0,2) circle (2pt) node[anchor=south west, font=\fontsize{6.8}{6.8}\selectfont\bfseries, text=brandCrimson] {$A(0,2)$};
+
+      % Line 2: y = x - 2 (Blue)
+      \draw[very thick, color=brandBlue, domain=-1.15:3.25] plot (\x, {\x - 2});
+      \node[color=brandBlue, font=\fontsize{6.8}{6.8}\selectfont\bfseries, anchor=south east] at (3.25, 1.3) {$(L_2): x-y=2$};
+      \fill[brandBlue] (0,-2) circle (2pt) node[anchor=north east, font=\fontsize{6.8}{6.8}\selectfont\bfseries, text=brandBlue] {$C(0,-2)$};
+      \fill[brandBlue] (2,0) circle (2pt) node[anchor=north west, font=\fontsize{6.8}{6.8}\selectfont\bfseries, text=brandBlue] {$D(2,0)$};
+
+      % Dashed drop lines to axes
+      \draw[dashed, line width=0.75pt, color=brandCrimson!70] (1,0) -- (1,-1) -- (0,-1);
+
+      % Intersection point I(1, -1)
+      \coordinate (I) at (1, -1);
+      \draw[color=brandGold, line width=1.5pt, fill=brandCrimson] (I) circle (3.2pt);
+      \node[right=3.5pt, font=\fontsize{7.5}{7.5}\selectfont\bfseries, color=brandNavy] at (I) {$I(1, -1)$};
+
+      % Callout badge in Quadrant 1
+      \coordinate (CBox) at (1.8, 2.45);
+      \node[fill=koreaYellow!95, draw=brandCrimson!70, line width=0.5pt, rounded corners=3.5pt, font=\fontsize{6.5}{6.5}\selectfont\kml, align=center, inner sep=2.5pt] at (CBox) {ចំណុចប្រសព្វ $I(1, -1)$\\[-1pt]$\implies$ \textbf{គូចម្លើយនៃប្រព័ន្ធ}};
+      \draw[->, >=latex, line width=0.75pt, color=brandCrimson] (CBox.south) to[out=-90, in=45] (1.15, -0.75);
+    \end{tikzpicture}
+  \end{minipage}
+\end{khcard}
+
+\vspace{2pt}
+\begin{khboxpractice}
+  \exhead{3} \textbf{ចូរដោះស្រាយប្រព័ន្ធសមីការខាងក្រោមតាមវិធីជំនួស ៖}\\[3pt]
+  \khlabel{ក} $\begin{cases} y + 6 = 3x & (1) \\ 9x - 2y = 3 & (2) \end{cases}$ \hfill
+  \khlabel{ខ} $\begin{cases} 3x - 4y = 8 & (1) \\ 4x + y = 17 & (2) \end{cases}$
+\end{khboxpractice}
+
+\newpage
+
+% =========================================================================
+% ផ្នែកទី ៣: ដំណោះស្រាយប្រព័ន្ធសមីការតាមវិធីបូក
+% =========================================================================
+\khsection{៣}{ដំណោះស្រាយប្រព័ន្ធសមីការតាមវិធីបូក (វិធីបំបាត់ដោយបូក)}
+
+\begin{khboxorange}
+  \begin{itemize}[leftmargin=12pt, itemsep=2pt, topsep=1pt, parsep=0pt]
+    \item[\color{brandNavy}\ding{228}] \textbf{វិធាននៃវិធីបំបាត់ដោយបូក ៖} ក្នុងវិធីសាស្ត្រនេះ គេគ្រាន់តែបំបាត់អញ្ញាតមួយក្នុងចំណោមអញ្ញាតទាំងពីរ ដោយការគុណតម្រូវមេគុណនៃអញ្ញាតនោះឱ្យមានតម្លៃដាច់ខាតស្មើគ្នា និងមានសញ្ញាផ្ទុយគ្នា។
+    \item[\color{brandCrimson}\ding{228}] \textbf{អនុវត្តប្រមាណវិធីបូក ៖} ធ្វើប្រមាណវិធីបូកអង្គនិងអង្គនៃសមីការទាំងពីរ ពេលនោះអញ្ញាតដែលត្រូវបំបាត់នឹងស្មើ $0$ ហើយយើងទទួលបានសមីការដឺក្រេទី១ មានតែមួយអញ្ញាតដែលងាយស្រួលដោះស្រាយ។
+  \end{itemize}
+\end{khboxorange}
+
+\vspace{2pt}
+\begin{khcard}
+  \exhead{1} \textbf{ដោះស្រាយប្រព័ន្ធសមីការ $\begin{cases} 2x + 3y = 8 & (1) \\ 3x - y = 1 & (2) \end{cases}$ តាមវិធីបំបាត់ដោយបូក ៖} \\[3pt]
+  \noindent
+  \begin{minipage}[t]{0.35\linewidth}
+    \stepbadge{១} \textbf{តម្រូវមេគុណ $y$ ៖}\\
+    គុណសមីការ $(2)$ នឹង $3$ ៖\\
+    $(2)\times 3 \iff \mathbf{9x - 3y = 3} \quad (2')$
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.31\linewidth}
+    \stepbadge{២} \textbf{បូក $(1) + (2')$ ៖}\\
+    \renewcommand{\arraystretch}{1.05}
+    \begin{tabular}{r@{\ }l}
+      $2x + 3y$ & $= 8$ \\
+    $+$\quad $9x - 3y$ & $= 3$ \\ \hline
+      $11x\phantom{+0y}$ & $= 11 \implies \mathbf{x = 1}$
+    \end{tabular}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.31\linewidth}
+    \stepbadge{៣} \textbf{ជំនួស $x$ រក $y$ ៖}\\
+    ជំនួស $x = 1$ ក្នុង $(2)$ ៖\\
+    $3(1) - y = 1$\\
+    $\implies y = 3 - 1 = \mathbf{2}$\\[2pt]
+    \textbf{ដូចនេះ} គូចម្លើយ \koreahl{$(1, 2)$}
+  \end{minipage}
+
+  \vspace{2pt}
+  \begin{center}
+    \begin{tikzpicture}[scale=0.88, every node/.style={transform shape}]
+      \node[fill=brandGoldBg, draw=brandGold!60, rounded corners=3pt, inner sep=2.5pt, font=\fontsize{7.5}{7.5}\selectfont\kml] (m) at (0,0) {មេគុណ $y$ ក្នុង $(1)$ គឺ $+3$ និងក្នុង $(2)$ គឺ $-1$};
+      \node[fill=brandTealBg, draw=brandTeal!60, rounded corners=3pt, inner sep=2.5pt, font=\fontsize{7.5}{7.5}\selectfont\kml] (r) at (7.8,0) {គុណ $(2)$ នឹង $3$ ដើម្បីបាន $+3y$ និង $-3y$ (បូកបំបាត់បាន $0$)};
+      \draw[->, >=stealth, line width=0.9pt, color=brandGold] (m.east) -- (r.west);
+    \end{tikzpicture}
+  \end{center}
+\end{khcard}
+
+\vspace{2pt}
+\exhead{2} \textbf{ចូរដោះស្រាយប្រព័ន្ធសមីការខាងក្រោមតាមវិធីបូក ៖}
+\vspace{2pt}
+
+\begin{multicols}{3}
+  \noindent\khlabel{ក} $\begin{cases} 2x + y = 2 \\ -2x + y = 4 \end{cases}$
+
+  \noindent\khlabel{ខ} $\begin{cases} 2x - y = 1 \\ 3x + y = 4 \end{cases}$
+
+  \noindent\khlabel{គ} $\begin{cases} 3x + 2y = 8 \\ 2x - y = 3 \end{cases}$
+
+  \noindent\khlabel{ឃ} $\begin{cases} 2x + y = 2 \\ x - 3y = 1 \end{cases}$
+
+  \columnbreak
+
+  \noindent\khlabel{ង} $\begin{cases} y = 3x + 1 \\ 2y + 3x = -7 \end{cases}$
+
+  \noindent\khlabel{ច} $\begin{cases} \frac{x}{2} - \frac{y}{5} = 1 \\ y - \frac{x}{5} = 8 \end{cases}$
+
+  \noindent\khlabel{ឆ} $\begin{cases} 3(x - y) - \frac{1}{3}(x + y) = 30 \\ x + y + \frac{5}{3}(x - y) = 22 \end{cases}$
+
+  \noindent\khlabel{ជ} $\begin{cases} \frac{x}{2} = \frac{y}{5} \\ x + y = 21 \end{cases}$
+
+  \columnbreak
+
+  \noindent\khlabel{ឈ} $\begin{cases} 3(x - 2) + y = -6 \\ -3(2x + 1) = 3y - 2 \end{cases}$
+
+  \noindent\khlabel{ញ} $\begin{cases} 2x - \frac{1}{2}y = 0 \\ x - 3y = 8 \end{cases}$
+
+  \noindent\khlabel{ដ} $\begin{cases} \frac{4}{5}x - 2y = -2 \\ 3x + 4y = 8 \end{cases}$
+
+  \noindent\khlabel{ឋ} $\begin{cases} \frac{2}{3}x + y = -4 \\ 3x + y = 9 \end{cases}$
+\end{multicols}
+
+\vspace{2pt}
+\begin{khboxpractice}
+  \exhead{3} \textbf{ចូរដោះស្រាយប្រព័ន្ធសមីការខាងក្រោមតាមវិធីបំបាត់ដោយបូក ៖}\\[3pt]
+  \khlabel{ក} $\begin{cases} 4x - 3y = 9 & (1) \\ -3x + 5y = 7 & (2) \end{cases}$ \hfill
+  \khlabel{ខ} $\begin{cases} 7x + 3(y - 3) = 5(x + y) & (1) \\ 7(x - 1) - 6y = 5(x - y) & (2) \end{cases}$
+\end{khboxpractice}
+
+\newpage
+
+% =========================================================================
+% ផ្នែកទី ៤: ចំណោទនៃប្រព័ន្ធសមីការ
+% =========================================================================
+\khsection{៤}{ចំណោទនៃប្រព័ន្ធសមីការ}
+
+\begin{khboxorange}
+  \begin{itemize}[leftmargin=12pt, itemsep=2pt, topsep=1pt, parsep=0pt]
+    \item[\color{brandNavy}\ding{228}] \textbf{ជំហានទី ១ (ជ្រើសរើសអញ្ញាត) ៖} កំណត់អញ្ញាត $x$ និង $y$ តាងឱ្យបរិមាណមិនស្គាល់ក្នុងប្រធានចំណោទ រួមទាំងលក្ខខណ្ឌ និងខ្នាតរបស់វា។
+    \item[\color{brandNavy}\ding{228}] \textbf{ជំហានទី ២ (បង្កើតប្រព័ន្ធសមីការ) ៖} បកប្រែទំនាក់ទំនងរវាងពាក្យពេចន៍ក្នុងប្រធានឱ្យទៅជាកន្សោមពិជគណិត ដើម្បីបានប្រព័ន្ធសមីការដឺក្រេទី១ មានពីរអញ្ញាត។
+    \item[\color{brandNavy}\ding{228}] \textbf{ជំហានទី ៣ (ដោះស្រាយ) ៖} ជ្រើសរើសវិធីសាស្ត្រសមស្រប (វិធីជំនួស ឬវិធីបំបាត់ដោយបូក) ដើម្បីដោះស្រាយរក $x$ និង $y$។
+    \item[\color{brandCrimson}\ding{228}] \textbf{ជំហានទី ៤ (ផ្ទៀងផ្ទាត់ និងឆ្លើយ) ៖} ផ្ទៀងផ្ទាត់ចម្លើយដែលរកឃើញជាមួយលក្ខខណ្ឌប្រធានចំណោទ រួចធ្វើសេចក្តីសន្និដ្ឋានឆ្លើយអមដោយខ្នាតត្រឹមត្រូវ។
+  \end{itemize}
+\end{khboxorange}
+
+\vspace{2pt}
+\begin{khcard}
+  \exhead{1} \textbf{ផលបូកនៃពីរចំនួនស្មើនឹង $20$ ហើយផលដករបស់វាស្មើនឹង $8$ ។ ចូររកចំនួនទាំងពីរនេះ ។}\\[3pt]
+  \noindent
+  \begin{minipage}[t]{0.48\linewidth}
+    \subbadge{១. តាងអញ្ញាត} តាង $x$ ជាចំនួនធំ និង $y$ ជាចំនួនតូច ($x > y$)។\\[2pt]
+    \subbadge{២. បង្កើតប្រព័ន្ធ} តាមប្រធាន យើងបានប្រព័ន្ធសមីការ ៖
+    \[
+      \begin{cases} x + y = 20 & (1) \\ x - y = 8 & (2) \end{cases}
+    \]
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.49\linewidth}
+    \subbadge{៣. ដោះស្រាយប្រព័ន្ធ}
+    បូកសមីការ $(1) + (2)$ គេបាន ៖
+    $2x = 28 \implies \mathbf{x = 14}$ \\
+    ជំនួស $x = 14$ ក្នុង $(1)$ ៖
+    $14 + y = 20 \implies \mathbf{y = 6}$\\[2pt]
+    \subbadge{៤. ឆ្លើយ} ចំនួនទាំងពីរដែលត្រូវរកគឺ \koreahl{$14$} និង \koreahl{$6$}។
+  \end{minipage}
+\end{khcard}
+
+\vspace{2pt}
+\begin{multicols}{2}
+  \noindent
+  \exhead{2} ផលបូកនៃពីរចំនួនស្មើនឹង $40$ ហើយផលបូកនៃ $2$ ដងចំនួនទីមួយនិងចំនួនទី $2$ ស្មើនឹង $50$ ។ តើចំនួនទាំងពីរនោះស្មើប៉ុន្មាន ?
+
+  \vspace{3pt}
+  \noindent
+  \exhead{3} ពីរដងនៃចំនួនទី $1$ ថែមនឹងចំនួនទី $2$ ស្មើនឹង $120$ ហើយផលបូកនៃ $3$ ដងចំនួនទី $1$ និង $2$ ដងចំនួនទី $2$ ស្មើនឹង $110$ ។ ចូររកចំនួនទាំងពីរនេះ ។
+
+  \vspace{3pt}
+  \noindent
+  \exhead{4} ពីរដងនៃប្រាក់របស់វត្តីជាមួយប្រាក់លីណាស្មើនឹង $13000$ រៀល ហើយប្រាក់របស់វត្តីលើសប្រាក់លីណាចំនួន $2000$ រៀល ។ តើអ្នកទាំងពីរម្នាក់ៗមានប្រាក់ប៉ុន្មានរៀល ?
+
+  \vspace{3pt}
+  \noindent
+  \exhead{5} កន្និកាមានប្រាក់ $5000$ រៀលច្រើនជាងលីហួរ ។ គេដឹងថាពីរដងនៃប្រាក់កន្និកាលើសប្រាក់លីហួរចំនួន $8000$ រៀល ។ ចូររកប្រាក់អ្នកទាំងពីរ ។
+
+  \columnbreak
+
+  \noindent
+  \exhead{6} រតនៈមានប្រាក់ $20000$ រៀលតិចជាងពីរដងរបស់ប្រាក់វិរៈបុត្រ ប៉ុន្តែបីដងនៃប្រាក់រតនៈច្រើនជាងប្រាក់វិរៈបុត្រ $5000$ រៀល ។ តើអ្នកទាំងពីរមានប្រាក់ប៉ុន្មានរៀល ?
+
+  \vspace{3pt}
+  \noindent
+  \exhead{7} ចតុកោណកែងមួយមានបរិមាត្រស្មើនឹង $168\text{m}$ ។ គេដឹងថាបណ្តោយលើសទទឹង $24\text{m}$ ។ តើចតុកោណនេះមានទទឹងនិងបណ្តោយប្រវែងប៉ុន្មាន ?
+
+  \vspace{3pt}
+  \noindent
+  \exhead{8} ចតុកោណកែងមួយមានបរិមាត្រស្មើនឹង $38\text{cm}$ ។ គេដឹងថាបណ្តោយលើស $3$ ដងនៃទទឹងចំនួន $1\text{cm}$ ។ ចូរគណនាប្រវែងទទឹងនិងបណ្តោយនៃចតុកោណកែង ។
+
+  \vspace{3pt}
+  \noindent
+  \exhead{9} គេទិញសៀវភៅ $6$ ក្បាលនិងប៊ិច $8$ ដើមរួមគ្នាតម្លៃ $14000\text{ ៛}$ ។ មួយសប្តាហ៍ក្រោយមកគេទិញសៀវភៅ $9$ ក្បាលនិងប៊ិច $6$ ដើមដដែលនេះទៀតរួមគ្នាតម្លៃ $13200\text{ ៛}$ ។ ដោយដឹងថាគេនៅរក្សាតម្លៃទំនិញដដែល ចូររកតម្លៃនៃសៀវភៅមួយក្បាល និងប៊ិចមួយដើម ។
+
+  \vspace{3pt}
+  \noindent
+  \exhead{10} ពូសុខវិនិយោគប្រាក់ $5$ លានរៀល ដើម្បីដាក់យកការប្រាក់តាមអត្រាការប្រាក់រៀងគ្នា $8\%$ និង $6\%$ ។ ដោយដឹងថាគាត់ទទួលបានការប្រាក់សរុប $360000\text{ ៛}$ ក្នុងមួយឆ្នាំ ។ ចូររកដើមទុនដែលគាត់បានដាក់តាមអត្រានីមួយៗ ។
+\end{multicols}
+
+\vspace{2pt}
+\begin{khboxpractice}
+  \exhead{11} \textbf{ដោះស្រាយចំណោទអនុវត្តន៍ ៖}\\[3pt]
+  \begin{itemize}[leftmargin=12pt, itemsep=2pt]
+    \item[\khlabel{ក}] ផលបូកនៃពីរចំនួនស្មើនឹង $50$ ផលដកនៃ $3$ ដងចំនួនទី $1$ និង $2$ ដងនៃចំនួនទី $2$ ស្មើនឹង $60$ ។ ចូររកចំនួនទាំងពីរនោះ ។
+    \item[\khlabel{ខ}] សួនរាងចតុកោណកែងមួយមានបរិមាត្រស្មើនឹង $158\text{m}$ ។ គេដឹងថាបណ្តោយលើសទទឹង $5\text{m}$ ។ ចូររកទទឹងនិងបណ្តោយនៃចតុកោណកែង ។
+  \end{itemize}
+\end{khboxpractice}
+
+\newpage
+
+% =========================================================================
+% ផ្នែកទី ៥: លំហាត់អនុវត្តន៍បន្ថែម
+% =========================================================================
+\khsection{៥}{លំហាត់អនុវត្តន៍បន្ថែម}
+
+\Needspace*{4.5cm}
+\exhead{1} \textbf{តើកូអរដោនេដែលឱ្យខាងក្រោមជាគូចម្លើយនៃប្រព័ន្ធសមីការដែរឬទេ ?}
+\vspace{2pt}
+\begin{multicols}{2}
+  \noindent\khlabel{ក} $\begin{cases} x - y = 8 \\ x + y = -2 \end{cases}$ \quad $(0, -3)$
+
+  \noindent\khlabel{ខ} $\begin{cases} 2x + y = 3 \\ x + 2y = 4 \end{cases}$ \quad $(2, -1)$
+
+  \columnbreak
+
+  \noindent\khlabel{គ} $\begin{cases} y = 3x \\ x + y = 3 \end{cases}$ \quad $(0, 0)$
+
+  \noindent\khlabel{ឃ} $\begin{cases} x - y = 3 \\ 2x - 2y = 6 \end{cases}$ \quad $(5, 2)$
+\end{multicols}
+
+\vspace{3pt}
+\Needspace*{4.8cm}
+\exhead{2} \textbf{ចូរដោះស្រាយប្រព័ន្ធសមីការខាងក្រោមតាមក្រាប ៖}
+\vspace{2pt}
+\begin{multicols}{2}
+  \noindent\khlabel{ក} $\begin{cases} x - 4y = 1 \\ x + y = -4 \end{cases}$
+
+  \noindent\khlabel{ខ} $\begin{cases} y - 2 = 0 \\ x - 3 = 0 \end{cases}$
+
+  \noindent\khlabel{គ} $\begin{cases} 2x - 3y = 13 \\ x - 2y = 8 \end{cases}$
+
+  \noindent\khlabel{ឃ} $\begin{cases} y = 3x \\ x + y = 4 \end{cases}$
+
+  \columnbreak
+
+  \noindent\khlabel{ង} $\begin{cases} 2x + y = 6 \\ y = 8 - 2x \end{cases}$
+
+  \noindent\khlabel{ច} $\begin{cases} x + y = 1 \\ \frac{x}{2} + \frac{y}{2} = 2 \end{cases}$
+
+  \noindent\khlabel{ឆ} $\begin{cases} x + y = 3 \\ y = \frac{7 - 2x}{2} \end{cases}$
+
+  \noindent\khlabel{ជ} $\begin{cases} y = 7 - x \\ x = y + 3 \end{cases}$
+\end{multicols}
+
+\vspace{3pt}
+\Needspace*{4.8cm}
+\exhead{3} \textbf{ចូរដោះស្រាយប្រព័ន្ធសមីការខាងក្រោមតាមវិធីបំបាត់ដោយបូក ៖}
+\vspace{2pt}
+\begin{multicols}{4}
+  \noindent\khlabel{ក} $\begin{cases} 2x + 2y = -2 \\ 5x - 2y = 9 \end{cases}$
+
+  \noindent\khlabel{ខ} $\begin{cases} 2x + 2y = 8 \\ 2x - y = 5 \end{cases}$
+
+  \noindent\khlabel{គ} $\begin{cases} 3x + 3y = 9 \\ 4x - 3y = -16 \end{cases}$
+
+  \columnbreak
+
+  \noindent\khlabel{ឃ} $\begin{cases} 8x - 3y = 17 \\ -7x + 6y = 2 \end{cases}$
+
+  \noindent\khlabel{ង} $\begin{cases} 7x - 10y = -1 \\ 3x + 2y = -13 \end{cases}$
+
+  \noindent\khlabel{ច} $\begin{cases} 4x - 3y = 15 \\ 8x + 2y = -10 \end{cases}$
+
+  \columnbreak
+
+  \noindent\khlabel{ឆ} $\begin{cases} 2x + 8y = -1 \\ -10x + 4y = 16 \end{cases}$
+
+  \noindent\khlabel{ជ} $\begin{cases} 5x + 3y + 9 = 0 \\ 3x - 4y + 17 = 0 \end{cases}$
+
+  \noindent\khlabel{ឈ} $\begin{cases} 6x - 5 = 2x - 7y \\ 2x = 5y - 6 \end{cases}$
+
+  \columnbreak
+
+  \noindent\khlabel{ញ} $\begin{cases} 4x - 3y = 9 \\ -3x + 5y = 7 \end{cases}$
+
+  \noindent\khlabel{ដ} $\begin{cases} 3x + 4y = -1 \\ 7x + 9y = 0 \end{cases}$
+
+  \noindent\khlabel{ឋ} $\begin{cases} 4x - 2y = -19 \\ -6x - 3y = 1.5 \end{cases}$
+\end{multicols}
+
+\vspace{3pt}
+\Needspace*{4.8cm}
+\exhead{4} \textbf{ចូរដោះស្រាយប្រព័ន្ធសមីការខាងក្រោមតាមវិធីជំនួស ៖}
+\vspace{2pt}
+\begin{multicols}{4}
+  \noindent\khlabel{ក} $\begin{cases} x - 2y = 16 \\ 4x + y = 1 \end{cases}$
+
+  \noindent\khlabel{ខ} $\begin{cases} x + 2y = 6 \\ 4x + 3y = 4 \end{cases}$
+
+  \noindent\khlabel{គ} $\begin{cases} y = -4x + 15 \\ 2x - 3y = 13 \end{cases}$
+
+  \columnbreak
+
+  \noindent\khlabel{ឃ} $\begin{cases} 5x - y = -23 \\ 3x - y = -15 \end{cases}$
+
+  \noindent\khlabel{ង} $\begin{cases} -2x + y = 2 \\ 2x + 3y = 6 \end{cases}$
+
+  \noindent\khlabel{ច} $\begin{cases} x + 5y = 11 \\ 4x - y = 2 \end{cases}$
+
+  \columnbreak
+
+  \noindent\khlabel{ឆ} $\begin{cases} 2x + 3y = 11 \\ 3x + 3y = 18 \end{cases}$
+
+  \noindent\khlabel{ជ} $\begin{cases} 5x + 3y = 4 \\ 4x - 2y = 1 \end{cases}$
+
+  \noindent\khlabel{ឈ} $\begin{cases} 5x + 7y = -3 \\ 2x + 14y = 2 \end{cases}$
+
+  \columnbreak
+
+  \noindent\khlabel{ញ} $\begin{cases} 3x + 6y = 6 \\ 2x = 2y \end{cases}$
+
+  \noindent\khlabel{ដ} $\begin{cases} x = 10y \\ \frac{1}{2}x = 3y + 2 \end{cases}$
+
+  \noindent\khlabel{ឋ} $\begin{cases} x - 7 = y \\ \frac{1}{4}x - 1 = y \end{cases}$
+\end{multicols}
+
+\vspace{3pt}
+\Needspace*{4.5cm}
+\exhead{5} \textbf{ចូរកំណត់តម្លៃ $m$ ដើម្បីឱ្យប្រព័ន្ធសមីការខាងក្រោមគ្មានចម្លើយ ៖}
+\vspace{2pt}
+\begin{multicols}{2}
+  \noindent\khlabel{ក} $\begin{cases} 4x + 12y = 12 \\ 2x + my = 5 \end{cases}$
+
+  \noindent\khlabel{ខ} $\begin{cases} 12x - 3my = 1 \\ 4x + 2y = 3 \end{cases}$
+
+  \columnbreak
+
+  \noindent\khlabel{គ} $\begin{cases} 2x - 4y = 10 \\ mx - 10y = 2 \end{cases}$
+
+  \noindent\khlabel{ឃ} $\begin{cases} 6mx + 14y = 0 \\ -3x + 2y = 6 \end{cases}$
+\end{multicols}
+
+\vspace{3pt}
+\Needspace*{4.5cm}
+\exhead{6} \textbf{ចូរកំណត់តម្លៃ $m$ ដើម្បីឱ្យប្រព័ន្ធសមីការខាងក្រោមគ្មានចម្លើយ ៖}
+\vspace{2pt}
+\begin{multicols}{2}
+  \noindent\khlabel{ក} $\begin{cases} 2x + my = 3 \\ (m - 1)x + 3y = m - 2 \end{cases}$
+
+  \noindent\khlabel{ខ} $\begin{cases} 4x + 9y = 11 \\ (3m + 2)x + (5m + 8)y = 12 \end{cases}$
+
+  \columnbreak
+
+  \noindent\khlabel{គ} $\begin{cases} (m + 1)x + (2m + 3)y = 3m - 1 \\ 2x + 5y = 4 \end{cases}$
+
+  \noindent\khlabel{ឃ} $\begin{cases} (3m + 2)x + (m - 3)y = 7 - m \\ -8x + y = 5 \end{cases}$
+\end{multicols}
+
+\vspace{3pt}
+\Needspace*{4.5cm}
+\exhead{7} \textbf{ចូរកំណត់តម្លៃ $m$ និង $n$ ដើម្បីឱ្យប្រព័ន្ធសមីការខាងក្រោមមានគូចម្លើយរាប់មិនអស់ ៖}
+\vspace{2pt}
+\begin{multicols}{2}
+  \noindent\khlabel{ក} $\begin{cases} mx + ny = 10 \\ 4x - 3y = 5 \end{cases}$
+
+  \noindent\khlabel{ខ} $\begin{cases} 2mx + y = 12 \\ 4x + 2y = 6 \end{cases}$
+
+  \columnbreak
+
+  \noindent\khlabel{គ} $\begin{cases} 5x - y = 15 \\ mx - 8ny = 6 \end{cases}$
+
+  \noindent\khlabel{ឃ} $\begin{cases} 6x + y = 30 \\ (n - 1)x + \frac{1}{3}y = n + m \end{cases}$
+\end{multicols}
+
+\vspace{3pt}
+\Needspace*{4.5cm}
+\exhead{8} \textbf{ចូរកំណត់តម្លៃ $m$ និង $n$ ដើម្បីឱ្យប្រព័ន្ធសមីការខាងក្រោមមានគូចម្លើយរាប់មិនអស់ ៖}
+\vspace{2pt}
+\begin{multicols}{2}
+  \noindent\khlabel{ក} $\begin{cases} 2x + 3y = 5 \\ mx + (m + n)y = 10 \end{cases}$
+
+  \noindent\khlabel{ខ} $\begin{cases} mx + 3y = 9 \\ 2x + (n - 1)y = 3 \end{cases}$
+
+  \columnbreak
+
+  \noindent\khlabel{គ} $\begin{cases} (m + 1)x + (n - 1)y = m + n \\ 2x + y = 3 \end{cases}$
+
+  \noindent\khlabel{ឃ} $\begin{cases} (2m + 1)x + (3n - 2)y = m + n \\ 5x + 4y = 4 \end{cases}$
+\end{multicols}
+
+\vspace{3pt}
+\begin{multicols}{2}
+  \noindent
+  \exhead{9} សុខនិងសៅទិញសៀវភៅសរសេរ ។ សុខទិញសៀវភៅស្តើង $2$ ក្បាល និងសៀវភៅក្រាស់ $3$ ក្បាលអស់ប្រាក់ $21000\text{ ៛}$ ។ ចំណែកសៅវិញទិញសៀវភៅស្តើង $3$ ក្បាល និងសៀវភៅក្រាស់ $2$ ក្បាលអស់ប្រាក់ចំនួន $19000\text{ ៛}$ ។ តើសៀវភៅទាំងពីរប្រភេទនេះ មួយក្បាលមានតម្លៃប៉ុន្មាន ?
+
+  \vspace{5pt}
+  \noindent
+  \exhead{10} នៅខាងក្នុងកាបូបមួយមានប្រាក់ $8000\text{ ៛}$ ។ គេរាប់ចំនួនក្រដាសប្រាក់ឃើញ $11$ សន្លឹក ។ ក្រដាសប្រាក់នេះមានចំនួនពីរប្រភេទ គឺប្រភេទ $500\text{ ៛}$ និង $1000\text{ ៛}$ ។ ចូររកចំនួនក្រដាសប្រាក់ប្រភេទនីមួយៗ ។
+
+  \vspace{5pt}
+  \noindent
+  \exhead{11} ពូសំដាក់ទឹកត្នោតដោយប្រើខ្សែពួរបង្ហូតចុះមកដី ។ បើគាត់មិនបត់ខ្សែជាពីរទេ នោះគាត់បង្ហូតបំពង់មកដល់ដី នៅសល់កន្ទុយខ្សែ $7\text{m}$ ទៀត ។ ប៉ុន្តែបើគាត់បត់ខ្សែពួរជាពីរ គាត់បង្ហូតបំពង់មកដល់ដីល្មម គ្មានសល់ខ្សែសោះ ។ បំពង់និងខ្សែបំពង់មានប្រវែង $1\text{m}$ ។ កម្ពស់ដើមត្នោតត្រូវគិតពីកន្លែងដែលគាត់អង្គុយមកត្រឹមដី ។ ចូររកប្រវែងខ្សែពួរនិងកម្ពស់ដើមត្នោត ។
+
+  \columnbreak
+
+  \noindent
+  \exhead{12} ដីមួយកន្លែងមានរាងចតុកោណកែងដែលមានបរិមាត្រ $110\text{m}$ ។ បើគេថែម $5\text{m}$ លើបណ្តោយនិង $2\text{m}$ លើទទឹង នោះផ្ទៃក្រឡាកើនលើសពីមុន $150\text{m}^2$ ។ ចូររកប្រវែងបណ្តោយនិងទទឹងនៃដីនោះ ។
+
+  \vspace{6pt}
+  \noindent
+  \exhead{13} គេយកក្រដាសប្រាក់ $20\$$ ទៅទិញនំ H និងនំ P ។\\
+  បើគេទិញនំ H $6$ និងនំ P $4$ នោះគេនឹងអាប់វិញចំនួន $1.5\$$ ។\\
+  បើគេទិញនំ H $2$ និងនំ P $5$ នោះគេនឹងអាប់វិញចំនួន $1\$$ ។\\
+  បើគេទិញនំ H $4$ និងនំ P $4$ តើគេនឹងអាប់វិញប្រាក់ប៉ុន្មាន ?
+\end{multicols}
+
+\newpage
+
+\begin{multicols}{2}
+  \noindent
+  \exhead{14} ផលដកនៃពីរចំនួនស្មើ $22$ ពីរដងនៃចំនួនធំបូកនឹងបីដងនៃចំនួនតូចស្មើនឹង $246$ ។ រកពីរចំនួននោះ ។
+
+  \vspace{6pt}
+  \noindent
+  \exhead{15} ពីរចំនួនមានផលបូកស្មើនឹង $490$ និងមានផលធៀបស្មើនឹង $\frac{3}{7}$ ។ ចូរគណនាចំនួនទាំងពីរនោះ ។
+
+  \vspace{6pt}
+  \noindent
+  \exhead{16} ផលធៀបនៃពីរចំនួនស្មើនឹង $\frac{5}{4}$ និងការ៉េនៃផលដករបស់វាស្មើនឹង $324$ ។ ចូរគណនាចំនួននីមួយៗ ។
+
+  \columnbreak
+
+  \noindent
+  \exhead{17} ត្រីកោណ $ABC$ មួយមានបរិមាត្រ $192\text{m}$ ។ ចូរគណនាប្រវែងជ្រុង $BC, CA, AB$ ដោយដឹងថាជ្រុងទាំងនោះសមាមាត្ររៀងគ្នានឹងចំនួន $2.5$, $2$ និង $1.5$ ។
+
+  \vspace{6pt}
+  \noindent
+  \exhead{18} ផលដកនៃពីរចំនួនស្មើនឹង $36$ និងការ៉េនៃផលធៀបរបស់វាស្មើនឹង $\frac{25}{81}$ ។ ចូរគណនាចំនួននីមួយៗ ។
+
+  \vspace{6pt}
+  \noindent
+  \exhead{19} ផលធៀបបាតទាំងពីរនៃចតុកោណព្នាយមួយស្មើនឹង $\frac{3}{5}$ និងផលបូកបាតរបស់វាស្មើនឹង $64\text{m}$ ។ ចូរគណនាប្រវែងនៃបាតនីមួយៗ ។
+\end{multicols}
+
+\vspace{3pt}
+\begin{multicols}{2}
+  \noindent
+  \exhead{20} ចូរទាញរកគូចម្លើយនៃប្រព័ន្ធសមីការ ៖
+  \begin{equation*}
+    \begin{cases}
+      \frac{5}{x+1} + \frac{7}{y-1} = 4 \\[6pt]
+      \frac{8}{x+1} + \frac{1}{y-1} = 3
+    \end{cases}
+  \end{equation*}
+
+  \vspace{3pt}
+  \noindent
+  \exhead{21} បើបន្ទាត់ $Ax + By = 9$ កាត់តាមចំណុច $(2, 1)$ និង $(-3, 3)$ ចូរកំណត់ $A$ និង $B$ ។
+
+  \columnbreak
+
+  \noindent
+  \exhead{22} គេឱ្យបន្ទាត់មួយមានសមីការ $2x + 6y = b$ កាត់តាមពីរចំណុច $A(-2, a)$ និង $B(2a, 1)$ ។ ចូររកតម្លៃ $a$ និង $b$ ។
+
+  \vspace{4pt}
+  \noindent
+  \exhead{23} ចូរដោះស្រាយប្រព័ន្ធសមីការ ៖
+  \begin{equation*}
+    \begin{cases}
+      \frac{2}{x} - \frac{2}{y} = \frac{1}{2} \\[6pt]
+      \frac{1}{x} + \frac{5}{y} = \frac{3}{4}
+    \end{cases}
+  \end{equation*}
+\end{multicols}
+
+\vspace{3pt}
+\Needspace*{4.5cm}
+\exhead{24} ក្រុមហ៊ុនមួយបានលក់ផលិតផលពីរមុខ A និង B ។ តាមការស្រាវជ្រាវនៃការលក់ទៅតាមឆ្នាំនីមួយៗមានដូចតារាងខាងក្រោម (ឯកតាគិតជាលានគ្រឿង) ៖
+\begin{center}
+  \renewcommand{\arraystretch}{1.2}
+  \begin{tabular}{|c|c|c|c|c|}
+    \hline
+    \rowcolor{brandNavy!15} \textbf{ឆ្នាំ} & \textbf{2008} & \textbf{2009} & \textbf{2010} & \textbf{2011} \\ \hline
+    \textbf{ផលិតផល A} & $2.3$ & $2.7$ & $3.1$ & $3.5$ \\ \hline
+    \textbf{ផលិតផល B} & $2.9$ & $3.3$ & $3.7$ & $4.1$ \\ \hline
+  \end{tabular}
+\end{center}
+បើក្រុមហ៊ុនរក្សាការលក់តាមអត្រាកំណើនដូចខាងលើ តើផលិតផល A អាចលក់កើនជាង B ឬទេ ? ហេតុអ្វី ?
+
+\end{document}

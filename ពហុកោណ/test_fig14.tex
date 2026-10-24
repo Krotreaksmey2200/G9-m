@@ -1,0 +1,99 @@
+\documentclass[tikz,border=8pt]{standalone}
+\usepackage{tikz}
+\usetikzlibrary{calc}
+\usepackage{fontspec}
+\setmainfont{Khmer OS Battambang}
+\definecolor{brandNavy}{RGB}{20, 45, 95}
+\definecolor{brandCrimson}{RGB}{185, 25, 40}
+\definecolor{brandTealBg}{RGB}{238, 246, 248}
+
+\begin{document}
+\begin{tikzpicture}
+  % Figure (ក) - Quadrilateral
+  \begin{scope}[xshift=0cm, yshift=0cm, scale=0.55]
+    \coordinate (Q1) at (0.4, 0);
+    \coordinate (Q2) at (2.8, 0);
+    \coordinate (Q3) at (3.5, 1.3);
+    \coordinate (Q4) at (0.9, 1.8);
+
+    \fill[brandTealBg] (Q1) -- (Q2) -- (Q3) -- (Q4) -- cycle;
+    \draw[very thick, brandNavy] (Q1) -- (Q2) -- (Q3) -- (Q4) -- cycle;
+
+    % Cyclic extensions counter-clockwise:
+    \draw[thick, brandCrimson] (Q2) -- ($(Q1)!1.35!(Q2)$);
+    \draw[thick, brandCrimson] (Q3) -- ($(Q2)!1.38!(Q3)$);
+    \draw[thick, brandCrimson] (Q4) -- ($(Q3)!1.35!(Q4)$);
+    \draw[thick, brandCrimson] (Q1) -- ($(Q4)!1.38!(Q1)$);
+
+    % Labels:
+    \node[above right=-1pt, font=\fontsize{7.5}{7.5}\selectfont\bfseries, color=brandNavy] at ($(Q2)+(0.12, 0.05)$) {$y$};
+    \node[above left=-1pt, font=\fontsize{7.5}{7.5}\selectfont\bfseries, color=brandNavy] at ($(Q3)+(-0.05, 0.18)$) {$2y$};
+    \node[below left=-1pt, font=\fontsize{7.5}{7.5}\selectfont\bfseries, color=brandNavy] at ($(Q4)+(-0.15, -0.05)$) {$y$};
+    \node[below right=-1pt, font=\fontsize{7.5}{7.5}\selectfont\bfseries, color=brandNavy] at ($(Q1)+(-0.02, -0.15)$) {$2y$};
+
+    \node[below=14pt, font=\fontsize{8}{8}\selectfont\bfseries] at (1.8, 0) {(ក)};
+  \end{scope}
+
+  % Figure (ខ) - Pentagon
+  \begin{scope}[xshift=2.9cm, yshift=0cm, scale=0.52]
+    \coordinate (P1) at (0.6, 0.15);
+    \coordinate (P2) at (2.0, 0.45);
+    \coordinate (P3) at (2.7, 1.35);
+    \coordinate (P4) at (1.9, 1.95);
+    \coordinate (P5) at (0.3, 0.95);
+
+    \fill[brandTealBg] (P1) -- (P2) -- (P3) -- (P4) -- (P5) -- cycle;
+    \draw[very thick, brandNavy] (P1) -- (P2) -- (P3) -- (P4) -- (P5) -- cycle;
+
+    % Cyclic extensions counter-clockwise:
+    \draw[thick, brandCrimson] (P2) -- ($(P3)!1.5!(P2)$);
+    \draw[thick, brandCrimson] (P3) -- ($(P4)!1.5!(P3)$);
+    \draw[thick, brandCrimson] (P4) -- ($(P5)!1.55!(P4)$);
+    \draw[thick, brandCrimson] (P5) -- ($(P1)!1.55!(P5)$);
+    \draw[thick, brandCrimson] (P1) -- ($(P2)!1.5!(P1)$);
+
+    % Labels:
+    \node[above left=-1pt, font=\fontsize{7}{7}\selectfont\bfseries, color=brandNavy] at ($(P1)+(-0.35, 0.05)$) {$70^\circ$};
+    \node[below left=-1pt, font=\fontsize{7.5}{7.5}\selectfont\bfseries, color=brandNavy] at ($(P2)+(-0.25, -0.15)$) {$y$};
+    \node[below right=-1pt, font=\fontsize{7.5}{7.5}\selectfont\bfseries, color=brandNavy] at ($(P3)+(0.08, -0.12)$) {$y$};
+    \node[below right=-1pt, font=\fontsize{7.5}{7.5}\selectfont\bfseries, color=brandNavy] at ($(P4)+(0.12, 0.02)$) {$y$};
+    \node[above right=-1pt, font=\fontsize{7}{7}\selectfont\bfseries, color=brandNavy] at ($(P5)+(-0.08, 0.18)$) {$80^\circ$};
+
+    \node[below=14pt, font=\fontsize{8}{8}\selectfont\bfseries] at (1.5, 0) {(ខ)};
+  \end{scope}
+
+  % Figure (គ) - Heptagon
+  \begin{scope}[xshift=6.0cm, yshift=0cm, scale=0.52]
+    \coordinate (G) at (0.6, 0.15);
+    \coordinate (A) at (1.8, 0.15);
+    \coordinate (B) at (2.6, 0.95);
+    \coordinate (C) at (2.2, 1.85);
+    \coordinate (D) at (1.4, 2.25);
+    \coordinate (E) at (0.5, 1.95);
+    \coordinate (F) at (0.0, 1.15);
+
+    \fill[brandTealBg] (G) -- (A) -- (B) -- (C) -- (D) -- (E) -- (F) -- cycle;
+    \draw[very thick, brandNavy] (G) -- (A) -- (B) -- (C) -- (D) -- (E) -- (F) -- cycle;
+
+    % Cyclic extensions counter-clockwise matching crop_heptagon.png:
+    \draw[thick, brandCrimson] (A) -- ($(G)!1.45!(A)$);
+    \draw[thick, brandCrimson] (B) -- ($(A)!1.45!(B)$);
+    \draw[thick, brandCrimson] (C) -- ($(B)!1.45!(C)$);
+    \draw[thick, brandCrimson] (D) -- ($(C)!1.55!(D)$);
+    \draw[thick, brandCrimson] (E) -- ($(D)!1.55!(E)$);
+    \draw[thick, brandCrimson] (F) -- ($(E)!1.55!(F)$);
+    \draw[thick, brandCrimson] (G) -- ($(F)!1.45!(G)$);
+
+    % Labels:
+    \node[above right=-1pt, font=\fontsize{7}{7}\selectfont\bfseries, color=brandNavy] at ($(A)+(0.15, 0.08)$) {$2y$};
+    \node[above right=-1pt, font=\fontsize{7}{7}\selectfont\bfseries, color=brandNavy] at ($(B)+(0.12, 0.12)$) {$3y$};
+    \node[above left=-1pt, font=\fontsize{7}{7}\selectfont\bfseries, color=brandNavy] at ($(C)+(-0.02, 0.22)$) {$2y$};
+    \node[above left=-1pt, font=\fontsize{7}{7}\selectfont\bfseries, color=brandNavy] at ($(D)+(-0.18, 0.06)$) {$2y$};
+    \node[left=-1pt, font=\fontsize{7}{7}\selectfont\bfseries, color=brandNavy] at ($(E)+(-0.16, -0.05)$) {$2y$};
+    \node[below left=-1pt, font=\fontsize{7}{7}\selectfont\bfseries, color=brandNavy] at ($(F)+(-0.12, -0.15)$) {$3y$};
+    \node[below right=-1pt, font=\fontsize{7}{7}\selectfont\bfseries, color=brandNavy] at ($(G)+(0.12, -0.15)$) {$2y$};
+
+    \node[below=14pt, font=\fontsize{8}{8}\selectfont\bfseries] at (1.3, 0) {(គ)};
+  \end{scope}
+\end{tikzpicture}
+\end{document}

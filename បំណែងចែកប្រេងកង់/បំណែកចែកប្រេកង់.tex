@@ -1,0 +1,951 @@
+\documentclass[theme=teal]{khmermath}
+\usepackage{needspace}
+
+\geometry{left=0.85cm, right=0.85cm, top=0.75cm, bottom=1.5cm, footskip=0.7cm}
+\usepackage{colortbl}
+\usepackage{tikz}
+\usetikzlibrary{calc,shapes,arrows,arrows.meta,intersections,through,backgrounds,shadows,decorations.pathmorphing,angles,quotes,positioning}
+
+% -------------------------------------------------------------------------
+% Korean Math Textbook Style Color Palette & Macros
+% -------------------------------------------------------------------------
+\definecolor{koreaTeal}{RGB}{0, 150, 155}       % Primary Header Teal/Cyan
+\definecolor{koreaDarkTeal}{RGB}{0, 105, 110}   % Dark Teal Accent
+\definecolor{koreaBeige}{RGB}{247, 244, 237}     % Concept Sidebar Beige (#F7F4EE)
+\definecolor{koreaBeigeBorder}{RGB}{225, 218, 205}
+\definecolor{koreaOrange}{RGB}{235, 115, 30}     % Problem Number Orange
+\definecolor{koreaBlue}{RGB}{35, 110, 190}      % Standard Blue
+\definecolor{koreaPurple}{RGB}{125, 50, 160}    % Purple Accent
+\definecolor{koreaNumber}{RGB}{115, 125, 135}   % Problem Number Gray
+\definecolor{koreaYellow}{RGB}{255, 246, 175}   % Yellow Highlight Tint
+
+\definecolor{brandNavy}{RGB}{0, 105, 110}
+\definecolor{brandBlue}{RGB}{0, 150, 155}
+\definecolor{brandLightBlue}{RGB}{247, 244, 237}
+\definecolor{brandCrimson}{RGB}{195, 35, 60}
+\definecolor{brandCoral}{RGB}{235, 80, 75}
+\definecolor{brandGold}{RGB}{215, 130, 10}
+\definecolor{brandGoldBg}{RGB}{255, 252, 242}
+\definecolor{brandTeal}{RGB}{0, 150, 155}
+\definecolor{brandTealBg}{RGB}{244, 252, 250}
+\definecolor{subtleGray}{RGB}{246, 251, 249}
+\definecolor{cardBorder}{RGB}{220, 212, 198}
+
+% Custom Header & Footer setup (Korean Textbook Style)
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrule}{\color{koreaTeal!60}\hrule height 0.6pt\vspace{3pt}}
+
+\fancyfoot[L]{%
+  \fontsize{8.5}{8.5}\selectfont\kml \color{koreaNumber}\textbf{\thepage}\ \vline\ \color{koreaDarkTeal}\textbf{៦. បំណែងចែកប្រេកង់}%
+}
+\fancyfoot[C]{%
+  \fontsize{8.5}{8.5}\selectfont\kby \color{koreaDarkTeal}\textbf{\ding{72}\ បង្រៀនដោយ ៖ \textcolor{koreaDarkTeal}{ក្រូត រស្មី}\ \ding{72}}%
+}
+\fancyfoot[R]{%
+  \fontsize{8.5}{8.5}\selectfont\kby \color{koreaDarkTeal}\textbf{ Telegram: \textcolor{brandCrimson}{070897540}}\ \vline\ \color{koreaNumber}\textbf{\thepage}%
+}
+
+% Korean Header Banner
+\newcommand{\koreanheader}[2]{%
+  \noindent%
+  \begin{tikzpicture}[x=1cm, y=1cm]
+    \fill[koreaTeal, rounded corners=12pt] (0, 0.1) -- (0, 0.95) -- (3.8, 0.95) [rounded corners=0pt] -- (4.4, 0.1) -- cycle;
+    \node[white, font=\fontsize{11}{11}\selectfont\kml\bfseries] at (1.9, 0.52) {#1};
+    \node[anchor=west, font=\fontsize{17}{17}\selectfont\kml\bfseries, color=koreaDarkTeal] at (4.6, 0.42) {#2};
+    \node[anchor=east, font=\fontsize{8.5}{8.5}\selectfont\kby, color=gray!80] at (19.2, 0.48) {$>$ ក្លឹបសិក្សាគណិតវិទ្យា ភី ស៊ី​ អឹម (PCM)};
+  \end{tikzpicture}%
+  \vspace{2pt}%
+}
+
+% Yellow Formula Highlight Box
+\newcommand{\koreahl}[1]{\colorbox{koreaYellow}{\fontsize{8.5}{8.5}\selectfont\textbf{#1}}}
+
+% General Rule Box (Teal/Navy Theme - ជាទូទៅ / Feynman Concept)
+\newtcolorbox{khboxorange}[1][]{
+  enhanced,
+  colframe=brandNavy!40,
+  colback=brandLightBlue,
+  boxrule=0.7pt,
+  arc=4.5pt,
+  borderline west={3.5pt}{0pt}{brandNavy},
+  drop fuzzy shadow=brandNavy!15,
+  left=7pt, right=7pt, top=4pt, bottom=4pt,
+  title={\fontsize{9}{9}\selectfont\kml\color{white}\ding{72}\ ជាទូទៅ},
+  coltitle=white,
+  colbacktitle=brandNavy,
+  boxed title style={
+    boxrule=0pt,
+    arc=3pt,
+    left=6pt, right=6pt, top=2pt, bottom=2pt
+  },
+  attach boxed title to top left={yshift*=-\tcboxedtitleheight/2, xshift=10pt},
+  #1
+}
+
+% Worked Example Box (Korean Representative Example - ឧទាហរណ៍គំរូ Image 2 Style)
+\newtcolorbox{khexamplebox}[1][]{
+  enhanced,
+  colframe=koreaTeal,
+  colback=white,
+  boxrule=0.85pt,
+  arc=5.5pt,
+  borderline west={3.8pt}{0pt}{koreaDarkTeal},
+  drop fuzzy shadow=koreaTeal!15,
+  left=7pt, right=7pt, top=4pt, bottom=4pt,
+  title={\fontsize{9.5}{9.5}\selectfont\kml\bfseries\color{white}\ding{45}\ ឧទាហរណ៍គំរូ និងការវិភាគជាជំហានៗ (អមគំនូសព្រួញពន្យល់)},
+  coltitle=white,
+  colbacktitle=koreaTeal,
+  boxed title style={
+    boxrule=0pt,
+    arc=4pt,
+    left=7pt, right=7pt, top=2.5pt, bottom=2.5pt
+  },
+  attach boxed title to top left={yshift*=-\tcboxedtitleheight/2, xshift=10pt},
+  #1
+}
+
+% Example / Card Item Box
+\newtcolorbox{khcard}[1][]{
+  enhanced,
+  colframe=cardBorder,
+  colback=white,
+  boxrule=0.7pt,
+  arc=3.5pt,
+  left=6pt, right=6pt, top=4pt, bottom=4pt,
+  #1
+}
+
+% Section Badge Macro
+\newcommand{\khsection}[2]{%
+  \Needspace*{3.5cm}%
+  \vspace{2pt}%
+  \noindent%
+  \begin{tikzpicture}
+    \fill[rounded corners=5pt, brandNavy!7] (0,0) rectangle (19.3, 0.62);
+    \fill[rounded corners=4pt, brandNavy] (0.05, 0.05) rectangle (0.58, 0.57);
+    \node[white, font=\fontsize{9.5}{9.5}\selectfont\bfseries] at (0.31, 0.31) {#1};
+    \fill[brandGold, rounded corners=1pt] (0.68, 0.12) rectangle (0.72, 0.50);
+    \node[anchor=west, font=\fontsize{11}{11}\selectfont\kml, color=brandCrimson] at (0.80, 0.31) {\textbf{#2}};
+  \end{tikzpicture}%
+  \vspace{1pt}%
+}
+
+% Korean Math Numbering Macro (Two-Tone Big Numbers 01, 02, 03...)
+\def\splitnum#1#2{%
+  \color{koreaNumber!65}#1\color{koreaOrange}#2%
+}
+\newcommand{\koreannum}[1]{%
+  \ifstrempty{#1}{}{%
+    \mbox{%
+      \fontsize{15}{15}\selectfont\bfseries%
+      \ifnum#1<10\relax%
+        \color{koreaNumber!65}0\color{koreaOrange}#1%
+      \else%
+        \expandafter\splitnum#1%
+      \fi%
+    }\,\ %
+  }%
+}
+\newcommand{\exhead}[1]{\koreannum{#1}}
+
+% Sub-Question Badge (Crimson Rounded Square)
+\newcommand{\khlabel}[1]{%
+  \tikz[baseline=-0.6ex]{%
+    \node[fill=brandCrimson, rounded corners=2.5pt, inner sep=1.8pt, minimum width=1.25em, minimum height=1.25em, text=white, font=\kml\fontsize{7.5}{7.5}\selectfont, align=center] (lbl) {\raisebox{0.2pt}{#1}};%
+  }\,\ %
+}
+
+% Practice Badge
+\newcommand{\phead}{%
+  \tikz[baseline=-0.6ex]{%
+    \node[fill=brandGold!95, rounded corners=2.5pt, inner sep=2.2pt, text=white, font=\fontsize{7.5}{7.5}\selectfont\kml] {ប្រតិបត្តិ};%
+  }\,\ %
+}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{2pt}
+
+\begin{document}
+
+% =========================================================================
+% PAGE 1: ផ្នែកទី ១ - គោលគំនិត + គំនូសបំព្រួញ + ឧទាហរណ៍គំរូ និងក្រាបសសរ
+% =========================================================================
+\koreanheader{មេរៀនទី ៦}{បំណែងចែកប្រេកង់}
+
+\khsection{១}{ការផ្គុំទិន្នន័យជាប្រេកង់}
+
+% គំនិតសាមញ្ញបែប Feynman
+\begin{khboxorange}[title={\fontsize{9}{9}\selectfont\kml\color{white}\ding{72}\  តើអ្វីទៅជាប្រេកង់?}]
+  \begin{itemize}[leftmargin=10pt, itemsep=1.5pt, topsep=1pt, parsep=0pt]
+    \item[\color{brandNavy}\ding{228}] \textbf{ប្រេកង់ ($f$) ៖} ប្រៀបដូចជាការរាប់ \textbf{«ចំនួនដងដែលរឿងមួយកើតឡើង»} (ឧទាហរណ៍ ៖ ក្នុងមួយសប្ដាហ៍ អ្នកញ៉ាំការ៉េម $4$ ដង នោះប្រេកង់នៃការញ៉ាំការ៉េមគឺស្មើ $4$)។
+    \item[\color{brandCrimson}\ding{228}] \textbf{ប្រេកង់ធៀប ($f_r$) ៖} ប្រៀបដូចជាការសួរថា \textbf{«ក្នុងចំណោមទាំងអស់ តើរឿងនោះមានចំណែកប៉ុន្មានភាគ?»} គឺយកចំនួនដងកើតឡើងចែកនឹងចំនួនសរុប ៖ \ \koreahl{$f_r = \frac{f}{N}$} \ (\text{ឬគិតជាភាគរយ ៖} \ $f_r \times 100\%$)។
+  \end{itemize}
+\end{khboxorange}
+
+\vspace{1pt}
+% គំនូសបំព្រួញមេរៀន (Concept Diagram)
+\begin{center}
+\begin{tikzpicture}[
+  box/.style={rectangle, rounded corners=5pt, draw=brandNavy!50, fill=white, thick, inner sep=4pt, align=center, font=\fontsize{8}{8}\selectfont\kml, minimum height=1.1cm},
+  arr/.style={-{Latex[length=2.5mm]}, very thick, brandNavy}
+]
+  \node[box, fill=brandTealBg, minimum width=2.5cm] (n1) at (0, 0) {\textbf{ទិន្នន័យដើម}\\[1pt]\scriptsize (Raw Data)};
+  \node[box, fill=koreaYellow!40, minimum width=2.5cm] (n2) at (4.6, 0) {\textbf{ប្រេកង់ $f$}\\[1pt]\scriptsize (ចំនួនដងកើតឡើង)};
+  \node[box, fill=brandLightBlue, minimum width=2.5cm] (n3) at (9.4, 0) {\textbf{ប្រេកង់ធៀប $f_r$}\\[1pt]\small $f_r = \frac{f}{N}$};
+  \node[box, fill=brandGoldBg, minimum width=2.5cm] (n4) at (14.2, 0) {\textbf{ភាគរយ $\%$}\\[1pt]\small $f_r \times 100\%$};
+
+  \draw[arr] (n1) -- (n2) node[midway, above=1pt, font=\fontsize{7.5}{7.5}\selectfont\kml, text=brandNavy] {រាប់ដង};
+  \draw[arr] (n2) -- (n3) node[midway, above=1pt, font=\fontsize{7.5}{7.5}\selectfont\kml, text=brandCrimson] {$\div N$};
+  \draw[arr] (n3) -- (n4) node[midway, above=1pt, font=\fontsize{7.5}{7.5}\selectfont\kml, text=brandGold] {$\times 100\%$} ;
+
+  \node[fill=brandNavy!7, draw=brandNavy!20, rounded corners=3.5pt, inner sep=3.5pt] at (7.1, -1.05) {%
+    \fontsize{7.5}{7.5}\selectfont\kml\color{brandNavy}\textbf{លក្ខណៈផ្ទៀងផ្ទាត់ ៖} \ $\sum f = N$ (សរុបទិន្នន័យ) \quad \textcolor{brandCrimson}{$\blacktriangleright$} \quad $\sum f_r = 1$ \quad \textcolor{brandGold}{$\blacktriangleright$} \quad $\sum \% = 100\%$%
+  };
+\end{tikzpicture}
+\end{center}
+
+\vspace{-2pt}
+% ឧទាហរណ៍គំរូក្បោះក្បាយ + តារាងជាជួរឈរ + គំនួសព្រួញ Annotation + ក្រាបសសរ
+\begin{khexamplebox}
+
+  \textbf{ប្រធាន ៖} ខាងក្រោមនេះជាលទ្ធផលពិន្ទុរបស់សិស្សនៃថ្នាក់រៀនមួយចំនួន $50$ នាក់ ៖
+  \begin{center}
+    \vspace{-2pt}
+    \fontsize{8}{8}\selectfont
+    \setlength{\tabcolsep}{12.5pt}
+    \renewcommand{\arraystretch}{1.18}
+    \begin{tabular}{|cccccccccc|}
+      \hline
+      $4$ & $4$ & $5$ & $4$ & $1$ & $6$ & $5$ & $6$ & $6$ & $5$ \\
+      $5$ & $4$ & $5$ & $4$ & $9$ & $2$ & $7$ & $5$ & $7$ & $2$ \\
+      $5$ & $2$ & $6$ & $3$ & $7$ & $3$ & $5$ & $1$ & $5$ & $6$ \\
+      $4$ & $5$ & $1$ & $5$ & $5$ & $6$ & $1$ & $6$ & $2$ & $5$ \\
+      $5$ & $2$ & $9$ & $4$ & $6$ & $7$ & $4$ & $4$ & $4$ & $5$ \\
+      \hline
+    \end{tabular}
+  \end{center}
+  \vspace{-2pt}
+  \khlabel{ក} រៀបចំទិន្នន័យជាតារាងបំណែងចែកប្រេកង់ (ជួរឈរ) គិតជាប្រេកង់ $f$, ប្រេកង់ធៀប $f_r$ និង $\%$ ។ \\
+  \khlabel{ខ} សង់ក្រាបសសរ និងបកស្រាយទិន្នន័យ ។\\[4pt]
+
+  % បែងចែកជា ២ ជួរឈរ (ឆ្វេង ៖ តារាងជួរឈរអមគំនូសព្រួញ, ស្តាំ ៖ ក្រាបសសរ និងការបកស្រាយ)
+  \begin{minipage}[t]{0.54\textwidth}
+
+    \textbf{\color{koreaDarkTeal}\ding{70}\ ក. តារាងបំណែងចែកប្រេកង់ (ជួរឈរ) ៖}
+    
+    \vspace{2pt}
+    \begin{center}
+    \begin{tikzpicture}
+      % Vertical Table (តារាងជាជួរឈរ)
+      \node[inner sep=0pt] (tbl) {
+        \fontsize{7.5}{9.5}\selectfont
+        \setlength{\tabcolsep}{3.8pt}
+        \renewcommand{\arraystretch}{1.20}
+        \begin{tabular}{|c|c|c|c|}
+          \hline
+          \rowcolor{koreaTeal!25}
+          \textbf{ពិន្ទុ ($x$)} & \textbf{ប្រេកង់ ($f$)} & \textbf{ប្រេកង់ធៀប ($f_r$)} & \textbf{ភាគរយ (\%)} \\ \hline
+          $1$ & $4$ & $0.08$ & $8\%$ \\ \hline
+          $2$ & $5$ & $0.10$ & $10\%$ \\ \hline
+          $3$ & $2$ & $0.04$ & $4\%$ \\ \hline
+          $4$ & $10$ & $0.20$ & $20\%$ \\ \hline
+          \rowcolor{brandCrimson!12}
+          $\mathbf{5}$ & $\mathbf{15}$ & $\mathbf{0.30}$ & $\mathbf{30\%}$ \\ \hline
+          $6$ & $8$ & $0.16$ & $16\%$ \\ \hline
+          $7$ & $4$ & $0.08$ & $8\%$ \\ \hline
+          $9$ & $2$ & $0.04$ & $4\%$ \\ \hline
+          \rowcolor{koreaTeal!15}
+          \textbf{សរុប} & $N=50$ & $\sum = 1.0$ & $100\%$ \\ \hline
+        \end{tabular}
+      };
+
+      % Side Annotation Badges with Curved Arrows (Image 2 style)
+      % Top badge for row 1
+      \node[
+        draw=koreaOrange!80, fill=koreaOrange!10, rounded corners=3pt, inner sep=2pt, 
+        font=\fontsize{6.5}{6.5}\selectfont\kml, text=koreaOrange!90!black, 
+        anchor=west
+      ] (b1) at ([xshift=0.10cm, yshift=1.40cm]tbl.east) {$\frac{4}{50} = 0.08 \xrightarrow{\times 100\%} 8\%$};
+
+      \draw[-{Latex[length=1.8mm]}, thick, koreaOrange] 
+        (b1.west) to[out=180, in=0] ([yshift=1.40cm]tbl.east);
+
+      % Badge for modal score 5
+      \node[
+        draw=brandCrimson!80, fill=brandCrimson!10, rounded corners=3pt, inner sep=2pt, 
+        font=\fontsize{6.5}{6.5}\selectfont\kml, text=brandCrimson!90!black, 
+        anchor=west
+      ] (b5) at ([xshift=0.10cm, yshift=0.15cm]tbl.east) {\textbf{ពិន្ទុ 5 ៖} $\frac{15}{50} = 0.30 \ (\mathbf{30\%})$};
+
+      \draw[-{Latex[length=1.8mm]}, thick, brandCrimson] 
+        (b5.west) to[out=180, in=0] ([yshift=0.15cm]tbl.east);
+
+      % Badge for total
+      \node[
+        draw=koreaDarkTeal!80, fill=koreaDarkTeal!10, rounded corners=3pt, inner sep=2pt, 
+        font=\fontsize{6.5}{6.5}\selectfont\kml, text=koreaDarkTeal!90!black, 
+        anchor=west
+      ] (btot) at ([xshift=0.10cm, yshift=-1.15cm]tbl.east) {\textbf{សរុប ៖} $N=50 \implies 100\%$};
+
+      \draw[-{Latex[length=1.8mm]}, thick, koreaDarkTeal] 
+        (btot.west) to[out=180, in=0] ([yshift=-1.15cm]tbl.east);
+
+      % Top header flow badge
+      \node[
+        draw=koreaTeal!80, fill=koreaTeal!10, rounded corners=2.5pt, inner sep=1.8pt, 
+        font=\fontsize{6.5}{6.5}\selectfont\kml, text=koreaDarkTeal
+      ] at ([yshift=0.35cm]tbl.north) {ក្បួនបំពេញ ៖ $f \xrightarrow{\div 50} f_r \xrightarrow{\times 100\%} \%$};
+    \end{tikzpicture}
+    \end{center}
+  \end{minipage}%
+  \hfill%
+  \begin{minipage}[t]{0.01\textwidth}
+    \vspace{10pt}
+    \tikz \draw[dashed, koreaTeal!40, thick] (0, 0) -- (0, -6.8);
+  \end{minipage}%
+  \hfill%
+  \begin{minipage}[t]{0.43\textwidth}
+
+    \textbf{\color{koreaDarkTeal}\ding{70}\ ខ. ក្រាបសសរ និងការបកស្រាយទិន្នន័យ ៖}
+    
+    \vspace{2pt}
+    \centering
+    \begin{tikzpicture}[x=0.50cm, y=0.21cm, font=\fontsize{6.5}{6.5}\selectfont\kml]
+      % Axes
+      \draw[->, thick, brandNavy] (0, 0) -- (8.6, 0) node[right, font=\fontsize{6.5}{6.5}\selectfont\kml] {ពិន្ទុ ($x$)};
+      \draw[->, thick, brandNavy] (0, 0) -- (0, 16.5) node[above, font=\fontsize{6.5}{6.5}\selectfont\kml] {ប្រេកង់ ($f$)};
+      
+      % Gridlines & Y-labels (from textbook Image 1: 2, 4, 8, 10, 15)
+      \foreach \y in {2, 4, 8, 10, 15} {
+        \draw[dotted, gray!60] (0, \y) -- (7.8, \y);
+        \draw (0.1, \y) -- (-0.1, \y) node[left, font=\fontsize{6.2}{6.2}\selectfont] {$\y$};
+      }
+      
+      % Bars: 1->4, 2->5, 3->2, 4->10, 5->15, 6->8, 7->4, 9->2
+      \filldraw[fill=koreaNumber!35, draw=koreaNumber!80, rounded corners=1pt] (0.5, 0) rectangle (1.1, 4) node[above=0.5pt] at (0.8, 4) {$4$};
+      \node[below=1pt] at (0.8, 0) {$1$};
+
+      \filldraw[fill=koreaNumber!35, draw=koreaNumber!80, rounded corners=1pt] (1.4, 0) rectangle (2.0, 5) node[above=0.5pt] at (1.7, 5) {$5$};
+      \node[below=1pt] at (1.7, 0) {$2$};
+
+      \filldraw[fill=koreaNumber!35, draw=koreaNumber!80, rounded corners=1pt] (2.3, 0) rectangle (2.9, 2) node[above=0.5pt] at (2.6, 2) {$2$};
+      \node[below=1pt] at (2.6, 0) {$3$};
+
+      \filldraw[fill=koreaNumber!35, draw=koreaNumber!80, rounded corners=1pt] (3.2, 0) rectangle (3.8, 10) node[above=0.5pt] at (3.5, 10) {$10$};
+      \node[below=1pt] at (3.5, 0) {$4$};
+
+      \filldraw[fill=brandCrimson!75, draw=brandCrimson, rounded corners=1pt] (4.1, 0) rectangle (4.7, 15) node[above=0.5pt, font=\bfseries\color{brandCrimson}] at (4.4, 15) {\textbf{15}};
+      \node[below=1pt, font=\bfseries\color{brandCrimson}] at (4.4, 0) {$5$};
+
+      \filldraw[fill=koreaNumber!35, draw=koreaNumber!80, rounded corners=1pt] (5.0, 0) rectangle (5.6, 8) node[above=0.5pt] at (5.3, 8) {$8$};
+      \node[below=1pt] at (5.3, 0) {$6$};
+
+      \filldraw[fill=koreaNumber!35, draw=koreaNumber!80, rounded corners=1pt] (5.9, 0) rectangle (6.5, 4) node[above=0.5pt] at (6.2, 4) {$4$};
+      \node[below=1pt] at (6.2, 0) {$7$};
+
+      \filldraw[fill=koreaNumber!35, draw=koreaNumber!80, rounded corners=1pt] (6.8, 0) rectangle (7.4, 2) node[above=0.5pt] at (7.1, 2) {$2$};
+      \node[below=1pt] at (7.1, 0) {$9$};
+    \end{tikzpicture}
+
+    \vspace{2pt}
+    \begin{flushleft}
+    \begin{itemize}[leftmargin=8pt, itemsep=1.5pt, topsep=1pt, parsep=0pt]
+      \item[\color{brandNavy}\ding{228}] \textbf{ពិន្ទុទាប និងខ្ពស់ ៖} ពិន្ទុទាបបំផុតគឺ $1$ និងខ្ពស់បំផុតគឺ $9$។
+      \item[\color{brandCrimson}\ding{228}] \textbf{ពិន្ទុច្រើនជាងគេ ៖} គឺពិន្ទុ \textbf{$5$} (មាន $15$ នាក់ ត្រូវជា \textbf{$30\%$})។
+      \item[\color{brandNavy}\ding{228}] \textbf{ការប្រមូលផ្តុំពិន្ទុ ៖} សិស្សភាគច្រើនប្រមូលផ្តុំនៅចន្លោះពិន្ទុ $4$ ដល់ $6$ (មានចំនួន $10+15+8 = 33$ នាក់ ត្រូវជា $66\%$)។
+      \item[\color{brandNavy}\ding{228}] \textbf{សិស្សបានពិន្ទុ 1 ៖} មាន $4$ នាក់ ត្រូវជា $\frac{4}{50} = 0.08$ ឬ $8\%$។
+    \end{itemize}
+    \end{flushleft}
+  \end{minipage}
+\end{khexamplebox}
+
+\clearpage
+
+% =========================================================================
+% PAGE 2: លំហាត់អនុវត្ត 01, 02, 03, 04, 05 (បំពេញពេញទំព័រស្អាតបាត)
+% =========================================================================
+
+\begin{khcard}
+  \exhead{1} ខាងក្រោមនេះ ជាទិន្នន័យនៃពិន្ទុរបស់សិស្សនៃថ្នាក់រៀនមួយ ៖
+  \begin{center}
+    \vspace{-2pt}
+
+    \setlength{\tabcolsep}{12.5pt}
+    \renewcommand{\arraystretch}{1.22}
+    \begin{tabular}{|cccccccccc|}
+      \hline
+      $5$ & $8$ & $3$ & $4$ & $7$ & $8$ & $5$ & $7$ & $2$ & $9$ \\
+      $5$ & $6$ & $1$ & $4$ & $3$ & $6$ & $9$ & $1$ & $4$ & $7$ \\
+      $2$ & $1$ & $8$ & $5$ & $6$ & $8$ & $3$ & $2$ & $5$ & $3$ \\
+      \hline
+    \end{tabular}
+  \end{center}
+  \vspace{-2pt}
+  \khlabel{ក} ចូរផ្គុំទិន្នន័យខាងលើជាប្រេកង់ និងប្រេកង់ធៀបជា $\%$ ។ \\
+  \khlabel{ខ} ចូរបកស្រាយទិន្នន័យខាងលើជាក្រាបសសរ ។
+\end{khcard}
+
+\vspace{1.5pt}
+\begin{khcard}
+  \exhead{2} ខាងក្រោមនេះជាលទ្ធផលពិន្ទុរបស់សិស្សនៃថ្នាក់រៀនមួយចំនួន $50$ តម្លៃ ៖
+  \begin{center}
+    \vspace{-2pt}
+
+    \setlength{\tabcolsep}{12.5pt}
+    \renewcommand{\arraystretch}{1.18}
+    \begin{tabular}{|cccccccccc|}
+      \hline
+      $4$ & $4$ & $5$ & $4$ & $1$ & $6$ & $5$ & $6$ & $6$ & $5$ \\
+      $5$ & $4$ & $5$ & $4$ & $9$ & $2$ & $7$ & $5$ & $7$ & $2$ \\
+      $5$ & $2$ & $6$ & $3$ & $7$ & $3$ & $5$ & $1$ & $5$ & $6$ \\
+      $4$ & $5$ & $1$ & $5$ & $5$ & $6$ & $1$ & $6$ & $2$ & $5$ \\
+      $5$ & $2$ & $9$ & $4$ & $6$ & $7$ & $4$ & $4$ & $4$ & $5$ \\
+      \hline
+    \end{tabular}
+  \end{center}
+  \vspace{-2pt}
+  \khlabel{ក} ចូរផ្គុំទិន្នន័យខាងលើជាប្រេកង់ និងប្រេកង់ធៀបជា $\%$ ។ \\
+  \khlabel{ខ} តើសិស្សដែលមានពិន្ទុ $1$ មានប៉ុន្មាននាក់ ត្រូវជាប៉ុន្មានភាគរយ ?\\
+  \khlabel{គ} តើសិស្សភាគច្រើនទទួលបានពិន្ទុប៉ុន្មាន មានប៉ុន្មាននាក់ ត្រូវជាប៉ុន្មានភាគរយ ?\\ 
+  \khlabel{ឃ} ចូរបកស្រាយទិន្នន័យជាក្រាបសសរ ។
+\end{khcard}
+
+\vspace{1.5pt}
+\begin{khcard}
+  \exhead{3}  ខាងក្រោមនេះ ជាទិន្នន័យនៃចំនួនថ្ងៃដែលបុគ្គលិកមិនបានមកបំពេញការងារក្នុងរយៈពេល $20$ ថ្ងៃ ៖
+  \begin{center}
+
+  
+    \setlength{\tabcolsep}{12.5pt}
+    \renewcommand{\arraystretch}{1.22}
+    \begin{tabular}{|cccccccccc|}
+      \hline
+      $1$ & $2$ & $0$ & $0$ & $1$ & $2$ & $2$ & $1$ & $0$ & $0$ \\
+      $4$ & $0$ & $1$ & $1$ & $3$ & $2$ & $1$ & $3$ & $0$ & $1$ \\
+      \hline
+    \end{tabular}
+  \end{center}
+
+  \khlabel{ក} ចូររៀបចំទិន្នន័យខាងលើជាតារាងបំណែងចែកប្រេកង់ និងប្រេកង់ធៀបជា $\%$ ។ \\
+  \khlabel{ខ} ចូរសង់ក្រាបសសរតាងទិន្នន័យខាងលើ ។
+\end{khcard}
+
+\vspace{2.5pt}
+\begin{khcard}
+  \exhead{4} ខាងក្រោមនេះ ជាទិន្នន័យនៃចំនួនម៉ោងស្វ័យសិក្សាប្រចាំថ្ងៃរបស់សិស្សមួយក្រុមចំនួន $30$ នាក់ ៖
+  \begin{center}
+    \vspace{-2pt}
+
+    \setlength{\tabcolsep}{12.5pt}
+    \renewcommand{\arraystretch}{1.22}
+    \begin{tabular}{|cccccccccc|}
+      \hline
+      $2$ & $3$ & $1$ & $4$ & $2$ & $5$ & $3$ & $2$ & $4$ & $1$ \\
+      $3$ & $2$ & $4$ & $3$ & $2$ & $1$ & $3$ & $4$ & $2$ & $5$ \\
+      $1$ & $3$ & $2$ & $4$ & $3$ & $2$ & $5$ & $3$ & $2$ & $4$ \\
+      \hline
+    \end{tabular}
+  \end{center}
+  \vspace{-2pt}
+  \khlabel{ក} ចូររៀបចំទិន្នន័យខាងលើជាតារាងបំណែងចែកប្រេកង់ (ប្រេកង់ $f$, ប្រេកង់ធៀប $f_r$, និងភាគរយ $\%$) ។\\
+  \khlabel{ខ} តើសិស្សដែលស្វ័យសិក្សា $3$ ម៉ោងមានប៉ុន្មាននាក់ ត្រូវជាប៉ុន្មានភាគរយ ?\\
+  \khlabel{គ} តើសិស្សភាគច្រើនស្វ័យសិក្សាប៉ុន្មានម៉ោងក្នុងមួយថ្ងៃ ? \\
+  \khlabel{ឃ} ចូរបកស្រាយទិន្នន័យខាងលើជាក្រាបសសរ ។
+\end{khcard}
+
+\vspace{1.5pt}
+\begin{khcard}
+  \exhead{5} ខាងក្រោមនេះ ជាទិន្នន័យនៃទំហំស្បែកជើងរបស់សិស្សមួយក្រុមចំនួន $20$ នាក់ ៖
+  \begin{center}
+    \vspace{-2pt}
+
+    \setlength{\tabcolsep}{12.5pt}
+    \renewcommand{\arraystretch}{1.22}
+    \begin{tabular}{|cccccccccc|}
+      \hline
+      $37$ & $38$ & $36$ & $39$ & $38$ & $37$ & $40$ & $38$ & $36$ & $38$ \\
+      $39$ & $37$ & $38$ & $40$ & $37$ & $38$ & $39$ & $38$ & $37$ & $39$ \\
+      \hline
+    \end{tabular}
+  \end{center}
+  \vspace{-2pt}
+  \khlabel{ក} ចូររៀបចំទិន្នន័យខាងលើជាតារាងបំណែងចែកប្រេកង់ និងប្រេកង់ធៀបជា $\%$ ។\\
+  \khlabel{ខ} តើទំហំស្បែកជើងណាដែលសិស្សពាក់ច្រើនជាងគេ ? មានចំនួនប៉ុន្មាននាក់ ? ត្រូវជាប៉ុន្មានភាគរយ ?\\
+  \khlabel{គ} ចូរសង់ក្រាបសសរតាងប្រេកង់នៃទិន្នន័យខាងលើ ។
+\end{khcard}
+
+\clearpage
+
+% =========================================================================
+% PAGE 3: ផ្នែកទី ២ - គោលគំនិត + គំនូសបំព្រួញ + ឧទាហរណ៍គំរូ និងក្រាបប្រេកង់កើន
+% =========================================================================
+\khsection{២}{ការផ្គុំទិន្នន័យជាប្រេកង់កើន និងប្រេកង់ថយ}
+
+% គំនិតសាមញ្ញបែប Feynman
+\begin{khboxorange}[title={\fontsize{9}{9}\selectfont\kml\color{white}\ding{72}\ គំនិតសាមញ្ញបែប ៖ កូនជ្រូកសន្សំលុយ និងការដកប្រាក់}]
+  \begin{itemize}[leftmargin=10pt, itemsep=1.5pt, topsep=1pt, parsep=0pt]
+    \item[\color{brandNavy}\ding{228}] \textbf{ប្រេកង់កើន ៖} ប្រៀបដូចជា \textbf{«ការសន្សំលុយក្នុងកូនជ្រូក»} ពីមួយថ្ងៃទៅមួយថ្ងៃ (បូកបង្គរពីលើចុះក្រោម $\downarrow$) ដើម្បីឆ្លើយតបសំណួរ \textbf{«ត្រឹមតម្លៃនោះ មានសរុបយ៉ាងច្រើនប៉ុន្មាន?»} ($x \le x_k$)។
+    \item[\color{brandCrimson}\ding{228}] \textbf{ប្រេកង់ថយ ៖} ប្រៀបដូចជា \textbf{«ការដកលុយចាយចេញពីកាបូប»} (ដកចេញពីចំនួនសរុប $N$ ឬបូកពីក្រោមឡើងលើ $\uparrow$) ដើម្បីឆ្លើយតបសំណួរ \textbf{«ត្រឹមតម្លៃនោះ នៅសល់យ៉ាងតិចប៉ុន្មាន?»} ($x \ge x_k$)។
+  \end{itemize}
+\end{khboxorange}
+
+\vspace{1pt}
+% គំនូសបំព្រួញប្រេកង់កើន និងប្រេកង់ថយ
+\begin{center}
+\begin{tikzpicture}[
+  box/.style={rectangle, rounded corners=4pt, draw=brandNavy!50, fill=white, thick, inner sep=4pt, align=center, font=\fontsize{7.8}{7.8}\selectfont\kml},
+  arr/.style={-{Latex[length=2mm]}, thick}
+]
+  \node[box, fill=brandLightBlue, minimum width=8.8cm] (inc) {
+    \textbf{\color{brandNavy}ប្រេកង់កើន ($F$) ៖ បូកបង្គរពីលើចុះក្រោម ($\downarrow$)}\\[2pt]
+    $F_1 = f_1$, \quad $F_2 = F_1 + f_2$, \quad $F_k = F_{k-1} + f_k$\\[2pt]
+    \textcolor{brandCrimson}{\ding{226} ឆ្លើយសំណួរ ៖ \textbf{«យ៉ាងច្រើន / មិនលើសពី»} ($x \le x_k$)}
+  };
+
+  \node[box, fill=brandGoldBg, minimum width=8.8cm, right=0.6cm of inc] (dec) {
+    \textbf{\color{brandGold}ប្រេកង់ថយ ($F'$) ៖ ដកចេញពីសរុប $N$ ឬបូកពីក្រោមឡើងលើ ($\uparrow$)}\\[2pt]
+    $F'_1 = N$, \quad $F'_2 = F'_1 - f_1$, \quad $F'_k = F'_{k-1} - f_{k-1}$\\[2pt]
+    \textcolor{brandNavy}{\ding{226} ឆ្លើយសំណួរ ៖ \textbf{«យ៉ាងតិច / មិនតិចជាង»} ($x \ge x_k$)}
+  };
+\end{tikzpicture}
+\end{center}
+
+\vspace{-2pt}
+% ឧទាហរណ៍គំរូក្បោះក្បាយ + ព្រួញអង្កត់ទ្រូង + ក្រាបប្រេកង់កើន
+\begin{khexamplebox}
+  \textbf{ប្រធាន ៖} ចំនួនបងប្អូនបង្កើត ($x$) នៃសិស្ស $10$ នាក់មានតារាងប្រេកង់ ៖ \ $x=0 \,(f=2), \ x=1 \,(f=5), \ x=2 \,(f=2), \ x=3 \,(f=1)$។\\
+  \khlabel{ក} សង់តារាងប្រេកង់កើន និងប្រេកង់ថយ។ \qquad \khlabel{ខ} សង់ក្រាបសសរតាងប្រេកង់កើន។\\[3pt]
+  \textbf{\color{brandGold}\ding{70}\ ដំណោះស្រាយ ៖ ការបំពេញតារាងប្រេកង់កើន និងប្រេកង់ថយ (ពង្រីកធំ និងមានគំនួសព្រួញពន្យល់)}
+
+  \vspace{2pt}
+  % តារាងបំណែងចែកប្រេកង់កើន និងថយ រចនាស្អាត ធំទូលាយ ស្រួលមើល
+  \begin{center}
+  \begin{tikzpicture}
+    % Table node
+    \node[inner sep=0pt] (tbl2) {
+     
+      \setlength{\tabcolsep}{12pt}
+      \renewcommand{\arraystretch}{1.6}
+      \begin{tabular}{|l|c|>{\color{brandCrimson}}c|c|c|>{\bfseries}c|}
+        \hline
+        \rowcolor{koreaTeal!25}
+        \textbf{\color{brandNavy}ចំនួនបងប្អូន ($x$)} & $0$ & 1 & $2$ & $3$ & \textbf{សរុប ($N$)} \\ \hline
+        \textbf{ប្រេកង់ ($f$)} & $2$ & 5 & $2$ & $1$ & 10 \\ \hline
+        \rowcolor{brandLightBlue!30}
+        \textbf{ប្រេកង់កើន ($F$)} & $2$ & 7 & $9$ & 10 & \text{---} \\ \hline
+        \rowcolor{brandGoldBg!40}
+        \textbf{ប្រេកង់ថយ ($F'$)} & $10$ & 8 & $3$ & 1 & \text{---} \\ \hline
+      \end{tabular}
+    };
+
+    % Clean Annotation Callout on the Right
+    \node[
+      right=0.35cm of tbl2, 
+      draw=brandNavy!30, 
+      fill=white, 
+      rounded corners=4pt, 
+      inner sep=5.5pt, 
+      align=left, 
+      font=\fontsize{7.5}{9}\selectfont\kml,
+      drop shadow={opacity=0.08, shadow xshift=1pt, shadow yshift=-1pt}
+    ] (badge2) {
+      \textbf{\color{brandNavy}ក្បួនបំពេញតាមជួរដេក ៖}\\[2pt]
+      \textcolor{brandCrimson}{$\blacktriangleright$ \textbf{ប្រេកង់កើន ($F$) ៖}} \ បូកសន្សំ ($+$) ពីឆ្វេងទៅស្តាំ\\
+      \textcolor{brandGold}{$\blacktriangleright$ \textbf{ប្រេកង់ថយ ($F'$) ៖}} \ ចាប់ពី $N=10$ ដកប្រេកង់ថយ ($-$)
+    };
+
+    \draw[-{Latex[length=2.2mm]}, thick, brandCrimson] 
+      ([yshift=0.25cm]tbl2.east) to[out=0, in=165] ([yshift=0.15cm]badge2.west);
+    \draw[-{Latex[length=2.2mm]}, thick, brandGold] 
+      ([yshift=-0.45cm]tbl2.east) to[out=0, in=195] ([yshift=-0.25cm]badge2.west);
+  \end{tikzpicture}
+  \end{center}
+
+  \vspace{1pt}
+  % ប្រអប់គន្លឹះគណនាបំពេញតាមចន្លោះនីមួយៗ
+  \begin{center}
+  \begin{tcolorbox}[
+    enhanced, colback=brandTealBg!40, colframe=brandNavy!30, arc=4pt, boxrule=0.7pt,
+    left=6pt, right=6pt, top=3pt, bottom=3pt
+  ]
+
+    \textbf{\color{brandNavy}\ding{228}\ គំនួសព្រួញក្បួនគណនាបំពេញតាមចន្លោះនីមួយៗ ៖}\\[3pt]
+    $\blacktriangleright$ \textbf{ប្រេកង់កើន ($F$) ៖} \ $F_1 = \mathbf{2} \ \xrightarrow{+5} \ F_2 = \mathbf{7} \ \xrightarrow{+2} \ F_3 = \mathbf{9} \ \xrightarrow{+1} \ F_4 = \mathbf{10}$ \ \textcolor{brandNavy}{\scriptsize (បូកសន្សំឆ្លើយសំណួរ «យ៉ាងច្រើន» $x \le x_k$)}\\
+    $\blacktriangleright$ \textbf{ប្រេកង់ថយ ($F'$) ៖} \ $F'_1 = \mathbf{10} \ \xrightarrow{-2} \ F'_2 = \mathbf{8} \ \xrightarrow{-5} \ F'_3 = \mathbf{3} \ \xrightarrow{-2} \ F'_4 = \mathbf{1}$ \ \textcolor{brandNavy}{\scriptsize (ដកប្រេកង់ឆ្លើយសំណួរ «យ៉ាងតិច» $x \ge x_k$)}
+  \end{tcolorbox}
+  \end{center}
+
+  \vspace{1pt}
+  \begin{minipage}[c]{0.56\textwidth}
+
+    \textbf{\color{brandNavy}\ding{228}\ ការបកស្រាយចម្លើយ ៖}
+    \begin{itemize}[leftmargin=10pt, itemsep=2.5pt, topsep=2pt]
+      \item[\color{brandCrimson}\ding{228}] សិស្សដែលមានបងប្អូន \textbf{យ៉ាងច្រើន $1$ នាក់ ($x \le 1$)} ៖ មើលត្រង់ប្រេកង់កើន $F$ ឃើញចំនួន \textbf{$7$ នាក់}។
+      \item[\color{brandGold}\ding{228}] សិស្សដែលមានបងប្អូន \textbf{យ៉ាងតិច $2$ នាក់ ($x \ge 2$)} ៖ មើលត្រង់ប្រេកង់ថយ $F'$ ឃើញចំនួន \textbf{$3$ នាក់}។
+      \item[\color{brandNavy}\ding{228}] \textbf{លក្ខណៈ ៖} តម្លៃចុងក្រោយនៃប្រេកង់កើន $F$ គឺស្មើនឹង $N = 10$ ជានិច្ច។
+    \end{itemize}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[c]{0.41\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=0.68, font=\fontsize{7}{7}\selectfont\kml]
+      \draw[->, thick, brandNavy] (0, 0) -- (5.2, 0) node[right] {$x$};
+      \draw[->, thick, brandNavy] (0, 0) -- (0, 5.5) node[above] {$F$};
+      \foreach \y/\ylbl in {1/2, 2/4, 3/6, 4/8, 5/10} {
+        \draw[dotted, gray!50] (0, \y) -- (4.6, \y);
+        \draw (0.08, \y) -- (-0.08, \y) node[left] {$\ylbl$};
+      }
+      \filldraw[fill=koreaTeal!50, draw=koreaDarkTeal, rounded corners=1pt] (0.6, 0) rectangle (1.2, 1) node[above=1pt] at (0.9, 1) {$2$};
+      \node[below] at (0.9, 0) {$0$};
+      \filldraw[fill=brandCrimson!70, draw=brandCrimson, rounded corners=1pt] (1.6, 0) rectangle (2.2, 3.5) node[above=1pt] at (1.9, 3.5) {\textbf{7}};
+      \node[below, font=\bfseries\color{brandCrimson}] at (1.9, 0) {$1$};
+      \filldraw[fill=koreaTeal!50, draw=koreaDarkTeal, rounded corners=1pt] (2.6, 0) rectangle (3.2, 4.5) node[above=1pt] at (2.9, 4.5) {$9$};
+      \node[below] at (2.9, 0) {$2$};
+      \filldraw[fill=koreaTeal!50, draw=koreaDarkTeal, rounded corners=1pt] (3.6, 0) rectangle (4.2, 5) node[above=1pt] at (3.9, 5) {$10$};
+      \node[below] at (3.9, 0) {$3$};
+      
+      \draw[thick, brandCrimson, dashed] (0.9, 1) -- (1.9, 3.5) -- (2.9, 4.5) -- (3.9, 5);
+      \fill[brandCrimson] (0.9, 1) circle (2pt) (1.9, 3.5) circle (2pt) (2.9, 4.5) circle (2pt) (3.9, 5) circle (2pt);
+      \node[above, font=\fontsize{7.5}{7.5}\selectfont\kml\bfseries, color=brandNavy] at (2.6, 5.6) {ក្រាបប្រេកង់កើន};
+    \end{tikzpicture}
+  \end{minipage}
+\end{khexamplebox}
+
+\clearpage
+
+% =========================================================================
+% PAGE 4: លំហាត់អនុវត្ត 04, 05, 06, 07
+% =========================================================================
+
+\begin{khcard}
+  \exhead{6} ខាងក្រោមនេះ ជាលទ្ធផលពិន្ទុរបស់សិស្សនៃថ្នាក់រៀនមួយ (ទិន្នន័យ $50$ តម្លៃ) ៖
+  \begin{center}
+
+    \setlength{\tabcolsep}{12.5pt}
+    \renewcommand{\arraystretch}{1.18}
+    \begin{tabular}{|cccccccccc|}
+      \hline
+      $4$ & $4$ & $5$ & $4$ & $1$ & $6$ & $5$ & $6$ & $6$ & $5$ \\
+      $5$ & $4$ & $5$ & $4$ & $9$ & $2$ & $7$ & $5$ & $7$ & $2$ \\
+      $5$ & $2$ & $6$ & $3$ & $7$ & $3$ & $5$ & $1$ & $5$ & $6$ \\
+      $4$ & $5$ & $1$ & $5$ & $5$ & $6$ & $1$ & $6$ & $2$ & $5$ \\
+      $5$ & $2$ & $9$ & $4$ & $6$ & $7$ & $4$ & $4$ & $4$ & $5$ \\
+      \hline
+    \end{tabular}
+  \end{center}
+  \vspace{-2pt}
+  \khlabel{ក} ចូរសង់តារាងប្រេកង់ ប្រេកង់កើន ប្រេកង់ធៀបជា $\%$ និងប្រេកង់កើនធៀប\\
+  \khlabel{ខ} ចូរពន្យល់ថា ត្រង់ប្រេកង់កើនស្មើ $36$ និង $48$ មានន័យដូចម្ដេច ?
+\end{khcard}
+
+\vspace{2pt}
+\begin{khcard}
+  \exhead{7} ប្រើទិន្នន័យនៃលំហាត់ ០៦ ខាងលើ ៖\\
+  \khlabel{ក} ចូរសង់តារាងប្រេកង់ ប្រេកង់ថយ ប្រេកង់ធៀបជា $\%$ និងប្រេកង់ធៀបថយ\\
+  \khlabel{ខ} ចូរពន្យល់ថា ត្រង់ប្រេកង់ថយស្មើ $41$ និង $29$ មានន័យដូចម្ដេច ?
+\end{khcard}
+
+\vspace{2pt}
+\begin{khcard}
+  \exhead{8} ចូរសង់តារាងប្រេកង់កើន និងប្រេកង់ថយចំពោះទិន្នន័យខាងក្រោម ៖\\[2pt]
+
+
+    \setlength{\tabcolsep}{9.5pt}
+    \renewcommand{\arraystretch}{1.22}
+    \khlabel{ក}\
+    \begin{tabular}{|c|c|c|c|c|c|c|}
+      \hline
+      \rowcolor{koreaTeal!15}
+      $x$ & $1$ & $3$ & $5$ & $6$ & $7$ & $11$ \\ \hline
+      $f$ & $2$ & $3$ & $6$ & $5$ & $3$ & $1$ \\ \hline
+    \end{tabular}
+\\[5pt]
+    \khlabel{ខ}\
+    \begin{tabular}{|c|c|c|c|c|c|c|c|}
+      \hline
+      \rowcolor{koreaTeal!15}
+      $x$ & $2$ & $3$ & $5$ & $6$ & $7$ & $9$ & $11$ \\ \hline
+      $f$ & $2$ & $5$ & $8$ & $3$ & $8$ & $12$ & $2$ \\ \hline
+    \end{tabular}
+
+\end{khcard}
+
+\vspace{2pt}
+\begin{khcard}
+  \exhead{9} បើ $x$ ជាចំនួនកូន ហើយ $f$ ជាចំនួនគ្រួសារ ចូរសង់តារាងប្រេកង់កើន និងប្រេកង់ថយតាមទិន្នន័យខាងក្រោម ៖
+  \begin{center}
+ 
+    \setlength{\tabcolsep}{15pt}
+    \renewcommand{\arraystretch}{1.25}
+    \begin{tabular}{|c|c|c|c|c|c|}
+      \hline
+      \rowcolor{koreaTeal!15}
+      $x$ & $0$ & $1$ & $2$ & $3$ & $4$ \\ \hline
+      $f$ & $4$ & $16$ & $18$ & $6$ & $6$ \\ \hline
+    \end{tabular}
+  \end{center}
+  \vspace{-2pt}
+  \khlabel{ក} ចូររកចំនួនគ្រួសារដែលមានកូន $2$ នាក់យ៉ាងច្រើន \\
+  \khlabel{ខ} ចូររកចំនួនគ្រួសារដែលមានកូន $2$ នាក់យ៉ាងតិច
+\end{khcard}
+
+
+
+% =========================================================================
+% PAGE 5: លំហាត់ 10, 11 និង ផ្នែកទី ៣ (គោលគំនិត + គំនូសបំព្រួញ + ឧទាហរណ៍ និងក្រាបអ៊ីស្តូក្រាម)
+% =========================================================================
+
+\begin{khcard}
+  \exhead{10} គេស្រង់ស្ថិតិចំនួនកូនតាមគ្រួសារនីមួយៗ ក្នុងតំបន់មួយបានតារាងខាងក្រោម ៖
+  \begin{center}
+
+    \setlength{\tabcolsep}{8.5pt}
+    \renewcommand{\arraystretch}{1.2}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+      \hline
+      \rowcolor{koreaTeal!15}
+      \textbf{ចំនួនកូន} $x$ & $0$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$ & $7$ & $8$ \\ \hline
+      \textbf{ចំនួនគ្រួសារ} $f$ & $144$ & $195$ & $130$ & $80$ & $58$ & $45$ & $24$ & $6$ & $3$ \\ \hline
+    \end{tabular}
+  \end{center}
+  \vspace{-4pt}
+  \khlabel{ក} បង្កើតតារាងដែលបង្ហាញពីប្រេកង់ ប្រេកង់កើន និងថយ\\
+  \khlabel{ខ} តើក្នុងតំបន់នេះមានប៉ុន្មានគ្រួសារ ? តើមានប៉ុន្មានគ្រួសារដែលមានកូនយ៉ាងច្រើន $5$ នាក់ ? និងប៉ុន្មានគ្រួសារទៀតដែលមានកូនយ៉ាងតិច $7$ នាក់ ?\\
+  \khlabel{គ} សង់ក្រាបសសរនៃប្រេកង់កើន
+\end{khcard}
+
+\vspace{0pt}
+\begin{khcard}
+  \exhead{11} ការស្រង់ចំនួនកូនដែលស្លាប់ក្នុងសង្គ្រាមតាមគ្រួសារនីមួយៗ ទទួលបានលទ្ធផលដូចខាងក្រោម ៖
+  \begin{center}
+
+    \setlength{\tabcolsep}{12pt}
+    \renewcommand{\arraystretch}{1.2}
+    \begin{tabular}{|c|c|c|c|c|c|c|}
+      \hline
+      \rowcolor{koreaTeal!15}
+      \textbf{ចំនួនកូនស្លាប់} $x$ & $1$ & $2$ & $3$ & $4$ & $5$ & $6$ \\ \hline
+      \textbf{ចំនួនគ្រួសារ} $f$ & $78$ & $1270$ & $680$ & $320$ & $150$ & $133$ \\ \hline
+    \end{tabular}
+  \end{center}
+  \vspace{-4pt}
+  \khlabel{ក} តាងទិន្នន័យខាងលើនេះជាក្រាបសសរនៃប្រេកង់ ប្រេកង់ធៀប \\[2pt]
+  \khlabel{ខ} បកស្រាយត្រង់ $x = 3$
+\end{khcard}
+
+\vspace{0pt}
+\khsection{៣}{ការផ្គុំទិន្នន័យជាថ្នាក់}
+
+% គំនិតសាមញ្ញបែប Feynman
+\begin{khboxorange}[title={\fontsize{10}{8.5}\selectfont\kml\color{white}\ding{72}\ គំនិតសាមញ្ញបែប  ៖ ការច្រកទិន្នន័យដាក់តាមបន្ទប់ (ឬប្រអប់)}]
+  \begin{itemize}[leftmargin=10pt, itemsep=0.5pt, topsep=0pt, parsep=0pt]
+    \item[\color{brandNavy}\ding{228}] \textbf{ហេតុអ្វីត្រូវផ្គុំជាថ្នាក់?} បើទិន្នន័យច្រើនរាយប៉ាយ ($31, 35, 42, 49\dots$) យើងមិនអាចរាប់មួយៗបានទេ គឺត្រូវ \textbf{«ច្រកចូលបន្ទប់រួម»} ហៅថា \textbf{ចន្លោះថ្នាក់ $[a, b[$} (រាប់ពី $a$ ដល់ \textbf{ក្រោម $b$} គឺ $a \le x < b$)។
+    \item[\color{brandBlue}\ding{228}] \textbf{ប្រវែងថ្នាក់ ($h$ = ទំហំបន្ទប់) ៖} $h = b - a = \text{លើ} - \text{ក្រោម}$ \ (ឧ. ថ្នាក់ $[30, 40[$ មាន $h = 40 - 30 = 10$)។
+    \item[\color{brandCrimson}\ding{228}] \textbf{ផ្ចិតនៃថ្នាក់ ($x_i$ = តំណាងបន្ទប់) ៖} ចំណុចកណ្ដាល $x_i = \frac{a+b}{2}$ \ ($\frac{30+40}{2} = 35$)។ ផ្ចិតបន្ទាប់គ្រាន់តែ \textbf{បូកថែម $h$} ($35 \xrightarrow{+10} 45 \dots$)។
+  \end{itemize}
+\end{khboxorange}
+
+\vspace{-2pt}
+% គំនូសបំព្រួញការផ្គុំជាថ្នាក់ (Premium Visual Cards)
+\begin{center}
+\begin{tikzpicture}
+  % ---------------- Left Card: ចន្លោះថ្នាក់ & ផ្ចិតថ្នាក់ ----------------
+  \draw[line width=0.8pt, koreaTeal!70, fill=koreaTeal!6, rounded corners=5pt] (0, 0) rectangle (8.8, 2.1);
+  
+  % Top Header Badge
+  \node[fill=koreaDarkTeal, text=white, rounded corners=3pt, inner sep=2.5pt, font=\fontsize{7.5}{7.5}\selectfont\kml\bfseries] 
+    at (4.4, 2.1) {\ding{72}\ ចន្លោះថ្នាក់ $[a, \ b[$ \ ($a \le x < b$ យកពី $a$ ដល់ក្រោម $b$)};
+  
+  % Number line interval
+  \draw[|-|, line width=1.4pt, brandCrimson] (1.3, 1.05) -- (7.5, 1.05);
+  \node[above=1pt, font=\fontsize{7.2}{7.2}\selectfont\kml\bfseries, color=brandCrimson] at (4.4, 1.05) {ប្រវែងថ្នាក់ $h = b - a$};
+  
+  % Endpoints & Center
+  \node[below=2pt, font=\fontsize{6.8}{6.8}\selectfont\kml, text=brandNavy] at (1.3, 1.05) {\textbf{ព្រំដែនក្រោម} $a$};
+  \node[below=2pt, font=\fontsize{6.8}{6.8}\selectfont\kml, text=brandNavy] at (7.5, 1.05) {\textbf{ព្រំដែនលើ} $b$};
+  
+  \fill[brandBlue] (4.4, 1.05) circle (2.2pt);
+  \node[below=1.5pt, font=\fontsize{7.2}{7.2}\selectfont\kml\bfseries, text=brandBlue] at (4.4, 1.05) {ផ្ចិតថ្នាក់ $x_i = \frac{a+b}{2}$};
+
+  % ---------------- Right Card: អ៊ីស្តូក្រាម vs ពហុកោណប្រេកង់ ----------------
+  \draw[line width=0.8pt, brandGold!70, fill=brandGoldBg!50, rounded corners=5pt] (9.1, 0) rectangle (18.3, 2.1);
+  
+  % Top Header Badge
+  \node[fill=brandGold, text=white, rounded corners=3pt, inner sep=2.5pt, font=\fontsize{7.5}{7.5}\selectfont\kml\bfseries] 
+    at (13.7, 2.1) {\ding{72}\ របៀបសង់ក្រាបទិន្នន័យជាថ្នាក់};
+  
+  % Content lines inside Right Card (2 clean, spacious lines)
+  \node[anchor=north west, font=\fontsize{7.2}{9.2}\selectfont\kml, text width=8.9cm] at (9.25, 1.82) {
+    \textbf{\color{brandNavy}\ding{226}\ អ៊ីស្តូក្រាម ៖} សសរ\textbf{ជាប់ៗគ្នា} (បាតជាថ្នាក់ $[a,b[$, កម្ពស់ជាប្រេកង់ $f$)\\[3pt]
+    \textbf{\color{brandCrimson}\ding{226}\ ពហុកោណ ៖} ខ្សែភ្ជាប់\textbf{ចំណុចផ្ចិតថ្នាក់} ($x_i$) លើដំបូលសសរនីមួយៗ
+  };
+\end{tikzpicture}
+\end{center}
+
+\vspace{-4pt}
+% ឧទាហរណ៍គំរូក្បោះក្បាយ + ក្រាបអ៊ីស្តូក្រាម & ពហុកោណប្រេកង់
+\begin{khexamplebox}
+  \textbf{ប្រធាន ៖} គេមានតារាងម៉ាស់សិស្ស (គិតជា $Kg$) ៖ \ $[30, 40[\ (f=4)$, \ $[40, 50[\ (f=8)$, \ $[50, 60[\ (f=3)$។\\
+  \khlabel{ក} គណនាប្រវែងថ្នាក់ $h$, ផ្ចិតនៃថ្នាក់ និងសង់តារាងប្រេកង់កើន។ \\
+  \khlabel{ខ} សង់ក្រាបអ៊ីស្តូក្រាម និងពហុកោណប្រេកង់។\\[5pt]
+  \textbf{\color{brandGold}\ding{70}\ ដំណោះស្រាយ ៖ ការបំពេញតារាងទិន្នន័យជាថ្នាក់ និងការសង់ក្រាប}
+
+  \vspace{1pt}
+  \begin{minipage}[t]{0.54\textwidth}
+    % Table 4 rows clean & spacious
+    \fontsize{8.5}{11}\selectfont
+    \setlength{\tabcolsep}{7pt}
+    \renewcommand{\arraystretch}{1.35}
+    \begin{tabular}{|l|c|>{\bfseries\color{brandCrimson}}c|c|>{\bfseries}c|}
+      \hline
+      \rowcolor{koreaTeal!25}
+      \textbf{\color{brandNavy}ចន្លោះថ្នាក់ ($Kg$)} & $[30, 40[$ & $[40, 50[$ & $[50, 60[$ & \textbf{សរុប} \\ \hline
+      \textbf{ប្រេកង់ ($f$)} & $4$ & 8 & $3$ & 15 \\ \hline
+      \rowcolor{brandLightBlue!30}
+      \textbf{ផ្ចិតថ្នាក់ ($x_i$)} & $35$ & 45 & $55$ & \text{---} \\ \hline
+      \rowcolor{brandGoldBg!40}
+      \textbf{ប្រេកង់កើន ($F$)} & $4$ & 12 & 15 & \text{---} \\ \hline
+    \end{tabular}
+
+    \vspace{2pt}
+    % Step-by-step annotation card
+    \begin{tcolorbox}[
+      enhanced, colback=brandTealBg!40, colframe=brandNavy!25, arc=3pt, boxrule=0.5pt,
+      left=4pt, right=4pt, top=2pt, bottom=2pt
+    ]
+      \fontsize{7.5}{8.5}\selectfont\kml
+      \textbf{\color{brandNavy}\ding{228}\ គន្លឹះបំពេញតារាងមួយជំហានៗ ៖}\\[1pt]
+      $\blacktriangleright$ \textbf{ប្រវែងថ្នាក់ ៖} $h = 40 - 30 = 10\,Kg$ (ស្មើគ្នាគ្រប់ថ្នាក់)\\
+      $\blacktriangleright$ \textbf{ផ្ចិតថ្នាក់ ៖} $x_1 = \frac{30+40}{2}=35 \xrightarrow{+10} 45 \xrightarrow{+10} 55$ \ (បូកថែម $h$ បន្តបន្ទាប់)\\
+      $\blacktriangleright$ \textbf{ប្រេកង់កើន ៖} $4 \xrightarrow{+8} 12 \xrightarrow{+3} 15$ \ \textcolor{brandCrimson}{(ក្រោម $50Kg$ មាន $12$ នាក់)}
+    \end{tcolorbox}
+  \end{minipage}
+  \hfill
+  \begin{minipage}[t]{0.44\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=1, font=\fontsize{6}{6}\selectfont\kml]
+      \draw[->, thick, brandNavy] (0, 0) -- (6.6, 0) node[right] {$Kg$};
+      \draw[->, thick, brandNavy] (0, 0) -- (0, 4.8) node[above] {$f$};
+      \foreach \y/\ylbl in {1/2, 2/4, 3/6, 4/8} {
+        \draw[dotted, gray!50] (0, \y) -- (6.0, \y);
+        \draw (0.08, \y) -- (-0.08, \y) node[left] {$\ylbl$};
+      }
+      % Histogram Bars
+      \filldraw[fill=koreaTeal!35, draw=koreaDarkTeal] (1.0, 0) rectangle (2.6, 2);
+      \filldraw[fill=brandCrimson!30, draw=brandCrimson, thick] (2.6, 0) rectangle (4.2, 4);
+      \filldraw[fill=koreaTeal!35, draw=koreaDarkTeal] (4.2, 0) rectangle (5.8, 1.5);
+      
+      \node[below] at (1.0, 0) {$30$};
+      \node[below] at (2.6, 0) {$40$};
+      \node[below] at (4.2, 0) {$50$};
+      \node[below] at (5.8, 0) {$60$};
+      
+      % Frequency Polygon
+      \draw[very thick, brandCrimson] (0.2, 0) -- (1.8, 2) -- (3.4, 4) -- (5.0, 1.5) -- (6.6, 0);
+      \fill[brandCrimson] (1.8, 2) circle (2pt) node[above=1pt] {$4$};
+      \fill[brandCrimson] (3.4, 4) circle (2pt) node[above=1pt] {\textbf{8}};
+      \fill[brandCrimson] (5.0, 1.5) circle (2pt) node[above=1pt] {$3$};
+      
+      \node[above, font=\fontsize{6.5}{6.5}\selectfont\kml\bfseries, color=brandNavy] at (3.4, 4.8) {អ៊ីស្តូក្រាម និង ពហុកោណប្រេកង់};
+    \end{tikzpicture}
+  \end{minipage}
+\end{khexamplebox}
+
+\clearpage
+
+% =========================================================================
+% PAGE 6: លំហាត់អនុវត្ត 12, 13, 14, 15, 16
+% =========================================================================
+
+\begin{khcard}
+  \exhead{12} ខាងក្រោមនេះ ជាទិន្នន័យនៃការថ្លឹងម៉ាស់របស់សិស្សក្នុងវិទ្យាល័យមួយ គិតជាគីឡូក្រាម ៖
+  \begin{center}
+ 
+    \setlength{\tabcolsep}{12.5pt}
+    \renewcommand{\arraystretch}{1.18}
+    \begin{tabular}{|cccccccccc|}
+      \hline
+      $38$ & $42$ & $48$ & $41$ & $52$ & $55$ & $59$ & $62$ & $62$ & $63$ \\
+      $63$ & $68$ & $69$ & $70$ & $73$ & $74$ & $37$ & $45$ & $61$ & $65$ \\
+      $75$ & $76$ & $77$ & $78$ & $79$ & $81$ & $83$ & $84$ & $85$ & $86$ \\
+      $87$ & $92$ & $95$ & $91$ & $58$ & $52$ & $41$ & $43$ & $67$ & $64$ \\
+      \hline
+    \end{tabular}
+  \end{center}
+  \vspace{-2pt}
+  \khlabel{ក} ចូរផ្គុំទិន្នន័យខាងលើជាថ្នាក់ ដែលមាន $7$ ថ្នាក់ និងយកប្រវែងចន្លោះថ្នាក់ស្មើនឹង $10$ ដោយចាប់ផ្ដើមពី $30$\\
+  \khlabel{ខ} តើសិស្សដែលមានម៉ាស់ចន្លោះ $60 - 70$ គីឡូក្រាមមានប៉ុន្មាននាក់ ? \\
+  \khlabel{គ} សង់អ៊ីស្តូក្រាម
+\end{khcard}
+
+\vspace{1pt}
+\begin{khcard}
+  \exhead{13} ប្រើទិន្នន័យនៃលំហាត់ ១២ ខាងលើ ៖\\
+  \khlabel{ក} សង់តារាងប្រេកង់ ប្រេកង់កើន ប្រេកង់ថយ និងផ្ចិតនៃថ្នាក់ \quad
+  \khlabel{ខ} សង់ពហុកោណប្រេកង់កើន និងពហុកោណប្រេកង់ថយ
+\end{khcard}
+
+\vspace{1pt}
+\begin{khcard}
+  \exhead{14}ខាងក្រោមនេះជាម៉ាស់សិស្ស $200$ នាក់ (គិតជា $Kg$) នៅវិទ្យាល័យមួយ ៖
+  \begin{center}
+
+    \setlength{\tabcolsep}{16pt}
+    \renewcommand{\arraystretch}{1.25}
+    \begin{tabular}{|c|c|c|c|c|}
+      \hline
+      \rowcolor{koreaTeal!15}
+      \textbf{ម៉ាស់} & $30 - 40$ & $40 - 50$ & $50 - 60$ & $60 - 70$ \\ \hline
+      \textbf{ប្រេកង់} & $35$ & $45$ & $55$ & $65$ \\ \hline
+    \end{tabular}
+  \end{center}
+  \vspace{-2pt}
+  \khlabel{ក} សង់តារាងប្រេកង់កើន និងផ្ចិតនៃថ្នាក់ \quad
+  \khlabel{ខ} សង់ពហុកោណប្រេកង់កើន \quad
+  \khlabel{គ} តើមានចំនួនសិស្សប៉ុន្មាននាក់ដែលមានម៉ាស់ក្រោម $50\,Kg$ ?
+\end{khcard}
+
+\vspace{1pt}
+\begin{khcard}
+  \exhead{15} ក្នុងការប្រកួតបាល់បោះក្នុងថេរវេលា $45$ នាទី ក្រុមកីឡាករទទួលជ័យជំនះបោះបាល់ចូលទីបានលទ្ធផលដូចតារាងខាងក្រោម ៖
+  \begin{center}
+
+    \setlength{\tabcolsep}{5.8pt}
+    \renewcommand{\arraystretch}{1.25}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+      \hline
+      \rowcolor{koreaTeal!15}
+      \textbf{រយៈពេល (នាទី)} & $0 - 5$ & $5 - 10$ & $10 - 15$ & $15 - 20$ & $20 - 25$ & $25 - 30$ & $30 - 35$ & $35 - 40$ & $40 - 45$ \\ \hline
+      \textbf{ចំនួនបាល់} & $4$ & $5$ & $9$ & $12$ & $15$ & $14$ & $10$ & $8$ & $6$ \\ \hline
+    \end{tabular}
+  \end{center}
+
+  \khlabel{ក} តើក្រុមកីឡាករនេះ បោះចូលទីបានប៉ុន្មានបាល់ក្នុងរយៈពេល $45$ នាទី ?\\
+  \khlabel{ខ} តើក្រុមកីឡាករនេះ បោះចូលទីបានប៉ុន្មានបាល់ក្នុងរយៈពេលក្រោម $15$ នាទីដំបូង ? នៅកន្លះម៉ោងចុងក្រោយ តើគេបោះចូលទីបានប៉ុន្មានបាល់ហើយត្រូវជាប៉ុន្មានភាគរយ ?\\
+  \khlabel{គ} ចូរគូសក្រាបនៃពហុកោណប្រេកង់កើន ។
+\end{khcard}
+
+\vspace{1pt}
+\begin{khcard}
+  \exhead{16} ខាងក្រោមនេះជា តារាងចំនួនដងនៃការផ្សាយពាណិជ្ជកម្មតាមទូរទស្សន៍ជាតិដែលប្រព្រឹត្តទៅចាប់ពីម៉ោង $12$ រសៀល (រយៈពេលផ្សាយគិតជានាទី) ៖
+  \begin{center}
+    \fontsize{7.8}{7.8}\selectfont
+    \setlength{\tabcolsep}{5.8pt}
+    \renewcommand{\arraystretch}{1.25}
+    \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+      \hline
+      \rowcolor{koreaTeal!15}
+      \textbf{រយៈពេលផ្សាយ (នាទី)} & ក្រោម $5$ & $5 - 10$ & $10 - 15$ & $15 - 20$ & $20 - 25$ & $25 - 30$ & $30 - 35$ & $35 - 40$ & $40 - 45$ \\ \hline
+      \textbf{ចំនួនដង} & $5$ & $1$ & $1$ & $3$ & $2$ & $6$ & $8$ & $12$ & $12$ \\ \hline
+    \end{tabular}
+  \end{center}
+  \vspace{-2pt}
+  \khlabel{ក} តើក្នុងល្ងាចនេះគេផ្សាយពាណិជ្ជកម្មបានប៉ុន្មានដង ? អស់រយៈពេលប៉ុន្មាននាទី ?\\
+  \khlabel{ខ} តើគេផ្សាយពាណិជ្ជកម្មបានប៉ុន្មានដង ក្នុងរយៈពេល $20$ នាទីចុងក្រោយ ? ក្នុងរយៈពេលតិចជាង $30$ នាទីដំបូង ?\\
+  \khlabel{គ} ចូរគូសក្រាបនៃពហុកោណប្រេកង់កើន និងថយ ។
+\end{khcard}
+
+\end{document}

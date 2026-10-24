@@ -1,0 +1,1143 @@
+\documentclass[theme=teal]{khmermath}
+\usepackage{needspace}
+
+\geometry{left=0.75cm, right=0.75cm, top=0.45cm, bottom=1.05cm, footskip=0.58cm}
+\usepackage{colortbl}
+\usepackage{tikz}
+\usetikzlibrary{calc,shapes,arrows,intersections,through,backgrounds,shadows,decorations.pathmorphing,angles,quotes}
+\usepackage{array}
+
+% -------------------------------------------------------------------------
+% Korean Math Textbook Style Color Palette & Macros
+% -------------------------------------------------------------------------
+\definecolor{koreaTeal}{RGB}{0, 150, 155}       % Primary Header Teal/Cyan
+\definecolor{koreaDarkTeal}{RGB}{0, 105, 110}   % Dark Teal Accent
+\definecolor{koreaBeige}{RGB}{247, 244, 237}     % Concept Sidebar Beige
+\definecolor{koreaBeigeBorder}{RGB}{225, 218, 205}
+\definecolor{koreaOrange}{RGB}{235, 115, 30}     % Problem Number Orange
+\definecolor{koreaBlue}{RGB}{35, 110, 190}      % Standard Blue
+\definecolor{koreaPurple}{RGB}{125, 50, 160}    % Purple Accent
+\definecolor{koreaNumber}{RGB}{115, 125, 135}   % Problem Number Gray
+\definecolor{koreaYellow}{RGB}{255, 246, 175}   % Yellow Highlight Tint
+
+\definecolor{brandNavy}{RGB}{0, 105, 110}
+\definecolor{brandBlue}{RGB}{0, 150, 155}
+\definecolor{brandLightBlue}{RGB}{247, 244, 237}
+\definecolor{brandCrimson}{RGB}{195, 35, 60}
+\definecolor{brandCoral}{RGB}{235, 80, 75}
+\definecolor{brandGold}{RGB}{215, 130, 10}
+\definecolor{brandGoldBg}{RGB}{255, 252, 242}
+\definecolor{brandTeal}{RGB}{0, 150, 155}
+\definecolor{brandTealBg}{RGB}{244, 252, 250}
+\definecolor{subtleGray}{RGB}{246, 251, 249}
+\definecolor{cardBorder}{RGB}{220, 212, 198}
+\definecolor{tableHeaderBg}{RGB}{0, 125, 130}
+\definecolor{tableRowAlt}{RGB}{244, 250, 250}
+\definecolor{feynmanBg}{RGB}{252, 247, 255}
+
+% -------------------------------------------------------------------------
+% Custom Header & Footer setup (Fancyhdr)
+% -------------------------------------------------------------------------
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrule}{\color{koreaTeal!60}\hrule height 0.6pt\vspace{2pt}}
+
+\fancyfoot[L]{%
+  \fontsize{8.5}{8.5}\selectfont\kml \color{koreaNumber}\textbf{\thepage}\ \vline\ \color{koreaDarkTeal}\textbf{០៧. មធ្យមស្ថិតិ}%
+}
+\fancyfoot[C]{%
+  \fontsize{8.5}{8.5}\selectfont\kby \color{koreaDarkTeal}\textbf{\ding{72}\ បង្រៀនដោយ ៖ \textcolor{koreaDarkTeal}{ក្រូត រស្មី}\ \ding{72}}%
+}
+\fancyfoot[R]{%
+  \fontsize{8.5}{8.5}\selectfont\kby \color{koreaDarkTeal}\textbf{ Telegram: \textcolor{brandCrimson}{070897540}}\ \vline\ \color{koreaNumber}\textbf{\thepage}%
+}
+
+% -------------------------------------------------------------------------
+% Korean Header Banner
+% -------------------------------------------------------------------------
+\newcommand{\koreanheader}[2]{%
+  \noindent%
+  \begin{tikzpicture}[x=1cm, y=1cm]
+    \fill[koreaTeal, rounded corners=12pt] (0, 0.1) -- (0, 0.95) -- (3.8, 0.95) [rounded corners=0pt] -- (4.4, 0.1) -- cycle;
+    \node[white, font=\fontsize{11}{11}\selectfont\kml\bfseries] at (1.9, 0.52) {#1};
+    \node[anchor=west, font=\fontsize{18}{18}\selectfont\kml\bfseries, color=koreaDarkTeal] at (4.6, 0.42) {#2};
+    \node[anchor=east, font=\fontsize{8.5}{8.5}\selectfont\kby, color=gray!80] at (19.4, 0.48) {$>$ ក្លឹបសិក្សាគណិតវិទ្យា ភី ស៊ី​ អឹម};
+  \end{tikzpicture}%
+  \vspace{1pt}%
+}
+
+% Highlight macro
+\newcommand{\koreahl}[1]{\colorbox{koreaYellow}{\fontsize{8.5}{8.5}\selectfont\textbf{#1}}}
+
+% General Rule Box (ជាទូទៅ)
+\newtcolorbox{khboxorange}[1][]{
+  enhanced,
+  colframe=brandNavy!45,
+  colback=brandLightBlue,
+  boxrule=0.65pt,
+  arc=4pt,
+  borderline west={3.2pt}{0pt}{brandNavy},
+  drop fuzzy shadow=brandNavy!15,
+  left=6pt, right=6pt, top=2.5pt, bottom=2.5pt,
+  title={\fontsize{8.8}{8.8}\selectfont\kml\color{white}\ding{72}\ ជាទូទៅ},
+  coltitle=white,
+  colbacktitle=brandNavy,
+  boxed title style={
+    boxrule=0pt,
+    arc=3pt,
+    left=5pt, right=5pt, top=1.8pt, bottom=1.8pt
+  },
+  attach boxed title to top left={yshift*=-\tcboxedtitleheight/2, xshift=10pt},
+  #1
+}
+
+% Practice Box (ប្រតិបត្តិ)
+\newtcolorbox{khboxpractice}[1][]{
+  enhanced,
+  colframe=brandGold!80!black,
+  colback=brandGoldBg,
+  boxrule=0.65pt,
+  arc=4pt,
+  borderline west={3.2pt}{0pt}{brandGold},
+  drop fuzzy shadow=brandGold!15,
+  left=6pt, right=6pt, top=2.5pt, bottom=2.5pt,
+  #1
+}
+
+% Feynman Insight Box (គន្លឹះយល់ដឹងបែប Feynman)
+\newtcolorbox{khboxfeynman}[1][]{
+  enhanced,
+  colframe=koreaPurple!75!black,
+  colback=feynmanBg,
+  boxrule=0.65pt,
+  arc=4pt,
+  borderline west={3.2pt}{0pt}{koreaPurple},
+  drop fuzzy shadow=koreaPurple!15,
+  left=6pt, right=6pt, top=2.5pt, bottom=2.5pt,
+  title={\fontsize{8.8}{8.8}\selectfont\kml\color{white}\ding{45}\ គន្លឹះយល់ដឹងបែប },
+  coltitle=white,
+  colbacktitle=koreaPurple,
+  boxed title style={
+    boxrule=0pt,
+    arc=3pt,
+    left=5pt, right=5pt, top=1.8pt, bottom=1.8pt
+  },
+  attach boxed title to top left={yshift*=-\tcboxedtitleheight/2, xshift=10pt},
+  #1
+}
+
+% Concept / Exercise Card Box
+\newtcolorbox{khcard}[1][]{
+  enhanced,
+  colframe=cardBorder,
+  colback=white,
+  boxrule=0.55pt,
+  arc=3.5pt,
+  left=5.5pt, right=5.5pt, top=2.5pt, bottom=2.5pt,
+  #1
+}
+
+% Section Header
+\newcommand{\khsection}[2]{%
+  \Needspace*{2.5cm}%
+  \vspace{2pt}%
+  \noindent%
+  \begin{tikzpicture}
+    \fill[rounded corners=5pt, brandNavy!8] (0,0) rectangle (19.5, 0.60);
+    \fill[rounded corners=4pt, brandNavy] (0.05, 0.05) rectangle (0.55, 0.55);
+    \node[white, font=\fontsize{9.5}{9.5}\selectfont\bfseries] at (0.30, 0.30) {#1};
+    \fill[brandGold, rounded corners=1pt] (0.64, 0.12) rectangle (0.68, 0.48);
+    \node[anchor=west, font=\fontsize{11}{11}\selectfont\kml, color=brandCrimson] at (0.74, 0.30) {\textbf{#2}};
+  \end{tikzpicture}%
+  \vspace{1pt}%
+}
+
+% Numbering macros
+\def\splitnum#1#2{%
+  \color{koreaNumber!65}#1\color{koreaOrange}#2%
+}
+\newcommand{\koreannum}[1]{%
+  \ifstrempty{#1}{}{%
+    \mbox{%
+      \fontsize{15.5}{15.5}\selectfont\bfseries%
+      \ifnum#1<10\relax%
+        \color{koreaNumber!65}0\color{koreaOrange}#1%
+      \else%
+        \expandafter\splitnum#1%
+      \fi%
+    }\,\ %
+  }%
+}
+
+% Sub-question Badge (Crimson Rounded Square)
+\newcommand{\khlabel}[1]{%
+  \tikz[baseline=-0.6ex]{%
+    \node[fill=brandCrimson, rounded corners=2.5pt, inner sep=1.8pt, minimum width=1.25em, minimum height=1.22em, text=white, font=\kml\fontsize{7.5}{7.5}\selectfont, align=center] (lbl) {\raisebox{0.2pt}{#1}};%
+  }\,\ %
+}
+
+% Practice Header Badge
+\newcommand{\phead}{%
+  \tikz[baseline=-0.6ex]{%
+    \node[fill=brandGold, rounded corners=2.8pt, inner sep=2pt, text=white, font=\kml\fontsize{7.8}{7.8}\selectfont] {\ding{45}\ ប្រតិបត្តិ};%
+  }\,\ %
+}
+
+\newcommand{\exhead}[1]{\hangindent=24pt\hangafter=1\koreannum{#1}}
+
+% Layout settings
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{1.2pt}
+\setlength{\columnsep}{11pt}
+\setlength{\columnseprule}{0.5pt}
+\def\columnseprulecolor{\color{koreaTeal!40}}
+\renewcommand{\arraystretch}{1.14}
+
+\begin{document}
+
+% =========================================================================
+% SECTION 1: មធ្យម (MEAN)
+% =========================================================================
+\koreanheader{មេរៀនទី ០៧}{មធ្យមស្ថិតិ}
+
+\khsection{១}{មធ្យម (Mean)}
+
+% Feynman Insight Box for Mean
+\begin{khboxfeynman}
+  \textbf{តើ «មធ្យម» គឺជាអ្វីក្នុងជីវិតពិត ? (Fair Sharing)}
+  \begin{itemize}[leftmargin=12pt, itemsep=0.5pt, topsep=1pt, parsep=0pt]
+    \item[\color{koreaPurple}\ding{228}] \textbf{ការប្រៀបធៀប ៖} សាកស្រមៃថាមិត្តភក្តិ ៤ នាក់មាននំរៀងៗខ្លួន ($2, 5, 1, 8$)។ ដើម្បីឱ្យយុត្តិធម៌ យើងប្រមូលនំទាំងអស់មកច្របល់ចូលគ្នា ($16$ នំ) រួចចែកស្មើៗគ្នាទៅមនុស្សទាំង ៤ នាក់ នោះម្នាក់ៗទទួលបាន $4$ នំ។ ចំនួន $4$ នេះហើយជា \textbf{«មធ្យម»} !
+    \item[\color{brandCrimson}\ding{228}] \textbf{ហេតុអ្វីប្រើរូបមន្ត $\frac{\sum xf}{N}$ ?} ព្រោះតម្លៃ $x$ នីមួយៗកើតឡើង $f$ ដង។ ជំនួសឱ្យការបូកដដែលៗ យើងគុណ $x \times f$ រួចបូកសរុប ចែកនឹងចំនួនទិន្នន័យសរុប $N$ ដើម្បីកាត់បន្ថយពេលវេលាគណនា។
+  \end{itemize}
+\end{khboxfeynman}
+
+\vspace{1pt}
+
+% Rule Box for Mean (ជាទូទៅ)
+\begin{khboxorange}
+  \textbf{មធ្យមស្ថិតិតាងដោយ $\bar{x}$ កំណត់ដោយផលបូកតម្លៃទិន្នន័យទាំងអស់ចែកនឹងចំនួនទិន្នន័យសរុប ៖}
+  \begin{equation*}
+    \koreahl{$\bar{x} = \frac{x_1 f_1 + x_2 f_2 + \dots + x_n f_n}{f_1 + f_2 + \dots + f_n} = \frac{\sum_{i=1}^{n} x_i f_i}{\sum_{i=1}^{n} f_i} = \frac{\sum x f}{N}$}
+  \end{equation*}
+  \begin{itemize}[leftmargin=12pt, itemsep=0.5pt, topsep=1pt, parsep=0pt]
+    \item[\color{brandNavy}\ding{228}] $x_1, x_2, \dots, x_n$ ៖ ជាតម្លៃនៃទិន្នន័យ \quad \color{brandNavy}\ding{228}\ $f_1, f_2, \dots, f_n$ ៖ ជាប្រេកង់រៀងៗខ្លួន
+    \item[\color{brandCrimson}\ding{228}] $N = f_1 + f_2 + \dots + f_n = \sum f$ ៖ ជាចំនួនប្រេកង់សរុប (ទំហំគំរូទិន្នន័យ)
+  \end{itemize}
+\end{khboxorange}
+
+\vspace{1pt}
+
+% Illustrative Visual Example for Mean (TikZ)
+\begin{khcard}
+  {\fontsize{10}{9}\selectfont\kml\bfseries\color{brandNavy}\ding{45}\ ឧទាហរណ៍បំភ្លឺគំនិត}\\[1.5pt]
+  ឧបមាថាកូនសិស្ស ៤ នាក់មានដុំគូបរៀងៗខ្លួន ៖ សុខមាន $2$ ដុំ, ធីតាមាន $6$ ដុំ, តារាមាន $1$ ដុំ, និងចិន្តាមាន $7$ ដុំ។\\
+  តើចំនួនដុំគូបជាមធ្យមរបស់សិស្សម្នាក់ៗស្មើនឹងប៉ុន្មាន ?
+  
+  \vspace{1pt}
+  \begin{center}
+    \begin{tikzpicture}[x=1cm, y=1cm, scale=1]
+      % --- Left Side: Before (Unequal) ---
+      \node[font=\fontsize{7.5}{7.5}\selectfont\kml, color=brandCrimson] at (2.0, 3.6) {\textbf{មុនធ្វើមធ្យម }};
+      
+      % Bar 1 (2 blocks)
+      \fill[brandBlue!75, rounded corners=1.5pt] (0.4, 0) rectangle (0.95, 0.8);
+      \node[above, font=\fontsize{7}{7}\selectfont\bfseries] at (0.675, 0.8) {$2$};
+      \node[below, font=\fontsize{6.5}{6.5}\selectfont\kby] at (0.675, 0) {សុខ};
+      
+      % Bar 2 (6 blocks)
+      \fill[koreaOrange!85, rounded corners=1.5pt] (1.3, 0) rectangle (1.85, 2.4);
+      \node[above, font=\fontsize{7}{7}\selectfont\bfseries] at (1.575, 2.4) {$6$};
+      \node[below, font=\fontsize{6.5}{6.5}\selectfont\kby] at (1.575, 0) {ធីតា};
+      
+      % Bar 3 (1 block)
+      \fill[brandTeal!85, rounded corners=1.5pt] (2.2, 0) rectangle (2.75, 0.4);
+      \node[above, font=\fontsize{7}{7}\selectfont\bfseries] at (2.475, 0.4) {$1$};
+      \node[below, font=\fontsize{6.5}{6.5}\selectfont\kby] at (2.475, 0) {តារា};
+      
+      % Bar 4 (7 blocks)
+      \fill[koreaPurple!80, rounded corners=1.5pt] (3.1, 0) rectangle (3.65, 2.8);
+      \node[above, font=\fontsize{7}{7}\selectfont\bfseries] at (3.375, 2.8) {$7$};
+      \node[below, font=\fontsize{6.5}{6.5}\selectfont\kby] at (3.375, 0) {ចិន្តា};
+      
+      % Baseline Left
+      \draw[thick, color=gray!80] (0.2, 0.5) -- (4.0, 0.5);
+      \node[font=\fontsize{6.5}{6.5}\selectfont\kml, color=black] at (2.0, -1) {ផលបូកសរុប $= 2+6+1+7 = \mathbf{16}$};
+
+      % --- Center: Transition Arrow ---
+      \draw[->, >=stealth, very thick, color=brandCrimson] (4.5, 1.5) -- (6.6, 1.5);
+      \node[above, font=\fontsize{7.5}{7.5}\selectfont\kml, color=brandCrimson, align=center] at (5.55, 1.65) {ច្របល់ចែកស្មើគ្នា\\$\bar{x} = \frac{16}{4} = 4$};
+
+      % --- Right Side: After (Equalized at height 4) ---
+      \begin{scope}[xshift=7.0cm]
+        \node[font=\fontsize{7.5}{7.5}\selectfont\kml, color=koreaDarkTeal] at (2.0, 3.6) {\textbf{ក្រោយធ្វើមធ្យម (កម្ពស់ស្មើគ្នា)}};
+        
+        % 4 Equal Bars (height 1.6 = 4 blocks)
+        \fill[koreaDarkTeal!80, rounded corners=1.5pt] (0.4, 0) rectangle (0.95, 1.6);
+        \node[above, font=\fontsize{7}{7}\selectfont\bfseries] at (0.675, 1.6) {$4$};
+        \node[below, font=\fontsize{6.5}{6.5}\selectfont\kby] at (0.675, 0) {សុខ};
+        
+        \fill[koreaDarkTeal!80, rounded corners=1.5pt] (1.3, 0) rectangle (1.85, 1.6);
+        \node[above, font=\fontsize{7}{7}\selectfont\bfseries] at (1.575, 1.6) {$4$};
+        \node[below, font=\fontsize{6.5}{6.5}\selectfont\kby] at (1.575, 0) {ធីតា};
+        
+        \fill[koreaDarkTeal!80, rounded corners=1.5pt] (2.2, 0) rectangle (2.75, 1.6);
+        \node[above, font=\fontsize{7}{7}\selectfont\bfseries] at (2.475, 1.6) {$4$};
+        \node[below, font=\fontsize{6.5}{6.5}\selectfont\kby] at (2.475, 0) {តារា};
+        
+        \fill[koreaDarkTeal!80, rounded corners=1.5pt] (3.1, 0) rectangle (3.65, 1.6);
+        \node[above, font=\fontsize{7}{7}\selectfont\bfseries] at (3.375, 1.6) {$4$};
+        \node[below, font=\fontsize{6.5}{6.5}\selectfont\kby] at (3.375, 0) {ចិន្តា};
+        
+        % Dashed Mean Line
+        \draw[dashed, very thick, color=brandCrimson] (0.1, 1.6) -- (4.8, 1.6);
+        \node[right, font=\fontsize{7.5}{7.5}\selectfont\kml, color=brandCrimson] at (3.7, 1.9) {\textbf{កម្រិតមធ្យម $\bar{x} = 4$}};
+        
+        % Baseline Right
+        \draw[thick, color=gray!80] (0.1, 0) -- (4.0, 0);
+        \node[font=\fontsize{6.5}{6.5}\selectfont\kml, color=koreaDarkTeal] at (2.0, -1) {ម្នាក់ៗទទួលបាន $\mathbf{4}$ ស្មើៗគ្នា};
+      \end{scope}
+    \end{tikzpicture}
+  \end{center}
+  \vspace{-3pt}
+  \textbf{\color{brandNavy}សេចក្ដីសន្និដ្ឋាន ៖} មធ្យម ($\bar{x}$) គឺជាការ \textbf{«កែសម្រួលកម្ពស់ឱ្យស្មើគ្នា (Leveling)»} ដោយកាត់បន្ថយពីអ្នកដែលមានច្រើន យកទៅបំពេញបន្ថែមឱ្យអ្នកដែលមានតិច រហូតដល់គ្រប់គ្នាទទួលបានកម្រិតស្មើគ្នាតែមួយ !
+\end{khcard}
+
+\vspace{1pt}
+
+\begin{khcard}
+  \exhead{1} \textbf{គេកត់ត្រាចំនួនភ្ញៀវដែលបានចូលមកកាត់សក់ជារៀងរាល់ថ្ងៃ ហើយទទួលបានលទ្ធផលដូចខាងក្រោម ៖}\\
+  ចូរកំណត់ចំនួនភ្ញៀវជាមធ្យមដែលបានចូលកាត់សក់ក្នុងហាងនោះ ។
+  \vspace{1pt}
+  \begin{center}
+    \begin{tabular}{|c|*{7}{>{\centering\arraybackslash}m{1.88cm}|}}
+      \hline
+      \rowcolor{tableHeaderBg}
+      \textcolor{white}{\textbf{ថ្ងៃ}} & \textcolor{white}{\textbf{ចន្ទ}} & \textcolor{white}{\textbf{អង្គារ}} & \textcolor{white}{\textbf{ពុធ}} & \textcolor{white}{\textbf{ព្រហស្បតិ៍}} & \textcolor{white}{\textbf{សុក្រ}} & \textcolor{white}{\textbf{សៅរ៍}} & \textcolor{white}{\textbf{អាទិត្យ}} \\
+      \hline
+      \rowcolor{tableRowAlt}
+      \textbf{ចំនួនភ្ញៀវ} & $18$ & $12$ & $30$ & $26$ & $38$ & $42$ & $48$ \\
+      \hline
+    \end{tabular}
+  \end{center}
+\end{khcard}
+
+\vspace{1pt}
+
+\begin{multicols}{2}
+  \noindent
+  \begin{khcard}
+    \exhead{2} គេមានទិន្នន័យ $38\, ,\, 25\, ,\, 42\, ,\, 50\, ,\, x\, ,\, 25$ ។\\
+    កំណត់តម្លៃនៃ $x$ ដើម្បីឱ្យមធ្យមនៃទិន្នន័យស្មើនឹង $35$ ។
+  \end{khcard}
+
+  \noindent
+  \begin{khcard}
+    \exhead{3} មធ្យមនៃទិន្នន័យ $52\, ,\, 35\, ,\, t\, ,\, 46\, ,\, 48\, ,\, 37\, ,\, 52\, ,\, 56\, ,\, 45$ គឺ $48$ ។\\
+    ចូររកតម្លៃនៃ $t$ ។
+  \end{khcard}
+\end{multicols}
+
+\vspace{1pt}
+
+\begin{khcard}
+  \exhead{4} \textbf{សុខបានប្រឡងលើមុខវិជ្ជាទាំង $9$ ដោយទទួលបានពិន្ទុមធ្យម $78$ ។}\\
+  ដោយដឹងថាពិន្ទុលម្អិតទៅតាមមុខវិជ្ជារួមមាន $90\, ,\, 95\, ,\, 75\, ,\, 80\, ,\, 85\, ,\, 65\, ,\, 70\, ,\, 60$ ហើយនៅសល់ពិន្ទុនៃមុខវិជ្ជាមួយទៀតដែលសុខពុំបានចាំ ។ ចូរកំណត់រកពិន្ទុដែលភ្លេចនោះ ។
+\end{khcard}
+
+\vspace{1pt}
+
+\begin{khcard}
+  \exhead{5} \textbf{ចូរគណនាមធ្យមនៃតារាងទិន្នន័យខាងក្រោម ៖}
+  \vspace{1pt}
+  \begin{center}
+    \begin{minipage}[t]{0.46\textwidth}
+      \khlabel{ក}
+      \centering
+      \begin{tabular}{|c|*{6}{>{\centering\arraybackslash}m{0.82cm}|}}
+        \hline
+        \rowcolor{tableHeaderBg}
+        \textcolor{white}{\textbf{$x$}} & \textcolor{white}{\textbf{1}} & \textcolor{white}{\textbf{3}} & \textcolor{white}{\textbf{5}} & \textcolor{white}{\textbf{6}} & \textcolor{white}{\textbf{7}} & \textcolor{white}{\textbf{11}} \\
+        \hline
+        \rowcolor{tableRowAlt}
+        \textbf{$f$} & $2$ & $3$ & $6$ & $5$ & $3$ & $1$ \\
+        \hline
+      \end{tabular}
+    \end{minipage}\hfill
+    \begin{minipage}[t]{0.51\textwidth}
+      \khlabel{ខ}
+      \centering
+      \begin{tabular}{|c|*{7}{>{\centering\arraybackslash}m{0.78cm}|}}
+        \hline
+        \rowcolor{tableHeaderBg}
+        \textcolor{white}{\textbf{$x$}} & \textcolor{white}{\textbf{2}} & \textcolor{white}{\textbf{3}} & \textcolor{white}{\textbf{5}} & \textcolor{white}{\textbf{6}} & \textcolor{white}{\textbf{7}} & \textcolor{white}{\textbf{9}} & \textcolor{white}{\textbf{11}} \\
+        \hline
+        \rowcolor{tableRowAlt}
+        \textbf{$f$} & $2$ & $5$ & $8$ & $3$ & $8$ & $12$ & $2$ \\
+        \hline
+      \end{tabular}
+    \end{minipage}
+  \end{center}
+\end{khcard}
+
+\vspace{1pt}
+
+% Practice Box for Mean
+\begin{khboxpractice}
+  \phead \textbf{ចូរគណនាមធ្យមនៃតារាងទិន្នន័យខាងក្រោម ៖}
+  \vspace{1pt}
+  \begin{center}
+    \begin{tabular}{|c|*{5}{>{\centering\arraybackslash}m{1.5cm}|}}
+      \hline
+      \rowcolor{brandGold!90!black}
+      \textcolor{white}{\textbf{$x$}} & \textcolor{white}{\textbf{0}} & \textcolor{white}{\textbf{1}} & \textcolor{white}{\textbf{2}} & \textcolor{white}{\textbf{3}} & \textcolor{white}{\textbf{4}} \\
+      \hline
+      \rowcolor{white}
+      \textbf{$f$} & $3$ & $6$ & $5$ & $2$ & $2$ \\
+      \hline
+    \end{tabular}
+  \end{center}
+\end{khboxpractice}
+
+% =========================================================================
+% SECTION 2: មេដ្យាន (MEDIAN)
+% =========================================================================
+
+\khsection{២}{មេដ្យាន (Median)}
+
+% Feynman Insight Box for Median
+\begin{khboxfeynman}
+  \textbf{តើ «មេដ្យាន» ខុសពី «មធ្យម» ដូចម្ដេច ? ហេតុអ្វីចាំបាច់ត្រូវមានមេដ្យាន ?}
+  \begin{itemize}[leftmargin=12pt, itemsep=0.5pt, topsep=1pt, parsep=0pt]
+    \item[\color{koreaPurple}\ding{228}] \textbf{ការប្រៀបធៀប ៖} មេដ្យាន គឺដូចជាការឱ្យមនុស្សទាំងអស់ \textbf{ឈរតម្រង់ជួរពីទាបទៅខ្ពស់} រួចចង្អុលយកអ្នកដែលឈរចំកណ្ដាលគេបង្អស់។
+    \item[\color{brandCrimson}\ding{228}] \textbf{ហេតុអ្វីត្រូវប្រើមេដ្យាន ?} សាកគិតថា ក្នុងចំណោមមនុស្ស ៥ នាក់មានចំណូល $200, 250, 300, 350$ និងមហាសេដ្ឋីម្នាក់មានចំណូល $1,000,000$។ បើយើងរក «មធ្យម» គឺឃើញជាង $200,000$ (មិនឆ្លុះបញ្ចាំងការពិត ព្រោះមនុស្ស ៤ នាក់ក្រដដែល)។ ប៉ុន្តែបើប្រើ «មេដ្យាន» គឺស្មើ $300$ ដែលជាអ្នកតំណាងពិតប្រាកដ។ ដូច្នេះ មេដ្យានមិនរងឥទ្ធិពលពីទិន្នន័យធំ ឬតូចខុសប្រក្រតី (Outliers) ឡើយ!
+  \end{itemize}
+\end{khboxfeynman}
+
+\vspace{1pt}
+
+\begin{khboxorange}
+  \textbf{បើទិន្នន័យមួយមាន $n$ តួ មេដ្យាននៃទិន្នន័យដែលបានរៀបតាមលំដាប់លំដោយ មានទីតាំងស្ថិតនៅតួទី ៖ \ \koreahl{$\dfrac{n+1}{2}$}}
+  \begin{itemize}[leftmargin=12pt, itemsep=0.8pt, topsep=1pt, parsep=0pt]
+    \item[\color{brandNavy}\ding{72}] \textbf{បើ $n$ ជាចំនួនសេស ៖} នោះមេដ្យានជាតម្លៃនៃតួកណ្ដាល (តួទី $\frac{n+1}{2}$) ។
+    \item[\color{brandCrimson}\ding{72}] \textbf{បើ $n$ ជាចំនួនគូ ៖} នោះមេដ្យានជាមធ្យមនៃតម្លៃកណ្ដាលទាំងពីរ (តួទី $\frac{n}{2}$ និងតួទី $\frac{n}{2}+1$) ។
+  \end{itemize}
+\end{khboxorange}
+
+\vspace{1pt}
+
+% Steps and Illustrative Visual Example for Median (TikZ)
+\begin{khcard}
+  {\fontsize{9}{9}\selectfont\kml\bfseries\color{brandNavy}\ding{45}\ វិធីសាស្ត្រគិត ៣ ជំហាន និងឧទាហរណ៍រូបភាព ៖ ការស្វែងរកមេដ្យាន}\\[2pt]
+  % 3-Step Process Flowchart (Infographic Pipeline)
+  \begin{center}
+    \begin{tikzpicture}[x=1cm, y=1cm]
+      % Step 1 Card
+      \draw[fill=kmTealBg, draw=kmTealBorder, line width=0.85pt, rounded corners=5pt] (0, 0) rectangle (5.45, 1.42);
+      \fill[kmTealMain, rounded corners=3.5pt] (0.08, 1.05) rectangle (5.37, 1.37);
+      \node[white, font=\fontsize{7.5}{7.5}\selectfont\kml\bfseries] at (2.72, 1.21) {\ding{182}\ ជំហាន ១ ៖ តម្រៀប (Sort)};
+      \node[font=\fontsize{6.8}{6.8}\selectfont\kby, align=center, text width=5.2cm] at (2.72, 0.52) {
+        រៀបទិន្នន័យពី\textbf{\color{red}តូចទៅធំ} (លំដាប់កើន)\\[1pt]
+        \textit{\color{red}«ហាមភ្លេចតម្រៀបជាដាច់ខាត!»}
+      };
+
+      % Arrow 1 -> 2
+      \draw[->, >=stealth, line width=2pt, color=kmTealSec!85] (5.52, 0.71) -- (5.98, 0.71);
+
+      % Step 2 Card
+      \draw[fill=kmTealBg, draw=kmTealBorder, line width=0.85pt, rounded corners=5pt] (6.05, 0) rectangle (11.55, 1.42);
+      \fill[kmTealMain, rounded corners=3.5pt] (6.13, 1.05) rectangle (11.47, 1.37);
+      \node[white, font=\fontsize{7.5}{7.5}\selectfont\kml\bfseries] at (8.8, 1.21) {\ding{183}\ ជំហាន ២ ៖ រកទីតាំង (Position)};
+      \node[font=\fontsize{6.8}{6.8}\selectfont\kby, align=center, text width=5.2cm] at (8.8, 0.52) {
+        គណនាទីតាំងកណ្ដាលតាមរូបមន្ត ៖\\[1pt]
+        {\textbf{\color{red}$\text{ទីតាំង} = \dfrac{n+1}{2}$} }\ {\fontsize{6}{6}\selectfont ($n$ ចំនួនតួ)}
+      };
+
+      % Arrow 2 -> 3
+      \draw[->, >=stealth, line width=2pt, color=kmBlueSec!85] (11.62, 0.71) -- (12.08, 0.71);
+
+      % Step 3 Card
+      \draw[fill=kmTealBg, draw=kmTealBorder, line width=0.85pt, rounded corners=5pt] (12.15, 0) rectangle (17.85, 1.42);
+      \fill[kmTealMain, rounded corners=3.5pt] (12.23, 1.05) rectangle (17.77, 1.37);
+      \node[white, font=\fontsize{7.5}{7.5}\selectfont\kml\bfseries] at (15.0, 1.21) {\ding{184}\ ជំហាន ៣ ៖ កំណត់តម្លៃ (Value)};
+      \node[font=\fontsize{6.6}{6.6}\selectfont\kby, align=left, text width=5.4cm] at (15.1, 0.52) {
+        $\bullet$ បើ $n$ \textbf{សេស} $\implies$ យកតម្លៃ\textbf{\color{kmMagentaMain}តួកណ្ដាល}\\
+        $\bullet$ បើ $n$ \textbf{គូ} $\implies$ \textbf{\color{kmMagentaMain}មធ្យម}នៃ ២ តួកណ្ដាល
+      };
+    \end{tikzpicture}
+  \end{center}
+
+  \vspace{1pt}
+  % Concrete Visual Application of the 3 Steps (Naturally Spaced Minipages)
+  \noindent
+  \begin{minipage}[t]{0.485\textwidth}
+    \begin{tcolorbox}[enhanced, colframe=kmTealBorder, colback=subtleGray!60, arc=5pt, boxrule=0.8pt, left=6pt, right=6pt, top=4pt, bottom=4.5pt]
+      \textbf{\color{kmTealMain}\fontsize{8}{8}\selectfont\ding{72}\ ករណីទី ១ ៖ $n=5$ ជាចំនួនសេស (មានតួកណ្ដាល ១)}\\[3pt]
+      {\fontsize{7}{7}\selectfont\kby
+      $\bullet$ \textbf{\color{kmTealMain}ជំហាន ១ ៖} $3, 1, 9, 4, 7 \ \longrightarrow \ 1, 3, \mathbf{4}, 7, 9$ (តម្រៀបកើន)\\[2.5pt]
+      $\bullet$ \textbf{\color{kmBlueMain}ជំហាន ២ ៖} $\text{ទីតាំង} = \dfrac{5+1}{2} = \mathbf{3}$ (ស្ថិតនៅចំតួទី ៣)\\[5pt]
+      }
+      % Center aligned visual boxes
+      \centering
+      \begin{tikzpicture}[x=1cm, y=1cm, scale=0.82]
+        \draw[fill=white, draw=brandNavy!40, rounded corners=2pt] (0.0, 0) rectangle (0.75, 0.55) node[pos=0.5, font=\fontsize{7.5}{7.5}\selectfont\bfseries] {$1$};
+        \draw[fill=white, draw=brandNavy!40, rounded corners=2pt] (0.9, 0) rectangle (1.65, 0.55) node[pos=0.5, font=\fontsize{7.5}{7.5}\selectfont\bfseries] {$3$};
+        \draw[fill=brandCrimson!15, draw=brandCrimson, very thick, rounded corners=2.5pt] (1.8, 0) rectangle (2.55, 0.55) node[pos=0.5, font=\fontsize{8.5}{8.5}\selectfont\bfseries, color=brandCrimson] {$4$};
+        \draw[fill=white, draw=brandNavy!40, rounded corners=2pt] (2.7, 0) rectangle (3.45, 0.55) node[pos=0.5, font=\fontsize{7.5}{7.5}\selectfont\bfseries] {$7$};
+        \draw[fill=white, draw=brandNavy!40, rounded corners=2pt] (3.6, 0) rectangle (4.35, 0.55) node[pos=0.5, font=\fontsize{7.5}{7.5}\selectfont\bfseries] {$9$};
+
+        \node[below, font=\fontsize{5.8}{5.8}\selectfont, color=gray!80] at (0.375, -0.02) {តួ ១};
+        \node[below, font=\fontsize{5.8}{5.8}\selectfont, color=gray!80] at (1.275, -0.02) {តួ ២};
+        \node[below, font=\fontsize{5.8}{5.8}\selectfont\bfseries, color=brandCrimson] at (2.175, -0.02) {តួ ៣};
+        \node[below, font=\fontsize{5.8}{5.8}\selectfont, color=gray!80] at (3.075, -0.02) {តួ ៤};
+        \node[below, font=\fontsize{5.8}{5.8}\selectfont, color=gray!80] at (3.975, -0.02) {តួ ៥};
+      \end{tikzpicture}\\[4pt]
+      \flushleft
+      {\fontsize{7}{7}\selectfont\kby
+      $\bullet$ \textbf{\color{brandCrimson}ជំហាន ៣ ៖} មេដ្យាន $\mathbf{Med = 4}$ \ {\fontsize{6}{6}\selectfont\color{kmTealMain}(សងខាងសល់ ២ តួស្មើគ្នា)}
+      }
+    \end{tcolorbox}
+  \end{minipage}\hfill
+  \begin{minipage}[t]{0.485\textwidth}
+    \begin{tcolorbox}[enhanced, colframe=kmTealBorder, colback=subtleGray!60, arc=5pt, boxrule=0.8pt, left=6pt, right=6pt, top=4pt, bottom=4.5pt]
+      \textbf{\color{koreaPurple}\fontsize{8}{8}\selectfont\ding{72}\ ករណីទី ២ ៖ $n=6$ ជាចំនួនគូ (មានតួកណ្ដាល ២)}\\[3pt]
+      {\fontsize{7}{7}\selectfont\kby
+      $\bullet$ \textbf{\color{kmTealMain}ជំហាន ១ ៖} $8, 2, 5, 10, 3, 6 \ \longrightarrow \ 2, 3, \mathbf{5}, \mathbf{6}, 8, 10$\\[2.5pt]
+      $\bullet$ \textbf{\color{kmBlueMain}ជំហាន ២ ៖} $\text{ទីតាំង} = \dfrac{6+1}{2} = \mathbf{3.5}$ (ចន្លោះតួ ៣ និងទី ៤)\\[5pt]
+      }
+      % Center aligned visual boxes
+      \centering
+      \begin{tikzpicture}[x=1cm, y=1cm, scale=0.82]
+        \draw[fill=white, draw=brandNavy!40, rounded corners=2pt] (0.0, 0) rectangle (0.7, 0.55) node[pos=0.5, font=\fontsize{7.5}{7.5}\selectfont\bfseries] {$2$};
+        \draw[fill=white, draw=brandNavy!40, rounded corners=2pt] (0.8, 0) rectangle (1.5, 0.55) node[pos=0.5, font=\fontsize{7.5}{7.5}\selectfont\bfseries] {$3$};
+        \draw[fill=koreaOrange!20, draw=koreaOrange, very thick, rounded corners=2pt] (1.6, 0) rectangle (2.3, 0.55) node[pos=0.5, font=\fontsize{8}{8}\selectfont\bfseries, color=koreaOrange!90!black] {$5$};
+        \draw[fill=koreaOrange!20, draw=koreaOrange, very thick, rounded corners=2pt] (2.4, 0) rectangle (3.1, 0.55) node[pos=0.5, font=\fontsize{8}{8}\selectfont\bfseries, color=koreaOrange!90!black] {$6$};
+        \draw[fill=white, draw=brandNavy!40, rounded corners=2pt] (3.2, 0) rectangle (3.9, 0.55) node[pos=0.5, font=\fontsize{7.5}{7.5}\selectfont\bfseries] {$8$};
+        \draw[fill=white, draw=brandNavy!40, rounded corners=2pt] (4.0, 0) rectangle (4.7, 0.55) node[pos=0.5, font=\fontsize{7.5}{7.5}\selectfont\bfseries] {$10$};
+
+        \node[below, font=\fontsize{5.8}{5.8}\selectfont, color=gray!80] at (0.35, -0.02) {តួ ១};
+        \node[below, font=\fontsize{5.8}{5.8}\selectfont, color=gray!80] at (1.15, -0.02) {តួ ២};
+        \node[below, font=\fontsize{5.8}{5.8}\selectfont\bfseries, color=koreaOrange!90!black] at (1.95, -0.02) {តួ ៣};
+        \node[below, font=\fontsize{5.8}{5.8}\selectfont\bfseries, color=koreaOrange!90!black] at (2.75, -0.02) {តួ ៤};
+        \node[below, font=\fontsize{5.8}{5.8}\selectfont, color=gray!80] at (3.55, -0.02) {តួ ៥};
+        \node[below, font=\fontsize{5.8}{5.8}\selectfont, color=gray!80] at (4.35, -0.02) {តួ ៦};
+      \end{tikzpicture}\\[4pt]
+      \flushleft
+      {\fontsize{7}{7}\selectfont\kby
+      $\bullet$ \textbf{\color{koreaOrange!90!black}ជំហាន ៣ ៖} $\mathbf{Med = \dfrac{5+6}{2} = 5.5}$ \ {\fontsize{6}{6}\selectfont\color{koreaPurple}(យកតួ ៣ និង ៤ បូកចែក ២)}
+      }
+    \end{tcolorbox}
+  \end{minipage}
+\end{khcard}
+
+\vspace{1pt}
+
+\begin{khcard}
+  \exhead{1} \textbf{ចូររកមធ្យម និងមេដ្យាននៃទិន្នន័យខាងក្រោម ៖}
+  \vspace{1.5pt}
+  \begin{multicols}{2}
+    \noindent
+    \khlabel{ក} $8\, ,\, 12\, ,\, 9\, ,\, 14\, ,\, 6\, ,\, 10\, ,\, 11$\\[4pt]
+    \khlabel{ខ} $21\, ,\, 18\, ,\, 25\, ,\, 24\, ,\, 20\, ,\, 28\, ,\, 30\, ,\, 34\, ,\, 28$\\[4pt]
+    \khlabel{គ} $6\, ,\, 12\, ,\, 14\, ,\, 10\, ,\, 11\, ,\, 10\, ,\, 15\, ,\, 14\, ,\, 20$
+
+    \columnbreak
+
+    \noindent
+    \khlabel{ឃ} $20\, ,\, 24\, ,\, 19\, ,\, 20\, ,\, 22\, ,\, 23\, ,\, 21\, ,\, 29$\\[4pt]
+    \khlabel{ង} $45\, ,\, 50\, ,\, 34\, ,\, 12\, ,\, 60\, ,\, 45\, ,\, 70\, ,\, 60\, ,\, 66\, ,\, 70$\\[4pt]
+    \khlabel{ច} $82\, ,\, 24\, ,\, 35\, ,\, 42\, ,\, 50\, ,\, 32\, ,\, 60\, ,\, 72\, ,\, 50\, ,\, 72$
+  \end{multicols}
+\end{khcard}
+
+\vspace{1pt}
+
+\begin{khcard}
+  \exhead{2} \textbf{ចូររកមេដ្យាននៃតារាងទិន្នន័យខាងក្រោម ៖}
+  \vspace{1.5pt}
+  \begin{itemize}[leftmargin=12pt, itemsep=3.5pt]
+    \item[\khlabel{ក}]
+      \begin{tabular}{|c|*{6}{>{\centering\arraybackslash}m{1.15cm}|}}
+        \hline
+        \rowcolor{tableHeaderBg}
+        \textcolor{white}{\textbf{$x$}} & \textcolor{white}{\textbf{1}} & \textcolor{white}{\textbf{2}} & \textcolor{white}{\textbf{3}} & \textcolor{white}{\textbf{4}} & \textcolor{white}{\textbf{5}} & \textcolor{white}{\textbf{6}} \\
+        \hline
+        \rowcolor{tableRowAlt}
+        \textbf{$f$} & $2$ & $3$ & $6$ & $5$ & $3$ & $1$ \\
+        \hline
+      \end{tabular}
+
+    \item[\khlabel{ខ}]
+      \begin{tabular}{|c|*{7}{>{\centering\arraybackslash}m{1.15cm}|}}
+        \hline
+        \rowcolor{tableHeaderBg}
+        \textcolor{white}{\textbf{$x$}} & \textcolor{white}{\textbf{10}} & \textcolor{white}{\textbf{12}} & \textcolor{white}{\textbf{14}} & \textcolor{white}{\textbf{16}} & \textcolor{white}{\textbf{17}} & \textcolor{white}{\textbf{18}} & \textcolor{white}{\textbf{20}} \\
+        \hline
+        \rowcolor{tableRowAlt}
+        \textbf{$f$} & $3$ & $3$ & $4$ & $7$ & $1$ & $5$ & $7$ \\
+        \hline
+      \end{tabular}
+
+    \item[\khlabel{គ}]
+      \begin{tabular}{|c|*{7}{>{\centering\arraybackslash}m{1.15cm}|}}
+        \hline
+        \rowcolor{tableHeaderBg}
+        \textcolor{white}{\textbf{$x$}} & \textcolor{white}{\textbf{8}} & \textcolor{white}{\textbf{10}} & \textcolor{white}{\textbf{14}} & \textcolor{white}{\textbf{20}} & \textcolor{white}{\textbf{22}} & \textcolor{white}{\textbf{25}} & \textcolor{white}{\textbf{30}} \\
+        \hline
+        \rowcolor{tableRowAlt}
+        \textbf{$f$} & $4$ & $5$ & $4$ & $8$ & $6$ & $5$ & $7$ \\
+        \hline
+      \end{tabular}
+  \end{itemize}
+\end{khcard}
+
+\vspace{1pt}
+
+% Practice Box for Median
+\begin{khboxpractice}
+  \phead \textbf{ចូររកមេដ្យាននៃប្រាក់បៀវត្សរ៍ (ឯកតាគិតជារៀល) ៖}
+  \vspace{1pt}
+  \begin{center}
+    \begin{tabular}{|c|*{6}{>{\centering\arraybackslash}m{2.0cm}|}}
+      \hline
+      \rowcolor{brandGold!90!black}
+      \textcolor{white}{\textbf{ប្រាក់បៀវត្សរ៍}} & \textcolor{white}{\textbf{200}} & \textcolor{white}{\textbf{300}} & \textcolor{white}{\textbf{350}} & \textcolor{white}{\textbf{700}} & \textcolor{white}{\textbf{840}} & \textcolor{white}{\textbf{950}} \\
+      \hline
+      \rowcolor{white}
+      \textbf{ប្រេកង់ ($f$)} & $6$ & $2$ & $2$ & $1$ & $1$ & $1$ \\
+      \hline
+    \end{tabular}
+  \end{center}
+\end{khboxpractice}
+
+% =========================================================================
+% SECTION 3: ម៉ូត (MODE)
+% =========================================================================
+
+\khsection{៣}{ម៉ូត (Mode)}
+
+% Feynman Insight Box for Mode
+\begin{khboxfeynman}
+  \textbf{តើពាក្យ «ម៉ូត» នេះមានន័យដូចម្ដេច ? (The Most Popular)}
+  \begin{itemize}[leftmargin=12pt, itemsep=0.5pt, topsep=1pt, parsep=0pt]
+    \item[\color{koreaPurple}\ding{228}] \textbf{ការប្រៀបធៀប ៖} ដូចពាក្យថាសម្លៀកបំពាក់ «ពេញនិយម / ហ្វេហ្សិន» អញ្ចឹង! ម៉ូត គឺជាតម្លៃណាដែលមនុស្សចូលចិត្ត ឬ\textbf{កើតឡើងញឹកញាប់ជាងគេបំផុត} (មានប្រេកង់ $f$ ធំជាងគេ)។ ឧទាហរណ៍ ៖ ក្នុងហាងលក់ស្បែកជើង លេខស្បែកជើងដែលលក់ដាច់ច្រើនគូជាងគេ គឺជា «ម៉ូត» ដែលជួយម្ចាស់ហាងដឹងពីតម្រូវការទីផ្សារ។
+  \end{itemize}
+\end{khboxfeynman}
+
+\vspace{1pt}
+
+\begin{khboxorange}
+  \textbf{នៅក្នុងទិន្នន័យមួយ ម៉ូត (Mode) គឺជាតម្លៃនៃទិន្នន័យណាដែលមានប្រេកង់ធំជាងគេ (លេចឡើងញឹកញាប់ជាងគេបំផុត) ។}
+  \begin{itemize}[leftmargin=12pt, itemsep=0.5pt, topsep=1pt, parsep=0pt]
+    \item[\color{brandNavy}\ding{228}] \textbf{សម្គាល់ ៖} ស៊េរីទិន្នន័យមួយអាចមានម៉ូតមួយ (Unimodal) ម៉ូតពីរ (Bimodal) ពហុម៉ូត (Multimodal) ឬគ្មានម៉ូតសោះ ។
+  \end{itemize}
+\end{khboxorange}
+
+\vspace{1pt}
+
+% Illustrative Example for Mode: 3 Cases (Unimodal, Bimodal, No Mode)
+\begin{khcard}
+  {\fontsize{9.2}{9.2}\selectfont\kml\color{brandNavy}\ding{45}\ \textbf{ឧទាហរណ៍គំរូ ៖} \color{koreaDarkTeal}ការកំណត់រកម៉ូតតាមករណីទាំង ៣ (3 Cases of Mode)}\\[3.5pt]
+  \noindent
+  % Case 1: Unimodal
+  \begin{minipage}[t]{0.318\textwidth}
+    \begin{tcolorbox}[enhanced, equal height group=modecards, colframe=koreaDarkTeal, colback=koreaDarkTeal!2.5, colbacktitle=koreaDarkTeal, coltitle=white, arc=5pt, boxrule=0.85pt, left=3pt, right=3pt, top=4pt, bottom=4pt, toptitle=2.8pt, bottomtitle=2.8pt, title={\centering\fontsize{7.8}{7.8}\selectfont\kml\ding{182}\; ម៉ូតមួយ \textmd{\scriptsize(Unimodal)}}]
+      \centering
+      \begin{tikzpicture}[x=1cm, y=1cm]
+        % Background capsule for repeated values
+        \fill[koreaDarkTeal!12, rounded corners=4pt] (0.80, -0.26) rectangle (2.32, 0.26);
+        \draw[koreaDarkTeal!50, dashed, line width=0.45pt, rounded corners=4pt] (0.80, -0.26) rectangle (2.32, 0.26);
+        % Tooltip above
+        \node[fill=koreaDarkTeal, text=white, rounded corners=2.5pt, font=\fontsize{6}{6}\selectfont\kby\bfseries, inner sep=2pt] at (1.56, 0.58) {កើតឡើង ៣ ដង};
+        \draw[koreaDarkTeal, -stealth, line width=0.7pt] (1.56, 0.44) -- (1.56, 0.28);
+        % Token Chips
+        \node[circle, draw=gray!35, fill=white, minimum size=0.42cm, inner sep=0pt, font=\fontsize{7.5}{7.5}\selectfont] at (0, 0) {$2$};
+        \node[circle, draw=gray!35, fill=white, minimum size=0.42cm, inner sep=0pt, font=\fontsize{7.5}{7.5}\selectfont] at (0.52, 0) {$3$};
+        \node[circle, draw=koreaDarkTeal, fill=koreaDarkTeal, text=white, minimum size=0.42cm, inner sep=0pt, font=\fontsize{7.8}{7.8}\selectfont\bfseries] at (1.04, 0) {$5$};
+        \node[circle, draw=koreaDarkTeal, fill=koreaDarkTeal, text=white, minimum size=0.42cm, inner sep=0pt, font=\fontsize{7.8}{7.8}\selectfont\bfseries] at (1.56, 0) {$5$};
+        \node[circle, draw=koreaDarkTeal, fill=koreaDarkTeal, text=white, minimum size=0.42cm, inner sep=0pt, font=\fontsize{7.8}{7.8}\selectfont\bfseries] at (2.08, 0) {$5$};
+        \node[circle, draw=gray!35, fill=white, minimum size=0.42cm, inner sep=0pt, font=\fontsize{7.5}{7.5}\selectfont] at (2.60, 0) {$7$};
+        \node[circle, draw=gray!35, fill=white, minimum size=0.42cm, inner sep=0pt, font=\fontsize{7.5}{7.5}\selectfont] at (3.12, 0) {$8$};
+      \end{tikzpicture}\\[3pt]
+      {\fontsize{6.8}{6.8}\selectfont\kby\color{gray!90!black}
+      $\textcolor{koreaDarkTeal}{\blacktriangleright}$~លេខ $5$ មានប្រេកង់ $f=3$ (ធំជាងគេ)\\[3pt]
+      }
+      \begin{tcolorbox}[enhanced, colback=white, colframe=koreaDarkTeal!75, boxrule=0.65pt, arc=3.5pt, left=2pt, right=2pt, top=2.5pt, bottom=2.5pt, halign=center]
+        {\fontsize{8.2}{8.2}\selectfont\textbf{\color{koreaDarkTeal} ម៉ូត $\mathbf{M_o = 5}$}}\\[1.5pt]
+        {\fontsize{6}{6}\selectfont\kby\color{koreaDarkTeal!85} (មានតែមួយតម្លៃគត់)}
+      \end{tcolorbox}
+    \end{tcolorbox}
+  \end{minipage}\hfill
+  % Case 2: Bimodal
+  \begin{minipage}[t]{0.318\textwidth}
+    \begin{tcolorbox}[enhanced, equal height group=modecards, colframe=koreaDarkTeal, colback=koreaDarkTeal!2.5, colbacktitle=koreaDarkTeal, coltitle=white, arc=5pt, boxrule=0.85pt, left=3pt, right=3pt, top=4pt, bottom=4pt, toptitle=2.8pt, bottomtitle=2.8pt, title={\centering\fontsize{7.8}{7.8}\selectfont\kml\ding{183}\; ម៉ូតពីរ \textmd{\scriptsize(Bimodal)}}]
+      \centering
+      \begin{tikzpicture}[x=1cm, y=1cm]
+        % Background highlights for both pairs
+        \fill[koreaDarkTeal!12, rounded corners=4pt] (0.28, -0.26) rectangle (1.28, 0.26);
+        \draw[koreaDarkTeal!50, dashed, line width=0.45pt, rounded corners=4pt] (0.28, -0.26) rectangle (1.28, 0.26);
+        \fill[koreaDarkTeal!12, rounded corners=4pt] (1.84, -0.26) rectangle (2.84, 0.26);
+        \draw[koreaDarkTeal!50, dashed, line width=0.45pt, rounded corners=4pt] (1.84, -0.26) rectangle (2.84, 0.26);
+        % Overhead bridge tooltip
+        \draw[koreaDarkTeal, line width=0.7pt] (0.78, 0.27) -- (0.78, 0.43) -- (2.34, 0.43) -- (2.34, 0.27);
+        \node[fill=koreaDarkTeal, text=white, rounded corners=2.5pt, font=\fontsize{6}{6}\selectfont\kby\bfseries, inner sep=2pt] at (1.56, 0.58) {កើតឡើង ២ ដងស្មើគ្នា};
+        % Token Chips
+        \node[circle, draw=gray!35, fill=white, minimum size=0.42cm, inner sep=0pt, font=\fontsize{7.5}{7.5}\selectfont] at (0, 0) {$1$};
+        \node[circle, draw=koreaDarkTeal, fill=koreaDarkTeal, text=white, minimum size=0.42cm, inner sep=0pt, font=\fontsize{7.8}{7.8}\selectfont\bfseries] at (0.52, 0) {$2$};
+        \node[circle, draw=koreaDarkTeal, fill=koreaDarkTeal, text=white, minimum size=0.42cm, inner sep=0pt, font=\fontsize{7.8}{7.8}\selectfont\bfseries] at (1.04, 0) {$2$};
+        \node[circle, draw=gray!35, fill=white, minimum size=0.42cm, inner sep=0pt, font=\fontsize{7.5}{7.5}\selectfont] at (1.56, 0) {$4$};
+        \node[circle, draw=koreaDarkTeal, fill=koreaDarkTeal, text=white, minimum size=0.42cm, inner sep=0pt, font=\fontsize{7.8}{7.8}\selectfont\bfseries] at (2.08, 0) {$6$};
+        \node[circle, draw=koreaDarkTeal, fill=koreaDarkTeal, text=white, minimum size=0.42cm, inner sep=0pt, font=\fontsize{7.8}{7.8}\selectfont\bfseries] at (2.60, 0) {$6$};
+        \node[circle, draw=gray!35, fill=white, minimum size=0.42cm, inner sep=0pt, font=\fontsize{7.5}{7.5}\selectfont] at (3.12, 0) {$9$};
+      \end{tikzpicture}\\[3pt]
+      {\fontsize{6.8}{6.8}\selectfont\kby\color{gray!90!black}
+      $\textcolor{koreaDarkTeal}{\blacktriangleright}$~លេខ $2$ និង $6$ មាន $f=2$ (ស្មើគ្នា)\\[3pt]
+      }
+      \begin{tcolorbox}[enhanced, colback=white, colframe=koreaDarkTeal!75, boxrule=0.65pt, arc=3.5pt, left=2pt, right=2pt, top=2.5pt, bottom=2.5pt, halign=center]
+        {\fontsize{8.2}{8.2}\selectfont\textbf{\color{koreaDarkTeal} ម៉ូត $\mathbf{M_o = 2}$ និង $\mathbf{6}$}}\\[1.5pt]
+        {\fontsize{6}{6}\selectfont\kby\color{koreaDarkTeal!85} (មានពីរតម្លៃស្មើគ្នា)}
+      \end{tcolorbox}
+    \end{tcolorbox}
+  \end{minipage}\hfill
+  % Case 3: No Mode
+  \begin{minipage}[t]{0.318\textwidth}
+    \begin{tcolorbox}[enhanced, equal height group=modecards, colframe=koreaDarkTeal, colback=koreaDarkTeal!2.5, colbacktitle=koreaDarkTeal, coltitle=white, arc=5pt, boxrule=0.85pt, left=3pt, right=3pt, top=4pt, bottom=4pt, toptitle=2.8pt, bottomtitle=2.8pt, title={\centering\fontsize{7.8}{7.8}\selectfont\kml\ding{184}\; គ្មានម៉ូត \textmd{\scriptsize(No Mode)}}]
+      \centering
+      \begin{tikzpicture}[x=1cm, y=1cm]
+        % Encompassing overhead bracket for all tokens
+        \draw[koreaDarkTeal, line width=0.7pt] (0, 0.27) -- (0, 0.43) -- (3.12, 0.43) -- (3.12, 0.27);
+        \node[fill=koreaDarkTeal, text=white, rounded corners=2.5pt, font=\fontsize{6}{6}\selectfont\kby\bfseries, inner sep=2pt] at (1.56, 0.58) {គ្រប់លេខកើតឡើងត្រឹម ១ ដង};
+        % Token Chips
+        \node[circle, draw=gray!35, fill=white, minimum size=0.42cm, inner sep=0pt, font=\fontsize{7.5}{7.5}\selectfont] at (0, 0) {$3$};
+        \node[circle, draw=gray!35, fill=white, minimum size=0.42cm, inner sep=0pt, font=\fontsize{7.5}{7.5}\selectfont] at (0.78, 0) {$5$};
+        \node[circle, draw=gray!35, fill=white, minimum size=0.42cm, inner sep=0pt, font=\fontsize{7.5}{7.5}\selectfont] at (1.56, 0) {$7$};
+        \node[circle, draw=gray!35, fill=white, minimum size=0.42cm, inner sep=0pt, font=\fontsize{7.5}{7.5}\selectfont] at (2.34, 0) {$8$};
+        \node[circle, draw=gray!35, fill=white, minimum size=0.42cm, inner sep=0pt, font=\fontsize{7.5}{7.5}\selectfont] at (3.12, 0) {$12$};
+      \end{tikzpicture}\\[3pt]
+      {\fontsize{6.8}{6.8}\selectfont\kby\color{gray!90!black}
+      $\textcolor{koreaDarkTeal}{\blacktriangleright}$~គ្មានលេខណាមាន $f$ ធំជាងគេឡើយ\\[3pt]
+      }
+      \begin{tcolorbox}[enhanced, colback=white, colframe=koreaDarkTeal!75, boxrule=0.65pt, arc=3.5pt, left=2pt, right=2pt, top=2.5pt, bottom=2.5pt, halign=center]
+        {\fontsize{8.2}{8.2}\selectfont\textbf{\color{koreaDarkTeal} គ្មានម៉ូតឡើយ}}\\[1.5pt]
+        {\fontsize{6}{6}\selectfont\kby\color{koreaDarkTeal!85} (គ្រប់តម្លៃកើតឡើងស្មើគ្នា)}
+      \end{tcolorbox}
+    \end{tcolorbox}
+  \end{minipage}
+
+  \vspace{3pt}
+  \begin{tcolorbox}[enhanced, colback=brandCrimson!6, colframe=brandCrimson!35, boxrule=0.6pt, arc=3.5pt, left=6pt, right=6pt, top=3pt, bottom=3pt]
+    {\fontsize{7}{7}\selectfont\kby
+    \textbf{\color{brandCrimson}\ding{228}\ គន្លឹះសំខាន់ ៖} ម៉ូតគឺជា \textbf{«តម្លៃនៃទិន្នន័យ ($x$)»} មិនមែនជាចំនួនប្រេកង់ ($f$) នោះឡើយ ! \ (ឧ. លេខ $5$ កើតឡើង $3$ ដង ម៉ូតគឺ $M_o = 5$ មិនមែនស្មើ $3$ ទេ)។}
+  \end{tcolorbox}
+\end{khcard}
+
+\vspace{1pt}
+
+\begin{khcard}
+  \exhead{1} \textbf{ចូររកម៉ូតនៃទិន្នន័យខាងក្រោម ៖}
+  \vspace{1pt}
+  \begin{multicols}{2}
+    \noindent
+    \khlabel{ក} $8\, ,\, 8\, ,\, 9\, ,\, 14\, ,\, 6\, ,\, 1\, ,\, 11\, ,\, 8\, ,\, 9$\\[3pt]
+    \khlabel{ខ} $21\, ,\, 18\, ,\, 25\, ,\, 24\, ,\, 18\, ,\, 18\, ,\, 30\, ,\, 28\, ,\, 28$
+
+    \columnbreak
+
+    \noindent
+    \khlabel{គ} $6\, ,\, 12\, ,\, 14\, ,\, 10\, ,\, 11\, ,\, 10\, ,\, 15\, ,\, 14\, ,\, 20$\\[3pt]
+    \khlabel{ឃ} $20\, ,\, 24\, ,\, 19\, ,\, 20\, ,\, 22\, ,\, 23\, ,\, 21\, ,\, 29\, ,\, 11$
+  \end{multicols}
+\end{khcard}
+
+\vspace{1pt}
+
+\begin{multicols}{2}
+  \noindent
+  \begin{khcard}
+    \exhead{2} \textbf{ចំនួនទូរទស្សន៍លក់ដាច់តាមថ្ងៃ ៖}
+    \vspace{1pt}
+    \begin{center}
+      \small
+      \begin{tabular}{*{10}{>{\centering\arraybackslash}p{0.36cm}}}
+        $1$ & $3$ & $3$ & $3$ & $4$ & $4$ & $1$ & $2$ & $2$ & $2$ \\
+        $5$ & $4$ & $4$ & $2$ & $2$ & $2$ & $2$ & $1$ & $4$ & $4$ \\
+        $3$ & $2$ & $3$ & $2$ & $2$ & $3$ & $2$ & $3$ & $2$ & $3$ \\
+      \end{tabular}
+    \end{center}
+    \vspace{1pt}
+    ចូរកំណត់មធ្យម មេដ្យាន និងម៉ូតនៃទិន្នន័យ ។
+  \end{khcard}
+
+  \noindent
+  \begin{khcard}
+    \exhead{3} \textbf{ការហាត់ប្រាណបញ្ចុះម៉ាស ($\text{kg}$) ៖}
+    \vspace{1pt}
+    \begin{center}
+      \small
+      \begin{tabular}{*{8}{>{\centering\arraybackslash}p{0.46cm}}}
+        $4$ & $6$ & $2$ & $10$ & $8$ & $5$ & $1$ & $4$ \\
+        $8$ & $10$ & $5$ & $4$ & $3$ & $7$ & $2$ & $4$ \\
+        $6$ & $8$ & $7$ & $4$ & $5$ & $3$ & $6$ & $4$ \\
+      \end{tabular}
+    \end{center}
+    \vspace{1pt}
+    ចូរកំណត់មធ្យម មេដ្យាន និងម៉ូតនៃទិន្នន័យ ។
+  \end{khcard}
+\end{multicols}
+
+\vspace{1pt}
+
+\begin{khcard}
+  \exhead{4} \textbf{ចូរគណនាមធ្យម មេដ្យាន និងម៉ូតតាមទិន្នន័យខាងក្រោម ៖}
+  \vspace{1pt}
+  \begin{center}
+    \begin{tabular}{|c|*{6}{>{\centering\arraybackslash}m{1.4cm}|}}
+      \hline
+      \rowcolor{tableHeaderBg}
+      \textcolor{white}{\textbf{$x$}} & \textcolor{white}{\textbf{16}} & \textcolor{white}{\textbf{18}} & \textcolor{white}{\textbf{19}} & \textcolor{white}{\textbf{20}} & \textcolor{white}{\textbf{21}} & \textcolor{white}{\textbf{30}} \\
+      \hline
+      \rowcolor{tableRowAlt}
+      \textbf{$f$} & $1$ & $4$ & $9$ & $3$ & $2$ & $1$ \\
+      \hline
+    \end{tabular}
+  \end{center}
+\end{khcard}
+
+\vspace{1pt}
+
+% Practice Box for Mode
+\begin{khboxpractice}
+  \phead \textbf{ចូររកមធ្យម មេដ្យាន និងម៉ូតនៃទិន្នន័យខាងស្ដាំ ៖} \quad $10\, ,\, 8\, ,\, 13\, ,\, 12\, ,\, 7$ ។
+\end{khboxpractice}
+
+\vspace{1pt}
+
+% Section Exercises 1 & 2
+\begin{khcard}
+  \exhead{1} \textbf{តារាងខាងក្រោមនេះ ជាបំណែងចែកសីតុណ្ហភាពតាមខែនីមួយៗ ៖}
+  \vspace{1pt}
+  \begin{center}
+    \resizebox{\textwidth}{!}{%
+      \begin{tabular}{|c|*{12}{>{\centering\arraybackslash}m{1.2cm}|}}
+        \hline
+        \rowcolor{tableHeaderBg}
+        \textcolor{white}{\textbf{ខែ}} & \textcolor{white}{\textbf{មករា}} & \textcolor{white}{\textbf{កុម្ភៈ}} & \textcolor{white}{\textbf{មីនា}} & \textcolor{white}{\textbf{មេសា}} & \textcolor{white}{\textbf{ឧសភា}} & \textcolor{white}{\textbf{មិថុនា}} & \textcolor{white}{\textbf{កក្កដា}} & \textcolor{white}{\textbf{សីហា}} & \textcolor{white}{\textbf{កញ្ញា}} & \textcolor{white}{\textbf{តុលា}} & \textcolor{white}{\textbf{វិច្ឆិកា}} & \textcolor{white}{\textbf{ធ្នូ}} \\
+        \hline
+        \rowcolor{tableRowAlt}
+        \textbf{$^\circ\text{C}$} & $14$ & $14$ & $23$ & $32$ & $35$ & $30$ & $30$ & $29$ & $25$ & $22$ & $18$ & $15$ \\
+        \hline
+      \end{tabular}%
+    }
+  \end{center}
+  \vspace{1pt}
+  \begin{itemize}[leftmargin=16pt, itemsep=0.8pt]
+    \item[\khlabel{ក}] ចូរគណនាម៉ូតនៃសីតុណ្ហភាព \quad \khlabel{ខ} ចូរគណនាសីតុណ្ហភាពមធ្យមប្រចាំឆ្នាំ
+  \end{itemize}
+\end{khcard}
+
+\vspace{1pt}
+
+\begin{khcard}
+  \exhead{2} \textbf{នៅឆមាសទី១ សុខប្រឡង $8$ មុខវិជ្ជាទទួលបានមធ្យមភាគពិន្ទុ $89$ ។}\\
+  តើនៅឆមាសទី២ នេះ សុខត្រូវប្រឹងបង្កើនពិន្ទុប៉ុន្មានទៀត ទើបធានាឱ្យមធ្យមភាគពិន្ទុរបស់គេកើនឡើងស្មើនឹង $90$ ?
+\end{khcard}
+
+% =========================================================================
+% SECTION 4: ការកំណត់មធ្យមស្ថិតិតាមតារាងប្រេកង់កើន (GROUPED DATA)
+% =========================================================================
+
+\khsection{៤}{ការកំណត់មធ្យមស្ថិតិតាមតារាងប្រេកង់កើន (Grouped Data)}
+
+% Feynman Insight Box for Grouped Data
+\begin{khboxfeynman}
+  \textbf{ហេតុអ្វីបានជាត្រូវរៀបចំ «តារាងប្រេកង់កើន» ? និងតួនាទីនៃជួរឈរទាំង ៤}
+  \begin{itemize}[leftmargin=12pt, itemsep=0.5pt, topsep=1pt, parsep=0pt]
+    \item[\color{koreaPurple}\ding{228}] \textbf{ហេតុអ្វីចាំបាច់ ?} នៅពេលទិន្នន័យមានចំនួនច្រើន ការសរសេររាយមួយៗនាំឱ្យស្មុគស្មាញ។ ការច្រកទិន្នន័យចូលក្នុងតារាងប្រេកង់កើន ជួយឱ្យយើងស្រង់ទិន្នន័យ គណនាបានលឿន និងទាញរកតម្លៃស្ថិតិទាំង ៣ បានយ៉ាងងាយស្រួល!
+    \item[\color{brandCrimson}\ding{228}] \textbf{តួនាទីជួរឈរទាំង ៤ ៖}
+      \textbf{១.} ជួរឈរ $x$ (ទិន្នន័យ/ផ្ចិតថ្នាក់) \ $\mid$ \
+      \textbf{២.} ជួរឈរ $f$ (ផ្ដល់ទំហំគំរូសរុប $N=\sum f$ និងរកម៉ូត) \ $\mid$ \
+      \textbf{៣.} ជួរឈរ $xf$ (សម្រាប់រកមធ្យម $\bar{x}$) \ $\mid$ \
+      \textbf{៤.} ជួរឈរ $cf$ (ប្រេកង់កើន សម្រាប់រកទីតាំងមេដ្យាន)
+  \end{itemize}
+\end{khboxfeynman}
+
+\vspace{1pt}
+
+% Illustrative Example from MoEYS (4-Column Table: Mean, Median, Mode)
+\begin{khcard}
+  {\fontsize{9.5}{9.5}\selectfont\kml\bfseries\color{brandNavy}\ding{45}\ ឧទាហរណ៍គំរូ ៖ ការរៀបចំតារាងប្រេកង់កើនដើម្បីទាញរក មធ្យម មេដ្យាន និងម៉ូត}\\[3.5pt]
+  \noindent
+  % Left Column: 4-Column Cumulative Frequency Table
+  \begin{minipage}[t]{0.435\textwidth}
+    \centering
+    \renewcommand{\arraystretch}{1.72}
+    {\fontsize{8.5}{8.5}\selectfont
+    \begin{tabular}{|>{\centering\arraybackslash}m{1.1cm}|>{\centering\arraybackslash}m{1.42cm}|>{\centering\arraybackslash}m{1.45cm}|>{\centering\arraybackslash}m{1.85cm}|}
+      \hline
+      \rowcolor{tableHeaderBg}
+      \textcolor{white}{\textbf{ពិន្ទុ $x$}} & \textcolor{white}{\textbf{ប្រេកង់ $f$}} & \textcolor{white}{\textbf{$x \cdot f$}} & \textcolor{white}{\textbf{ប្រេកង់កើន $cf$}} \\
+      \hline
+      \rowcolor{white}
+      $1$ & $4$ & $4$ & $4$ \\
+      \hline
+      \rowcolor{tableRowAlt}
+      $2$ & $5$ & $10$ & $9$ \\
+      \hline
+      \rowcolor{white}
+      $3$ & $2$ & $6$ & $11$ \\
+      \hline
+      \rowcolor{tableRowAlt}
+      $4$ & $10$ & $40$ & $21$ \\
+      \hline
+      \rowcolor{koreaYellow!60}
+      $\mathbf{5}$ & \shortstack{$\mathbf{15}$\\[-1pt]{\fontsize{5.5}{5.5}\selectfont\color{brandCrimson}\textbf{(ធំជាងគេ)}}} & $\mathbf{75}$ & \shortstack{$\mathbf{36}$\\[-1pt]{\fontsize{5.5}{5.5}\selectfont\color{kmBlueMain}\textbf{(ក្ដោប $25.5$)}}} \\
+      \hline
+      \rowcolor{white}
+      $6$ & $8$ & $48$ & $44$ \\
+      \hline
+      \rowcolor{tableRowAlt}
+      $7$ & $4$ & $28$ & $48$ \\
+      \hline
+      \rowcolor{white}
+      $9$ & $2$ & $18$ & $50$ \\
+      \hline
+      \rowcolor{brandNavy!15}
+      \textbf{សរុប} & \textbf{$N = 50$} & \textbf{$\sum xf = 229$} & \textbf{---} \\
+      \hline
+    \end{tabular}
+    }
+  \end{minipage}\hfill
+  % Right Column: 3 Detailed Determinations (Mean, Median, Mode)
+ \vspace{-0.4cm}
+  \begin{minipage}{0.535\textwidth}
+    % Calculation 1: Mean (Modern Editorial Left-Bordered Card)
+    \begin{tcolorbox}[enhanced, frame hidden, borderline west={2.8pt}{0pt}{kmTealMain}, colback=kmTealBg, arc=2.5pt, left=6pt, right=5pt, top=3.2pt, bottom=3.2pt]
+      \textbf{\color{kmTealMain}\fontsize{8.5}{8.5}\selectfont\ding{182}\ ការកំណត់មធ្យម ($\bar{x}$) ៖}\\[2pt]
+      {\fontsize{7.5}{7.5}\selectfont\kby
+      $\bullet$ តាមរូបមន្ត ៖ $\bar{x} = \dfrac{\sum xf}{N} = \dfrac{229}{50} = \mathbf{4.58}$ (ពិន្ទុ)\\[1.5pt]
+      $\bullet$ យកផលបូកជួរឈរ $xf$ ($229$) ចែកនឹងចំនួនសរុប $N$ ($50$)
+      }
+    \end{tcolorbox}
+
+
+
+    % Calculation 2: Median (Modern Editorial Left-Bordered Card)
+    \begin{tcolorbox}[enhanced, frame hidden, borderline west={2.8pt}{0pt}{kmBlueMain}, colback=kmBlueBg, arc=2.5pt, left=6pt, right=5pt, top=3.2pt, bottom=3.2pt]
+      \textbf{\color{kmBlueMain}\fontsize{8.5}{8.5}\selectfont\ding{183}\ ការកំណត់មេដ្យាន ($M_e$) តាមប្រេកង់កើន ៖}\\[2pt]
+      {\fontsize{7.5}{7.5}\selectfont\kby
+      $\bullet$ \textbf{រកទីតាំងមេដ្យាន ៖} $\text{ទីតាំង} = \dfrac{N+1}{2} = \dfrac{50+1}{2} = \mathbf{25.5}$\\[1.5pt]
+      $\bullet$ \textbf{ផ្ទៀងផ្ទាត់ក្នុងជួរឈរ $cf$ ៖}\\
+      \quad -- ត្រឹមពិន្ទុ $4$ មានទិន្នន័យត្រឹម $21$ នាក់ប៉ុណ្ណោះ ($cf = 21$)\\
+      \quad -- ចាប់ពីតួទី $22$ ដល់ទី $36$ គឺត្រូវនឹងពិន្ទុ $5$ ($cf = 36$)\\[1.5pt]
+      $\implies$ ដូចនេះ តួទី $25.5$ ធ្លាក់លើពិន្ទុ $\mathbf{5} \implies \mathbf{M_e = 5}$
+      }
+    \end{tcolorbox}
+
+
+
+    % Calculation 3: Mode (Modern Editorial Left-Bordered Card)
+    \begin{tcolorbox}[enhanced, frame hidden, borderline west={2.8pt}{0pt}{koreaOrange}, colback=brandGoldBg, arc=2.5pt, left=6pt, right=5pt, top=3.2pt, bottom=3.2pt]
+      \textbf{\color{koreaOrange!90!black}\fontsize{8.5}{8.5}\selectfont\ding{184}\ ការកំណត់ម៉ូត ($M_o$) ៖}\\[2pt]
+      {\fontsize{7.5}{7.5}\selectfont\kby
+      $\bullet$ ពិនិត្យជួរឈរទី ២ ($f$) ៖ ប្រេកង់ដែលធំជាងគេគឺ $f_{\max} = 15$\\
+      $\implies$ តម្លៃពិន្ទុដែលត្រូវនឹងប្រេកង់ $15$ នោះគឺលេខ $\mathbf{5} \implies \mathbf{M_o = 5}$
+      }
+    \end{tcolorbox}
+  \end{minipage}
+  \vspace{0.3cm}
+
+ 
+
+
+  % Full-Width Cumulative Frequency Ribbon & Validation Banner
+ 
+\end{khcard}
+
+\vspace{1pt}
+
+\begin{khcard}
+  \exhead{1} \textbf{ខាងក្រោមនេះជាម៉ាសសិស្សក្នុងថ្នាក់រៀនមួយ (គិតជា $\text{kg}$) ៖}
+  \vspace{1pt}
+  \begin{center}
+    \begin{tabular}{|c|*{7}{>{\centering\arraybackslash}m{1.6cm}|}}
+      \hline
+      \rowcolor{tableHeaderBg}
+      \textcolor{white}{\textbf{ម៉ាសជា $\text{kg}$}} & \textcolor{white}{\textbf{30--40}} & \textcolor{white}{\textbf{40--50}} & \textcolor{white}{\textbf{50--60}} & \textcolor{white}{\textbf{60--70}} & \textcolor{white}{\textbf{70--80}} & \textcolor{white}{\textbf{80--90}} & \textcolor{white}{\textbf{90--100}} \\
+      \hline
+      \rowcolor{tableRowAlt}
+      \textbf{ប្រេកង់ $f$} & $2$ & $6$ & $5$ & $10$ & $8$ & $6$ & $3$ \\
+      \hline
+    \end{tabular}
+  \end{center}
+  \vspace{1pt}
+  \begin{itemize}[leftmargin=18pt, itemsep=1pt]
+    \item[\khlabel{ក}] សង់តារាងបង្ហាញពីប្រេកង់ ប្រេកង់កើន ផ្ចិតនៃថ្នាក់ $x$ និងផលគុណ $xf$
+    \item[\khlabel{ខ}] ចូរគណនាមធ្យម មេដ្យាន និងម៉ូតនៃទិន្នន័យខាងលើ
+  \end{itemize}
+\end{khcard}
+
+\vspace{1pt}
+
+\begin{khcard}
+  \exhead{2} \textbf{ខាងក្រោមនេះជាការស្រង់ទិន្នន័យនៃអតិថិជនដែលបានទិញកាហ្វេក្នុងហាងមួយ (គិតចាប់ពីម៉ោង 12 រសៀល) ៖}
+  \vspace{1pt}
+  \begin{center}
+    \begin{tabular}{|c|*{5}{>{\centering\arraybackslash}m{2.3cm}|}}
+      \hline
+      \rowcolor{tableHeaderBg}
+      \textcolor{white}{\textbf{រយៈពេល (នាទី)}} & \textcolor{white}{\textbf{10--20}} & \textcolor{white}{\textbf{20--30}} & \textcolor{white}{\textbf{30--40}} & \textcolor{white}{\textbf{40--50}} & \textcolor{white}{\textbf{50--60}} \\
+      \hline
+      \rowcolor{tableRowAlt}
+      \textbf{ប្រេកង់ $f$} & $10$ & $15$ & $20$ & $35$ & $20$ \\
+      \hline
+    \end{tabular}
+  \end{center}
+  \vspace{1pt}
+  \begin{itemize}[leftmargin=18pt, itemsep=1pt]
+    \item[\khlabel{ក}] សង់តារាងបង្ហាញពីប្រេកង់ ប្រេកង់កើន ផ្ចិតនៃថ្នាក់ $x$ និងផលគុណ $xf$
+    \item[\khlabel{ខ}] ចូរគណនាមធ្យម មេដ្យាន និងម៉ូតនៃទិន្នន័យខាងលើ
+  \end{itemize}
+\end{khcard}
+
+\vspace{1pt}
+
+\begin{khcard}
+  \exhead{3} \textbf{ចូរគណនាមធ្យម មេដ្យាន និងម៉ូតតាមទិន្នន័យខាងក្រោម ៖}
+  \vspace{1pt}
+  \begin{itemize}[leftmargin=12pt, itemsep=3pt]
+    \item[\khlabel{ក}]
+      \begin{tabular}{|c|*{6}{>{\centering\arraybackslash}m{1.5cm}|}}
+        \hline
+        \rowcolor{tableHeaderBg}
+        \textcolor{white}{\textbf{$x$}} & \textcolor{white}{\textbf{10--18}} & \textcolor{white}{\textbf{18--26}} & \textcolor{white}{\textbf{26--34}} & \textcolor{white}{\textbf{34--42}} & \textcolor{white}{\textbf{42--50}} & \textcolor{white}{\textbf{50--58}} \\
+        \hline
+        \rowcolor{tableRowAlt}
+        \textbf{$f$} & $4$ & $8$ & $6$ & $10$ & $12$ & $5$ \\
+        \hline
+      \end{tabular}
+
+    \item[\khlabel{ខ}]
+      \begin{tabular}{|c|*{6}{>{\centering\arraybackslash}m{1.5cm}|}}
+        \hline
+        \rowcolor{tableHeaderBg}
+        \textcolor{white}{\textbf{$x$}} & \textcolor{white}{\textbf{20--25}} & \textcolor{white}{\textbf{25--30}} & \textcolor{white}{\textbf{30--35}} & \textcolor{white}{\textbf{35--40}} & \textcolor{white}{\textbf{40--45}} & \textcolor{white}{\textbf{45--50}} \\
+        \hline
+        \rowcolor{tableRowAlt}
+        \textbf{$f$} & $8$ & $2$ & $6$ & $4$ & $10$ & $12$ \\
+        \hline
+      \end{tabular}
+  \end{itemize}
+\end{khcard}
+
+\vspace{1pt}
+
+% Practice Box for Grouped Data
+\begin{khboxpractice}
+  \phead \textbf{ចូរគណនាមធ្យម មេដ្យាន និងម៉ូតតាមទិន្នន័យខាងក្រោម ៖}
+  \vspace{1pt}
+  \begin{center}
+    \begin{tabular}{|c|*{7}{>{\centering\arraybackslash}m{1.6cm}|}}
+      \hline
+      \rowcolor{brandGold!90!black}
+      \textcolor{white}{\textbf{ថ្នាក់}} & \textcolor{white}{\textbf{21--28}} & \textcolor{white}{\textbf{28--35}} & \textcolor{white}{\textbf{35--42}} & \textcolor{white}{\textbf{42--49}} & \textcolor{white}{\textbf{49--56}} & \textcolor{white}{\textbf{56--63}} & \textcolor{white}{\textbf{63--70}} \\
+      \hline
+      \rowcolor{white}
+      \textbf{ប្រេកង់} & $3$ & $7$ & $12$ & $15$ & $12$ & $7$ & $3$ \\
+      \hline
+    \end{tabular}
+  \end{center}
+\end{khboxpractice}
+
+% =========================================================================
+% SECTION 5: លំហាត់អនុវត្តសរុប (COMPREHENSIVE EXERCISES)
+% =========================================================================
+
+\khsection{៥}{លំហាត់អនុវត្តសរុប}
+
+% Feynman Summary Card: When to use which measure?
+\begin{khboxfeynman}
+  \textbf{តារាងសង្ខេប ៖ ពេលណាគួរជ្រើសរើសប្រើ មធ្យម, មេដ្យាន, ឬម៉ូត ?}
+  \begin{itemize}[leftmargin=12pt, itemsep=0.5pt, topsep=1pt, parsep=0pt]
+    \item[\color{brandNavy}\ding{228}] \textbf{មធ្យម ($\bar{x}$) ៖} ប្រើនៅពេលទិន្នន័យរាយស្មើៗគ្នា គ្មានតម្លៃណាមួយធំខ្លាំង ឬតូចខ្លាំងខុសគេ (គ្មាន Outliers)។
+    \item[\color{brandCrimson}\ding{228}] \textbf{មេដ្យាន ($Med$) ៖} ប្រើនៅពេលទិន្នន័យមានតម្លៃខុសប្លែកខ្លាំង (ដូចជាចំណូល ឬតម្លៃផ្ទះ) ព្រោះវាជាអ្នកតំណាងកណ្ដាលពិតប្រាកដ។
+    \item[\color{koreaPurple}\ding{228}] \textbf{ម៉ូត ($Mod$) ៖} ប្រើនៅពេលចង់ដឹងពី «ប្រជាប្រិយភាព» ឬទិន្នន័យគុណភាព (ដូចជាទំហំអាវ, មុខវិជ្ជាពេញចិត្ត, ពណ៌ដែលគេស្រឡាញ់)។
+  \end{itemize}
+\end{khboxfeynman}
+
+\vspace{1pt}
+
+\begin{khcard}
+  \exhead{1} \textbf{ក្នុងការពិសោធន៍បណ្ដុះកូនប៉េងប៉ោះ ដោយប្រើជីគីមីអស់រយៈពេលមួយសប្ដាហ៍ គេទទួលបានលទ្ធផលនៃបម្រែបម្រួលកម្ពស់កូនប៉េងប៉ោះដូចតារាងក្រោម ៖}
+  \vspace{1pt}
+  \begin{center}
+    \begin{tabular}{|c|*{7}{>{\centering\arraybackslash}m{1.6cm}|}}
+      \hline
+      \rowcolor{tableHeaderBg}
+      \textcolor{white}{\textbf{កម្ពស់ ($\text{mm}$)}} & \textcolor{white}{\textbf{0--5}} & \textcolor{white}{\textbf{5--10}} & \textcolor{white}{\textbf{10--15}} & \textcolor{white}{\textbf{15--20}} & \textcolor{white}{\textbf{20--25}} & \textcolor{white}{\textbf{25--30}} & \textcolor{white}{\textbf{30--35}} \\
+      \hline
+      \rowcolor{tableRowAlt}
+      \textbf{ចំនួនកូនប៉េងប៉ោះ} & $3$ & $15$ & $72$ & $15$ & $91$ & $35$ & $8$ \\
+      \hline
+    \end{tabular}
+  \end{center}
+  \vspace{1pt}
+  \begin{itemize}[leftmargin=18pt, itemsep=1pt]
+    \item[\khlabel{ក}] បង្កើតតារាងដែលបង្ហាញពីប្រេកង់ ប្រេកង់កើន និងប្រេកង់ថយ
+    \item[\khlabel{ខ}] រកចំនួនកូនប៉េងប៉ោះដែលមានកម្ពស់យ៉ាងតិច $20\,\text{mm}$ និង $35\,\text{mm}$
+    \item[\khlabel{គ}] ចូររកម៉ូត មេដ្យាន និងកម្ពស់មធ្យមនៃកូនប៉េងប៉ោះ ។ ចូរប្រៀបធៀបមេដ្យាន និងមធ្យម ។
+  \end{itemize}
+\end{khcard}
+
+\vspace{1pt}
+
+\begin{khcard}
+  \exhead{2} \textbf{តារាងខាងក្រោមជាបរិមាណទឹកដោះគោម៉ែ ដែលទារកបៅអស់ក្នុងមួយថ្ងៃ ៖}
+  \vspace{1pt}
+  \begin{center}
+    \resizebox{\textwidth}{!}{%
+      \begin{tabular}{|c|*{10}{>{\centering\arraybackslash}m{1.35cm}|}}
+        \hline
+        \rowcolor{tableHeaderBg}
+        \textcolor{white}{\textbf{ទឹកដោះគោម៉ែគិតជា $\text{g}$}} & \textcolor{white}{\textbf{40--45}} & \textcolor{white}{\textbf{45--50}} & \textcolor{white}{\textbf{50--55}} & \textcolor{white}{\textbf{55--60}} & \textcolor{white}{\textbf{60--65}} & \textcolor{white}{\textbf{65--70}} & \textcolor{white}{\textbf{70--75}} & \textcolor{white}{\textbf{75--80}} & \textcolor{white}{\textbf{80--85}} & \textcolor{white}{\textbf{85--90}} \\
+        \hline
+        \rowcolor{tableRowAlt}
+        \textbf{ចំនួនក្មេង} & $8$ & $11$ & $31$ & $61$ & $54$ & $58$ & $43$ & $25$ & $17$ & $7$ \\
+        \hline
+      \end{tabular}%
+    }
+  \end{center}
+  \vspace{1pt}
+  \begin{itemize}[leftmargin=18pt, itemsep=1pt]
+    \item[\khlabel{ក}] ចូររកចំនួនទារកដែលបៅទឹកដោះគោក្នុងមួយថ្ងៃ
+    \item[\khlabel{ខ}] តើក្នុងមួយថ្ងៃគិតជាមធ្យមទារកម្នាក់បៅទឹកដោះគោម៉ែអស់ប៉ុន្មានក្រាម ?
+    \item[\khlabel{គ}] ចូរគណនាម៉ូត
+    \item[\khlabel{ឃ}] ចូរគណនាមេដ្យាន រួចបកស្រាយចម្លើយតាមក្រាប
+  \end{itemize}
+\end{khcard}
+
+\vspace{1pt}
+
+\begin{khcard}
+  \exhead{3} \textbf{ក្រោយពីវាស់កម្ពស់សិស្សនៃវិទ្យាល័យមួយ គេបានលទ្ធផលដូចខាងក្រោម ៖}
+  \vspace{1pt}
+  \begin{center}
+    \begin{tabular}{|c|*{7}{>{\centering\arraybackslash}m{1.6cm}|}}
+      \hline
+      \rowcolor{tableHeaderBg}
+      \textcolor{white}{\textbf{កម្ពស់ ($\text{cm}$)}} & \textcolor{white}{\textbf{145--150}} & \textcolor{white}{\textbf{150--155}} & \textcolor{white}{\textbf{155--160}} & \textcolor{white}{\textbf{160--165}} & \textcolor{white}{\textbf{165--170}} & \textcolor{white}{\textbf{170--175}} & \textcolor{white}{\textbf{175--180}} \\
+      \hline
+      \rowcolor{tableRowAlt}
+      \textbf{ចំនួនសិស្ស} & $31$ & $95$ & $131$ & $272$ & $120$ & $77$ & $48$ \\
+      \hline
+    \end{tabular}
+  \end{center}
+  \vspace{1pt}
+  \begin{itemize}[leftmargin=18pt, itemsep=1pt]
+    \item[\khlabel{ក}] ចូរបង្កើតតារាងប្រេកង់ និងប្រេកង់កើន
+    \item[\khlabel{ខ}] ចូរសង់ក្រាបនៃពហុកោណប្រេកង់កើន
+    \item[\khlabel{គ}] ចូរគណនាមេដ្យាន រួចបកស្រាយនៅលើក្រាប
+  \end{itemize}
+\end{khcard}
+
+\end{document}

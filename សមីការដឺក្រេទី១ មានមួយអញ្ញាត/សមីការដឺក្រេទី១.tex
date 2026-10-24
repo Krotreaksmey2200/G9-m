@@ -1,0 +1,1034 @@
+\documentclass[theme=teal]{khmermath}
+\usepackage{needspace}
+\usepackage{colortbl}
+\usepackage{tikz}
+\usetikzlibrary{calc,shapes,arrows,intersections,through,backgrounds,shadows,decorations.pathmorphing,arrows.meta}
+\usepackage{fancyhdr}
+\usepackage{multicol}
+\usepackage{tabularx}
+
+\geometry{left=0.85cm, right=0.85cm, top=0.75cm, bottom=1.45cm, footskip=0.65cm}
+
+% -------------------------------------------------------------------------
+% Korean Math Textbook Style Color Palette & Macros
+% -------------------------------------------------------------------------
+\definecolor{koreaTeal}{RGB}{0, 150, 155}       % Primary Header Teal/Cyan
+\definecolor{koreaDarkTeal}{RGB}{0, 105, 110}   % Dark Teal Accent
+\definecolor{koreaBeige}{RGB}{247, 244, 237}     % Concept Sidebar Beige (#F7F4EE)
+\definecolor{koreaBeigeBorder}{RGB}{225, 218, 205}
+\definecolor{koreaOrange}{RGB}{235, 115, 30}     % Problem Number Orange
+\definecolor{koreaBlue}{RGB}{35, 110, 190}      % Standard Blue
+\definecolor{koreaPurple}{RGB}{125, 50, 160}    % Purple Accent
+\definecolor{koreaNumber}{RGB}{115, 125, 135}   % Problem Number Gray
+\definecolor{koreaYellow}{RGB}{255, 246, 175}   % Yellow Highlight Tint
+
+\definecolor{brandNavy}{RGB}{0, 105, 110}
+\definecolor{brandBlue}{RGB}{0, 150, 155}
+\definecolor{brandLightBlue}{RGB}{247, 244, 237}
+\definecolor{brandCrimson}{RGB}{195, 35, 60}
+\definecolor{brandCoral}{RGB}{235, 80, 75}
+\definecolor{brandGold}{RGB}{215, 130, 10}
+\definecolor{brandGoldBg}{RGB}{255, 252, 242}
+\definecolor{brandTeal}{RGB}{0, 150, 155}
+\definecolor{brandTealBg}{RGB}{244, 252, 250}
+\definecolor{subtleGray}{RGB}{246, 251, 249}
+\definecolor{cardBorder}{RGB}{220, 212, 198}
+\definecolor{trapRed}{RGB}{210, 40, 40}
+\definecolor{trapBg}{RGB}{255, 246, 246}
+\definecolor{trapBorder}{RGB}{245, 200, 200}
+
+% Custom Header & Footer setup (Fancyhdr)
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrule}{\color{koreaTeal!60}\hrule height 0.6pt\vspace{2.5pt}}
+
+\fancyfoot[L]{%
+  \fontsize{8.5}{8.5}\selectfont\kml \color{koreaNumber}\textbf{\thepage}\ \vline\ \color{koreaDarkTeal}\textbf{៤. សមីការដឺក្រេទី១ មានមួយអញ្ញាត}%
+}
+\fancyfoot[C]{%
+  \fontsize{8.5}{8.5}\selectfont\kby \color{koreaDarkTeal}\textbf{\ding{72}\ បង្រៀនដោយ ៖ \textcolor{koreaDarkTeal}{ក្រូត រស្មី}\ \ding{72}}%
+}
+\fancyfoot[R]{%
+  \fontsize{8.5}{8.5}\selectfont\kby \color{koreaDarkTeal}\textbf{ Telegram: \textcolor{brandCrimson}{070897540}}\ \vline\ \color{koreaNumber}\textbf{\thepage}%
+}
+
+% Korean Header Banner
+\newcommand{\koreanheader}[2]{%
+  \noindent%
+  \begin{tikzpicture}[x=1cm, y=1cm]
+    \fill[koreaTeal, rounded corners=12pt] (0, 0.08) -- (0, 0.92) -- (3.8, 0.92) [rounded corners=0pt] -- (4.4, 0.08) -- cycle;
+    \node[white, font=\fontsize{11}{11}\selectfont\kml\bfseries] at (1.9, 0.50) {#1};
+    \node[anchor=west, font=\fontsize{17}{17}\selectfont\kml\bfseries, color=koreaDarkTeal] at (4.5, 0.42) {#2};
+    \node[anchor=east, font=\fontsize{8.5}{8.5}\selectfont\kby, color=gray!80] at (19.2, 0.47) {$>$ ក្លឹបសិក្សាគណិតវិទ្យា PCM};
+  \end{tikzpicture}%
+  \vspace{2pt}%
+}
+
+% Yellow Formula Highlight Box
+\newcommand{\koreahl}[1]{\colorbox{koreaYellow}{\fontsize{8.5}{8.5}\selectfont\textbf{#1}}}
+
+% Section Header Macro
+\newcommand{\khsection}[2]{%
+  \vspace{2pt}%
+  \noindent%
+  \begin{tikzpicture}
+    \fill[rounded corners=4pt, brandNavy!7] (0,0) rectangle (19.3, 0.65);
+    \fill[rounded corners=3.5pt, brandNavy] (0.05, 0.05) rectangle (0.58, 0.60);
+    \node[white, font=\fontsize{9.5}{9.5}\selectfont\bfseries] at (0.31, 0.33) {#1};
+    \fill[brandGold, rounded corners=1pt] (0.68, 0.13) rectangle (0.72, 0.52);
+    \node[anchor=west, font=\fontsize{11}{11}\selectfont\kml, color=brandCrimson] at (0.80, 0.33) {\textbf{#2}};
+  \end{tikzpicture}%
+  \vspace{2pt}%
+}
+
+% Page Exercise Header
+\newcommand{\khexheader}[2]{%
+  \noindent%
+  \begin{tikzpicture}
+    \fill[rounded corners=4pt, koreaTeal!12] (0,0) rectangle (19.3, 0.58);
+    \fill[rounded corners=3pt, koreaTeal] (0.05, 0.05) rectangle (0.52, 0.53);
+    \node[white, font=\fontsize{9}{9}\selectfont\bfseries] at (0.28, 0.29) {\ding{45}};
+    \node[anchor=west, font=\fontsize{10.5}{10.5}\selectfont\kml\bfseries, color=koreaDarkTeal] at (0.65, 0.29) {កម្រងលំហាត់អនុវត្តន៍ ៖ ផ្នែកទី #1 (#2)};
+  \end{tikzpicture}%
+  \vspace{2pt}%
+}
+
+% Feynman Intuition Card Box
+\newtcolorbox{khboxfeynman}[1][]{
+  enhanced,
+  colframe=koreaOrange!85,
+  colback=brandGoldBg,
+  boxrule=0.7pt,
+  arc=5.0pt,
+  borderline west={3.5pt}{0pt}{koreaOrange},
+  drop fuzzy shadow=koreaOrange!12,
+  left=8pt, right=8pt, top=5pt, bottom=5pt,
+  title={\fontsize{9}{9}\selectfont\kml\color{white}\ding{96}\ គំនិតគ្រឹះយល់ដឹងស៊ីជម្រៅ (Mental Model)},
+  coltitle=white,
+  colbacktitle=koreaOrange,
+  boxed title style={
+    boxrule=0pt,
+    arc=3.5pt,
+    left=6pt, right=6pt, top=2pt, bottom=2pt
+  },
+  attach boxed title to top left={yshift*=-\tcboxedtitleheight/2, xshift=10pt},
+  #1
+}
+
+% General Rule Box (វិធាន)
+\newtcolorbox{khboxorange}[1][]{
+  enhanced,
+  colframe=brandNavy!40,
+  colback=brandLightBlue,
+  boxrule=0.7pt,
+  arc=5.0pt,
+  borderline west={3.5pt}{0pt}{brandNavy},
+  drop fuzzy shadow=brandNavy!15,
+  left=8pt, right=8pt, top=5pt, bottom=5pt,
+  title={\fontsize{9}{9}\selectfont\kml\color{white}\ding{72}\ វិធាន},
+  coltitle=white,
+  colbacktitle=brandNavy,
+  boxed title style={
+    boxrule=0pt,
+    arc=3.5pt,
+    left=6pt, right=6pt, top=2pt, bottom=2pt
+  },
+  attach boxed title to top left={yshift*=-\tcboxedtitleheight/2, xshift=10pt},
+  #1
+}
+
+% Model Worked Example Box with Arrow Annotations
+\newtcolorbox{khboxmodel}[1][]{
+  enhanced,
+  colframe=koreaTeal!60,
+  colback=brandTealBg,
+  boxrule=0.7pt,
+  arc=5.0pt,
+  borderline west={3.5pt}{0pt}{koreaTeal},
+  drop fuzzy shadow=koreaTeal!12,
+  left=8pt, right=8pt, top=5pt, bottom=5pt,
+  title={\fontsize{9}{9}\selectfont\kml\color{white}\ding{45}\ ឧទាហរណ៍គំរូ និងការវិភាគជាជំហានៗ (អមគំនួសព្រួញពន្យល់)},
+  coltitle=white,
+  colbacktitle=koreaTeal,
+  boxed title style={
+    boxrule=0pt,
+    arc=3.5pt,
+    left=6pt, right=6pt, top=2pt, bottom=2pt
+  },
+  attach boxed title to top left={yshift*=-\tcboxedtitleheight/2, xshift=10pt},
+  #1
+}
+
+% Watch Out / Trap Box
+\newtcolorbox{khboxtrap}[1][]{
+  enhanced,
+  colframe=trapBorder,
+  colback=trapBg,
+  boxrule=0.7pt,
+  arc=4.5pt,
+  borderline west={3.5pt}{0pt}{trapRed},
+  drop fuzzy shadow=trapRed!10,
+  left=8pt, right=8pt, top=5pt, bottom=5pt,
+  title={\fontsize{8.5}{8.5}\selectfont\kml\color{white}\ding{55}\ ចំណុចប្រុងប្រយ័ត្ន ៖ កំហុសដែលសិស្សតែងតែភ្លាត់ (Watch Out!)},
+  coltitle=white,
+  colbacktitle=trapRed,
+  boxed title style={
+    boxrule=0pt,
+    arc=3pt,
+    left=5pt, right=5pt, top=1.8pt, bottom=1.8pt
+  },
+  attach boxed title to top left={yshift*=-\tcboxedtitleheight/2, xshift=10pt},
+  #1
+}
+
+% Practice Card Box
+\newtcolorbox{khboxpractice}[1][]{
+  enhanced,
+  colframe=brandTeal,
+  colback=brandTealBg,
+  boxrule=0.8pt,
+  arc=4.5pt,
+  borderline west={3.5pt}{0pt}{brandCrimson},
+  drop fuzzy shadow=brandNavy!12,
+  left=8pt, right=8pt, top=5pt, bottom=5pt,
+  #1
+}
+
+% Self-Check Box Macro (Fills the exercise page elegantly with genuine utility)
+\newcommand{\selfcheckcard}[1]{%
+  \vspace{3pt}%
+  \begin{tcolorbox}[
+    enhanced,
+    colframe=brandNavy!30,
+    colback=brandLightBlue!60,
+    boxrule=0.6pt,
+    arc=4pt,
+    left=8pt, right=8pt, top=4pt, bottom=4pt
+  ]
+    \fontsize{8.5}{8.5}\selectfont\kml%
+    \textbf{\color{brandNavy}\ding{51}\ ការវាយតម្លៃការយល់ដឹងផ្ទាល់ខ្លួន (#1) ៖}\quad
+    $\square$\ \textbf{យល់ច្បាស់}\qquad
+    $\square$\ \textbf{យល់មធ្យម}\qquad
+    $\square$\ \textbf{ត្រូវអនុវត្តបន្ថែម}\hfill
+    \textbf{\color{brandCrimson}ពិន្ទុ ៖} \rule{1.6cm}{0.4pt} / ១០\\[3pt]
+    \textbf{\color{gray!80}ចំណាំសំខាន់ ៖} \rule{16.5cm}{0.4pt}
+  \end{tcolorbox}%
+}
+
+% Korean Number Macros (Two-tone Korean Textbook Style: 01, 02, 03...)
+\def\splitnum#1#2{%
+  \color{koreaNumber!65}#1\color{koreaOrange}#2%
+}
+\newcommand{\koreannum}[2][16]{%
+  \mbox{%
+    \fontsize{#1}{#1}\selectfont\bfseries%
+    \ifnum#2<10\relax%
+      \color{koreaNumber!65}0\color{koreaOrange}#2%
+    \else%
+      \expandafter\splitnum#2%
+    \fi%
+  }\,\ %
+}
+
+% Korean Exercise Header (Big 01, 02 with Title)
+\newcommand{\koreanexhead}[2]{%
+  \vspace{2.5pt}%
+  \noindent\koreannum[16]{#1}{\fontsize{10}{10}\selectfont\kml\bfseries\color{brandNavy} #2}\par\vspace{2.5pt}%
+}
+
+% Practice Pill Badge & Korean Header
+\newcommand{\phead}[1]{%
+  \tikz[baseline=-0.6ex]{%
+    \node[fill=brandCrimson, rounded corners=2.5pt, inner sep=2.5pt, text=white, font=\fontsize{8}{8}\selectfont\kml\bfseries] {#1};%
+  }\,\ %
+}
+\newcommand{\koreanphead}[2]{%
+  \vspace{2.5pt}%
+  \noindent\koreannum[16]{#1}\phead{ប្រតិបត្តិ}{\fontsize{10}{10}\selectfont\kml\bfseries\color{brandNavy} #2}\par\vspace{2.5pt}%
+}
+
+% Khmer Sub-question Badge (Crimson Rounded Square)
+\newcommand{\khlabel}[1]{%
+  \tikz[baseline=-0.6ex]{%
+    \node[fill=brandCrimson, rounded corners=3.2pt, inner sep=2.2pt, minimum width=1.35em, minimum height=1.32em, text=white, font=\kml\fontsize{8}{8}\selectfont, align=center] (lbl) {\raisebox{0.2pt}{#1}};%
+  }\,\ %
+}
+
+% Solution Header & Dotted Line
+\newcommand{\solutionsection}{%
+  \vspace{3pt}%
+  \noindent{\fontsize{9}{9}\selectfont\kml\bfseries\color{brandCrimson}\ding{45}\ ដំណោះស្រាយ ៖}\par\vspace{1.5pt}%
+  \noindent\tikz{\draw[thick, loosely dotted, color=gray!70] (0,0) -- (19.3,0);}%
+  \vspace{3pt}%
+}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{2pt}
+\setlength{\columnsep}{18pt}
+\setlength{\columnseprule}{0.5pt}
+\def\columnseprulecolor{\color{koreaTeal!40}}
+
+\begin{document}
+
+% =========================================================================
+% SPREAD 1: ផ្នែកទី ១ - សមីការដឺក្រេទី១មានមួយអញ្ញាត
+% PAGE 1: គំនិតគ្រឹះបែប Feynman + វិធាន + ឧទាហរណ៍គំរូ + ចំណុចប្រុងប្រយ័ត្ន
+% =========================================================================
+\koreanheader{មេរៀនទី ៤}{សមីការដឺក្រេទី១ មានមួយអញ្ញាត}
+
+\khsection{១}{សមីការដឺក្រេទី១មានមួយអញ្ញាត}
+
+\begin{khboxfeynman}
+  \begin{minipage}[c]{0.68\textwidth}
+    \textbf{គំនិតជញ្ជីងថ្លឹង (The Balance Scale Model) ៖}
+    \begin{itemize}[leftmargin=12pt, itemsep=2pt, topsep=1pt, parsep=0pt]
+      \item សមីការប្រៀបដូចជា \textbf{ជញ្ជីងដែលមានតុល្យភាព} (អង្គឆ្វេង = អង្គស្ដាំ)។
+      \item $x$ គឺជា \textbf{ប្រអប់អាថ៌កំបាំង} ដែលផ្ទុកទម្ងន់ដែលយើងមិនទាន់ស្គាល់។
+      \item \textbf{គោលដៅ ៖} ធ្វើឱ្យសល់តែ $x$ មួយគត់នៅអង្គម្ខាង ដើម្បីដឹងតម្លៃរបស់វា!
+      \item \textbf{វិធាន ៖} ដើម្បីកុំឱ្យជញ្ជីងលម្អៀង អ្វីដែលអ្នកធ្វើចំពោះអង្គម្ខាង (បូក, ដក, គុណ, ចែក) អ្នកត្រូវតែធ្វើដូចគ្នាពិតប្រាកដចំពោះអង្គម្ខាងទៀត។
+    \end{itemize}
+  \end{minipage}%
+  \hfill
+  \begin{minipage}[c]{0.29\textwidth}
+    \begin{center}
+      \begin{tikzpicture}[scale=1]
+        % Pivot base
+        \draw[fill=brandNavy!80] (-0.35,0) -- (0.35,0) -- (0,0.7) -- cycle;
+        \draw[line width=1.5pt, brandNavy] (-1.8,0.7) -- (1.8,0.7);
+        % Left pan
+        \draw[line width=0.8pt, gray!80] (-1.5,0.7) -- (-1.8,0.1) (-1.5,0.7) -- (-1.2,0.1);
+        \draw[fill=koreaBeigeBorder, rounded corners=1pt] (-2.0,0.05) rectangle (-1.0,0.15);
+        \node[draw=brandCrimson, fill=brandCrimson!10, rounded corners=2pt, inner sep=1.5pt, font=\fontsize{7}{7}\selectfont\bfseries] at (-1.5,0.4) {$x + 2$};
+        % Right pan
+        \draw[line width=0.8pt, gray!80] (1.5,0.7) -- (1.2,0.1) (1.5,0.7) -- (1.8,0.1);
+        \draw[fill=koreaBeigeBorder, rounded corners=1pt] (1.0,0.05) rectangle (2.0,0.15);
+        \node[draw=koreaTeal, fill=koreaTeal!15, rounded corners=2pt, inner sep=1.5pt, font=\fontsize{7}{7}\selectfont\bfseries] at (1.5,0.4) {$8$};
+        % Equal sign
+        \node[font=\fontsize{9}{9}\selectfont\bfseries, color=brandCrimson] at (0,1.05) {$=$};
+        \node[font=\fontsize{7}{7}\selectfont\kml, color=gray!90] at (0,-0.3) {ជញ្ជីងមានតុល្យភាព};
+      \end{tikzpicture}
+    \end{center}
+  \end{minipage}
+\end{khboxfeynman}
+
+\begin{khboxorange}[title={\fontsize{9}{9}\selectfont\kml\color{white}\ding{72}\ វិធានគន្លឹះ និងក្បួនបោះអង្គ (Operation Inverses)}]
+  \begin{tabularx}{\linewidth}{@{}p{5.2cm}|X@{}}
+    \textbf{\color{brandNavy}\ding{228}\ លក្ខណៈសមភាពគ្រឹះ ៖} & \textbf{\color{brandCrimson}\ding{228}\ ក្បួនបោះអង្គ (ប្តូរសញ្ញា \& ប្រមាណវិធី) ៖}\\[2pt]
+    $\bullet$ $a = b \iff a + c = b + c$ & 
+    $\bullet$ \koreahl{\textbf{បូក ($+$)} $\;\xrightarrow{\text{បោះទៅ}}\;$ \textbf{ដក ($-$)}} \quad (ឧ. $x + 2 = 8 \iff x = 8 - 2$)\\[2pt]
+    $\bullet$ $a = b \iff a - c = b - c$ & 
+    $\bullet$ \koreahl{\textbf{ដក ($-$)} $\;\xrightarrow{\text{បោះទៅ}}\;$ \textbf{បូក ($+$)}} \quad (ឧ. $x - 3 = 5 \iff x = 5 + 3$)\\[2pt]
+    $\bullet$ $a = b \iff ac = bc$ & 
+    $\bullet$ \koreahl{\textbf{គុណ ($\times$)} $\;\xrightarrow{\text{បោះទៅ}}\;$ \textbf{ចែក ($\div$)}} \quad (ឧ. $4x = 12 \iff x = \frac{12}{4}$)\\[2pt]
+    $\bullet$ $a = b \iff \dfrac{a}{c} = \dfrac{b}{c}$ \ ($c \neq 0$) & 
+    $\bullet$ \koreahl{\textbf{ចែក ($\div$)} $\;\xrightarrow{\text{បោះទៅ}}\;$ \textbf{គុណ ($\times$)}} \quad (ឧ. $\frac{x}{3} = 4 \iff x = 4 \times 3$)
+  \end{tabularx}
+\end{khboxorange}
+
+\begin{khboxmodel}
+  \begin{tikzpicture}[>=Latex, every node/.style={inner sep=1pt}]
+    % -------------------------------------------------------------
+    % Left Column (x = 0 to 8.8)
+    % -------------------------------------------------------------
+    % Model 1
+    \node[anchor=north west] at (0, 0.30) (title1) {\textbf{\color{koreaTeal}\ding{226}\ គំរូទី ១ ៖ លក្ខណៈសមភាព ($4x + 2 = 14$)}};
+    \node[anchor=north west] at (0.2, -0.45) (m1_s1) {\large $4x + 2 = 14$};
+    \node[anchor=north west] at (0.2, -1.20) (m1_s2) {\large $4x = 12$};
+    \node[anchor=north west] at (0.2, -1.90) (m1_s3) {\large $\mathbf{x = 3}$};
+
+    \draw[->, thick, koreaOrange] (2.5, -0.55) to[out=0, in=0, looseness=1.4] 
+      node[right=2pt, font=\fontsize{6.5}{7.5}\selectfont, fill=koreaOrange!12, rounded corners=2pt, inner sep=1.5pt, draw=koreaOrange!50] {
+        \textbf{\color{brandCrimson}ដក $2$ សងខាង} ($-2$)
+      } (2.5, -1.30);
+
+    \draw[->, thick, koreaOrange] (2.5, -1.30) to[out=0, in=0, looseness=1.4] 
+      node[right=2pt, font=\fontsize{6.5}{7.5}\selectfont, fill=koreaTeal!12, rounded corners=2pt, inner sep=1.5pt, draw=koreaTeal!50] {
+        \textbf{\color{koreaDarkTeal}ចែកនឹង $4$ សងខាង} ($\div 4$)
+      } (2.5, -2.00);
+
+    \node[anchor=north west, font=\fontsize{9}{8}\selectfont\color{koreaDarkTeal}] at (0.2, -2.40) 
+      {\ding{51}\ \textbf{ផ្ទៀងផ្ទាត់ ៖} $4(3) + 2 = 14$ (ពិត)};
+
+    % Horizontal separator in Left Col
+    \draw[dotted, color=koreaTeal!40, line width=0.6pt] (0, -2.75) -- (8.6, -2.75);
+
+    % Model 3 (Transposition Rule 1: Plus/Minus and Times/Divide)
+    \node[anchor=north west] at (0, -2.95) (title3) {\textbf{\color{brandCrimson}\ding{226}\ គំរូទី ៣ ៖ ក្បួនបោះអង្គ ($5x - 4 = 2x + 11$)}};
+    \node[anchor=north west] at (0.2, -3.60) (m3_s1) {\large $5x - 4 = 2x + 11$};
+    \node[anchor=north west] at (0.2, -4.40) (m3_s2) {\large $5x - 2x = 11 + 4$};
+    \node[anchor=north west] at (0.2, -5.15) (m3_s3) {\large $3x = 15 \iff \mathbf{x = 5}$};
+
+    \draw[->, thick, brandCrimson] (4.2, -3.70) to[out=0, in=0, looseness=1.4] 
+      node[right=2pt, font=\fontsize{6.5}{7.5}\selectfont, fill=brandCrimson!10, rounded corners=2pt, inner sep=1.5pt, draw=brandCrimson!40] {
+        \textbf{\color{brandCrimson}បោះ $+2x \to -2x$ \& $-4 \to +4$}
+      } (4.2, -4.50);
+
+    \draw[->, thick, koreaOrange] (4.2, -4.50) to[out=0, in=0, looseness=1.4] 
+      node[right=2pt, font=\fontsize{6.5}{7.5}\selectfont, fill=koreaTeal!12, rounded corners=2pt, inner sep=1.5pt, draw=koreaTeal!50] {
+        \textbf{\color{koreaDarkTeal}បោះ $\times 3 \to \div 3$} ($x = \frac{15}{3}$)
+      } (4.2, -5.25);
+
+    \node[anchor=north west, font=\fontsize{9}{8}\selectfont\color{koreaDarkTeal}] at (0.2, -5.65) 
+      {\ding{51}\ \textbf{ផ្ទៀងផ្ទាត់ ៖} $5(5) - 4 = 2(5) + 11 = 21$ (ពិត)};
+
+    % -------------------------------------------------------------
+    % Vertical separator line
+    % -------------------------------------------------------------
+    \draw[dashed, color=koreaTeal!35, line width=0.8pt] (8.9, 0.40) -- (8.9, -5.9);
+
+    % -------------------------------------------------------------
+    % Right Column (x = 9.3 to 18.0)
+    % -------------------------------------------------------------
+    % Model 2
+    \node[anchor=north west] at (9.3, 0.30) (title2) {\textbf{\color{koreaTeal}\ding{226}\ គំរូទី ២ ៖ ពន្លាតវង់ក្រចក}};
+    \node[anchor=north west] at (9.5, -0.65) (m2_s1) {\large $3(x - 2) + 4 = x + 10$};
+    \draw[->, thick, brandCrimson] (9.65, -0.58) to[out=45, in=135, looseness=0.9] (10.05, -0.58);
+    \draw[->, thick, brandCrimson] (9.65, -0.58) to[out=55, in=125, looseness=0.9] (10.55, -0.58);
+
+    \node[anchor=north west] at (9.5, -1.30) (m2_s2) {\large $3x - 2 = x + 10$};
+    \node[anchor=north west] at (9.5, -1.95) (m2_s3) {\large $2x = 12 \iff \mathbf{x = 6}$};
+
+    \draw[->, thick, koreaOrange] (14.6, -0.75) to[out=0, in=0, looseness=1.3] 
+      node[right=2pt, font=\fontsize{6.5}{7.5}\selectfont, fill=koreaOrange!12, rounded corners=2pt, inner sep=1.5pt, draw=koreaOrange!50] {
+        \textbf{\color{brandCrimson}ពន្លាត} ($3x - 6 + 4$)
+      } (14.6, -1.40);
+
+    \draw[->, thick, koreaOrange] (14.6, -1.40) to[out=0, in=0, looseness=1.3] 
+      node[right=2pt, font=\fontsize{6.5}{7.5}\selectfont, fill=koreaTeal!12, rounded corners=2pt, inner sep=1.5pt, draw=koreaTeal!50] {
+        \textbf{\color{koreaDarkTeal}ផ្ទេរតួ \& ចែក $2$}
+      } (14.6, -2.05);
+
+    \node[anchor=north west, font=\fontsize{9}{8}\selectfont\color{koreaDarkTeal}] at (9.5, -2.40) 
+      {\ding{51}\ \textbf{ផ្ទៀងផ្ទាត់ ៖} $3(6 - 2) + 4 = 16 = 6 + 10$ (ពិត)};
+
+    % Horizontal separator in Right Col
+    \draw[dotted, color=koreaTeal!40, line width=0.6pt] (9.3, -2.75) -- (18.0, -2.75);
+
+    % Model 4 (Transposition Rule 2: Division to Multiplication)
+    \node[anchor=north west] at (9.3, -2.95) (title4) {\textbf{\color{brandCrimson}\ding{226}\ គំរូទី ៤ ៖ ក្បួនបោះអង្គ (ចែកទៅគុណ)}};
+    \node[anchor=north west] at (9.5, -3.65) (m4_s1) {\large $\dfrac{2x + 1}{3} = 5$};
+    \node[anchor=north west] at (9.5, -4.45) (m4_s2) {\large $2x + 1 = 15$};
+    \node[anchor=north west] at (9.5, -5.15) (m4_s3) {\large $2x = 14 \iff \mathbf{x = 7}$};
+
+    \draw[->, thick, brandCrimson] (12.8, -3.85) to[out=0, in=0, looseness=1.3] 
+      node[right=2pt, font=\fontsize{6.5}{7.5}\selectfont, fill=brandCrimson!10, rounded corners=2pt, inner sep=1.5pt, draw=brandCrimson!40] {
+        \textbf{\color{brandCrimson}បោះ $\div 3 \to \times 3$} ($5 \times 3 = 15$)
+      } (12.8, -4.55);
+
+    \draw[->, thick, koreaOrange] (12.8, -4.55) to[out=0, in=0, looseness=1.3] 
+      node[right=2pt, font=\fontsize{6.5}{7.5}\selectfont, fill=koreaTeal!12, rounded corners=2pt, inner sep=1.5pt, draw=koreaTeal!50] {
+        \textbf{\color{koreaDarkTeal}បោះ $+1 \to -1$ \& $\times 2 \to \div 2$}
+      } (12.8, -5.25);
+
+    \node[anchor=north west, font=\fontsize{9}{8}\selectfont\color{koreaDarkTeal}] at (9.5, -5.65) 
+      {\ding{51}\ \textbf{ផ្ទៀងផ្ទាត់ ៖} $\dfrac{2(7) + 1}{3} = \dfrac{15}{3} = 5$ (ពិត)};
+  \end{tikzpicture}
+\end{khboxmodel}
+
+\begin{khboxtrap}
+  \begin{itemize}[leftmargin=14pt, itemsep=1.5pt, topsep=1pt, parsep=0pt]
+    \item \textbf{ភ្លាត់សញ្ញាពេលផ្លាស់ប្ដូរអង្គ ៖} កាលណាប្ដូរតួពីអង្គម្ខាងទៅអង្គម្ខាងទៀត ត្រូវប្ដូរសញ្ញាជានិច្ច ($+$ ទៅ $-$, $-$ ទៅ $+$)។
+    \item \textbf{សញ្ញាដកនៅពីមុខវង់ក្រចក ៖} $-(x - 4) = -x + 4$ (សញ្ញាក្នុងវង់ក្រចកត្រូវតែត្រឡប់ពីដកទៅបូក មិនមែន $-x - 4$ ទេ!)។
+  \end{itemize}
+\end{khboxtrap}
+
+% =========================================================================
+% PAGE 2: កម្រងលំហាត់ផ្នែកទី ១ ទាំងមូល (រក្សាទុកលំហាត់ដដែល ១០០%)
+% =========================================================================
+\newpage
+\khexheader{១}{សមីការដឺក្រេទី១មានមួយអញ្ញាត}
+
+\koreanexhead{1}{ចូរដោះស្រាយសមីការខាងក្រោម ៖}
+
+\begin{multicols}{3}
+  \noindent
+  \khlabel{ក} $4x + 2 = 8$\\[4pt]
+  \khlabel{ខ} $2x + 5 = 9$\\[4pt]
+  \khlabel{គ} $3x - 12 = 3$\\[4pt]
+  \khlabel{ឃ} $2x + 10 = 12$\\[4pt]
+  \khlabel{ង} $-3x + 1 = 4$\\[4pt]
+  \khlabel{ច} $-5x - 8 = 7$
+  
+  \columnbreak
+  \noindent
+  \khlabel{ឆ} $4x + 2 = x + 5$\\[4pt]
+  \khlabel{ជ} $5x + 8 = 3x - 4$\\[4pt]
+  \khlabel{ឈ} $3x - 22 = 3x + 3$\\[4pt]
+  \khlabel{ញ} $-2x + 14 = -2(x - 7)$\\[4pt]
+  \khlabel{ដ} $-3x - 20 = 4x + 22$
+  
+  \columnbreak
+  \noindent
+  \khlabel{ឋ} $-5x - 8 + 2x = 5x - 1$\\[4pt]
+  \khlabel{ឌ} $3(x - 1) + 2 = x - 12$\\[4pt]
+  \khlabel{ឍ} $2(x + 3) - 10 = x + 20$\\[4pt]
+  \khlabel{ណ} $4(x - 5) - 14 = 2(x - 8) + 10$\\[4pt]
+  \khlabel{ត} $4(2x - 1) + 3x = -2(x + 2) + 14$
+\end{multicols}
+
+\vspace{1pt}
+\koreanexhead{2}{ចូរដោះស្រាយសមីការខាងក្រោម ៖}
+
+\begin{multicols}{2}
+  \noindent
+  \khlabel{ក} $4(x - 5) = 2x - 14$\\[4pt]
+  \khlabel{ខ} $x + 7 = -2(x + 8)$\\[4pt]
+  \khlabel{គ} $3(2y - 1) = -8(6 + y)$\\[4pt]
+  \khlabel{ឃ} $-(z + 12) = 5(2z - 1)$\\[4pt]
+  \khlabel{ង} $n - (8 + 4n) = 2(3n - 4)$\\[4pt]
+  \khlabel{ច} $(2m + 3)^2 - (2m + 5) = 4m(m + 4) + 4$
+  
+  \columnbreak
+  \noindent
+  \khlabel{ឆ} $5p - (8 - p) = 2[-4 - (3 + 5p) - 13]$\\[4pt]
+  \khlabel{ជ} $-[k - (4k + 2)] = 2 + (2k + 7)$\\[4pt]
+  \khlabel{ឈ} $2 - 4\{-2x + 3[-1 + 5(1 - x)] - 1\} = 0$\\[4pt]
+  \khlabel{ញ} $\sqrt{3}(x - 2) - 2x\sqrt{2} = 2(x\sqrt{3} - 3 - x\sqrt{2})$\\[4pt]
+  \khlabel{ដ} $6(7x + 8) - 7(6x + 4) = 5(6 + 7x) - 35(x - 1)$\\[4pt]
+  \khlabel{ឋ} $8(3 - 2p) - 16(1 - p) - 3(p - 4) = 20 - 3p$
+\end{multicols}
+
+\vspace{1pt}
+\koreanphead{3}{ចូរដោះស្រាយសមីការ ៖}
+
+\begin{khboxpractice}
+  \begin{tabularx}{\linewidth}{@{}X@{}X@{}X@{}}
+    \khlabel{ក} $6(x - 2) = 3(x - 8)$ &
+    \khlabel{ខ} $3x + 5 = 3(x + 2)$ &
+    \khlabel{គ} $6x - 4 = 2 + 6(x - 1)$ 
+  \end{tabularx}
+\end{khboxpractice}
+\vspace{1pt}
+\koreanexhead{4}{លំហាត់ពង្រឹងសមត្ថភាពបន្ថែម ៖}
+
+\begin{multicols}{2}
+  \noindent
+  \khlabel{ក} $5(x + 3) - 2(x - 1) = 23$\\[4pt]
+  \khlabel{ខ} $7(2x - 3) - 4(x + 5) = 2(3x - 1) - 37$\\[4pt]
+  \khlabel{គ} $3[2(x - 1) + 4] = 5(x + 2) + 1$\\[4pt]
+  \khlabel{ឃ} $2(3x - 5) - (4x + 7) = 3(x - 8) + 1$\\[4pt]
+  \khlabel{ង} $4[x - (2x - 1)] = 3(x + 5) - 25$\\[4pt]
+  \columnbreak
+  \noindent
+  
+  \khlabel{ច} $5(2x - 1) - 3(3x + 2) = 4(x - 3) + 6$
+
+  \khlabel{ឆ} $3(x - 4) - 2(2x + 1) = -5(x - 2)$\\[4pt]
+  \khlabel{ជ} $2(x - 3) + 4(2x + 1) = 3(3x - 2) + 10$\\[4pt]
+  \khlabel{ឈ} $4(3x - 2) - 3(4x - 3) = 2(x + 1) - 3$
+\end{multicols}
+
+\vspace{1pt}
+\koreanexhead{5}{លំហាត់គិតស៊ីជម្រៅ (រកតម្លៃប៉ារ៉ាម៉ែត្រ) ៖}
+
+\begin{multicols}{2}
+  \noindent
+  \khlabel{ក} កំណត់តម្លៃ $m$ ដើម្បីឱ្យសមីការ $(m - 2)x + 5 = 14$ មានឫស $x = 3$ ។\\[3pt]
+  \khlabel{ខ} រកតម្លៃ $a$ បើគេដឹងថាសមីការ $3(x - a) + 4 = 2x + 5$ ផ្ទៀងផ្ទាត់ចំពោះ $x = 5$ ។\\[3pt]
+   \khlabel{គ} រកតម្លៃ $k$ ដើម្បីឱ្យសមីការ $2(kx - 1) = 3x + 4$ មានឫស $x = 2$ ។\\[3pt]
+
+  \khlabel{ឃ} រកតម្លៃ $p$ បើដឹងថាសមីការ $4(x - 2) = p(x + 1) - 6$ ផ្ទៀងផ្ទាត់ចំពោះ $x = 4$ ។
+\end{multicols}
+\selfcheckcard{សមីការដឺក្រេទី១}
+
+% =========================================================================
+% SPREAD 2: ផ្នែកទី ២ - សមីការដែលមានភាគបែងជាលេខ
+% PAGE 3: គំនិតគ្រឹះបែប Feynman + វិធាន + ឧទាហរណ៍គំរូ + ចំណុចប្រុងប្រយ័ត្ន
+% =========================================================================
+\clearpage
+\khsection{២}{សមីការដែលមានភាគបែងជាលេខ}
+
+\begin{khboxfeynman}
+  \textbf{គំនិតបំបាត់ឧបសគ្គ (Clearing the Obstacles) ៖}
+  \begin{itemize}[leftmargin=14pt, itemsep=2pt, topsep=1pt, parsep=0pt]
+    \item \textbf{ហេតុអ្វីសិស្សខ្លាចប្រភាគ?} ពីព្រោះភាគបែងធ្វើឱ្យការបូកដកមានភាពស្មុគស្មាញ និងងាយច្រឡំ។
+    \item \textbf{យុទ្ធសាស្ត្រឆ្លាតវៃ ៖} "កម្ចាត់ភាគបែងចោលភ្លាមៗ" តាំងពីជំហានដំបូងបំផុត!
+    \item \textbf{តើកម្ចាត់ដោយរបៀបណា?} ស្វែងរក \textbf{ភាគបែងរួមតូចបំផុត (LCM/ព.ប.រ)} នៃគ្រប់ភាគបែងទាំងអស់ រួចគុណអង្គទាំងពីរនៃសមីការនឹងចំនួននោះ។ ពេលសម្រួលភាគបែងរួច សមីការនឹងប្រែក្លាយជាចំនួនគត់ស្រួលគិតភ្លាម!
+  \end{itemize}
+\end{khboxfeynman}
+
+\begin{khboxorange}
+  \textbf{ដើម្បីដោះស្រាយសមីការដឺក្រេទី១ មានមួយអញ្ញាតដែលមានភាគបែងជាលេខ គេត្រូវ ៖}
+  \begin{itemize}[leftmargin=16pt, itemsep=1.5pt, topsep=1pt, parsep=0pt]
+    \item[\color{brandNavy}\ding{228}] \textbf{តម្រូវភាគបែងរួម} នៃអង្គទាំងពីររបស់សមីការ រួចលុបភាគបែងចោល ។
+    \item[\color{brandNavy}\ding{228}] \textbf{លើកតួណាមានអញ្ញាតទៅអង្គម្ខាង} និងតួគ្មានអញ្ញាតទៅអង្គម្ខាងទៀត ។ តួណាប្តូរអង្គត្រូវប្តូរសញ្ញា រួចធ្វើប្រមាណវិធី ។
+  \end{itemize}
+\end{khboxorange}
+
+\begin{khboxmodel}
+  \begin{tikzpicture}[>=Latex, every node/.style={inner sep=1pt}]
+    % -------------------------------------------------------------
+    % Model 1: LCM method (សមីការមានភាគបែងច្រើនតួ)
+    % -------------------------------------------------------------
+    \node[anchor=north west] at (0, 0.25) {\textbf{\color{koreaTeal}\ding{226}\ គំរូទី ១ ៖ សមីការមានភាគបែងច្រើនតួ (គុណ ព.ប.រ / LCM)}};
+
+    \node[anchor=north west] at (0.2, -0.45) (f1_s1) {\large $\dfrac{2x - 1}{3} - \dfrac{x + 2}{4} = 1$};
+    \node[anchor=north west] at (0.2, -1.50) (f1_s2) {\large $4(2x - 1) - 3(x + 2) = 12$};
+    \node[anchor=north west] at (0.2, -2.15) (f1_s3) {\large $8x - 4 - 3x - 6 = 12 \iff 5x - 10 = 12$};
+    \node[anchor=north west] at (0.2, -2.80) (f1_s4) {\large $5x = 22 \implies \mathbf{x = \dfrac{22}{5}}$};
+
+    % Arrow 1: multiply LCM
+    \draw[->, thick, koreaOrange] (5.8, -0.65) to[out=0, in=0, looseness=1.3]
+      node[right=2pt, font=\fontsize{6.5}{7.5}\selectfont, fill=koreaOrange!12, rounded corners=2pt, inner sep=1.5pt, draw=koreaOrange!50] {
+        \textbf{\color{brandCrimson}គុណគ្រប់តួនឹង $12$} ($\text{LCM}(3,4)=12$)
+      } (5.8, -1.60);
+
+    % Arrow 2: expand
+    \draw[->, thick, koreaTeal] (6.8, -1.60) to[out=0, in=0, looseness=1.3]
+      node[right=2pt, font=\fontsize{6.5}{7.5}\selectfont, fill=koreaTeal!12, rounded corners=2pt, inner sep=1.5pt, draw=koreaTeal!50] {
+        \textbf{\color{koreaDarkTeal}ពន្លាតវង់ក្រចក} ($-3(x+2) = -3x - 6$)
+      } (6.8, -2.25);
+
+    % Arrow 3: move -10
+    \draw[->, thick, koreaOrange] (9.6, -2.25) to[out=0, in=0, looseness=1.3]
+      node[right=2pt, font=\fontsize{6.5}{7.5}\selectfont, fill=koreaOrange!12, rounded corners=2pt, inner sep=1.5pt, draw=koreaOrange!50] {
+        \textbf{\color{brandCrimson}បោះ $-10 \to +10$} ($5x = 12 + 10$)
+      } (9.6, -2.90);
+
+    % Horizontal separator line
+    \draw[dotted, color=koreaTeal!40, line width=0.6pt] (0, -3.45) -- (18.0, -3.45);
+
+    % -------------------------------------------------------------
+    % Model 2: Cross Multiplication method (ក្បួនផលគុណខ្វែង)
+    % -------------------------------------------------------------
+    \node[anchor=north west] at (0, -3.65) {\textbf{\color{brandCrimson}\ding{226}\ គំរូទី ២ ៖ ក្បួនផលគុណខ្វែង ($\frac{A}{B} = \frac{C}{D} \implies A \cdot D = B \cdot C$)}};
+
+    \node[anchor=north west] at (0.2, -4.35) (f2_s1) {\large $\dfrac{3x - 1}{4} = \dfrac{x + 2}{3}$};
+    \node[anchor=north west] at (0.2, -5.40) (f2_s2) {\large $3(3x - 1) = 4(x + 2)$};
+    \node[anchor=north west] at (0.2, -6.05) (f2_s3) {\large $9x - 3 = 4x + 8 \iff 9x - 4x = 8 + 3$};
+    \node[anchor=north west] at (0.2, -6.70) (f2_s4) {\large $5x = 11 \implies \mathbf{x = \dfrac{11}{5}}$};
+
+    % Arrow 1: cross-multiply
+    \draw[->, thick, brandCrimson] (4.6, -4.55) to[out=0, in=0, looseness=1.3]
+      node[right=2pt, font=\fontsize{6.5}{7.5}\selectfont, fill=brandCrimson!10, rounded corners=2pt, inner sep=1.5pt, draw=brandCrimson!40] {
+        \textbf{\color{brandCrimson}គុណខ្វែង} ($3(3x-1) = 4(x+2)$)
+      } (4.6, -5.50);
+
+    % Arrow 2: expand & transpose
+    \draw[->, thick, koreaTeal] (5.8, -5.50) to[out=0, in=0, looseness=1.3]
+      node[right=2pt, font=\fontsize{6.5}{7.5}\selectfont, fill=koreaTeal!12, rounded corners=2pt, inner sep=1.5pt, draw=koreaTeal!50] {
+        \textbf{\color{koreaDarkTeal}ពន្លាត \& ផ្ទេរតួ} ($9x - 4x = 8 + 3$)
+      } (5.8, -6.15);
+
+    % Arrow 3: solve
+    \draw[->, thick, koreaOrange] (9.6, -6.15) to[out=0, in=0, looseness=1.3]
+      node[right=2pt, font=\fontsize{6.5}{7.5}\selectfont, fill=koreaTeal!12, rounded corners=2pt, inner sep=1.5pt, draw=koreaTeal!50] {
+        \textbf{\color{koreaDarkTeal}បោះ $\times 5 \to \div 5$} ($x = \frac{11}{5}$)
+      } (9.6, -6.80);
+
+    \node at (0, -7.10) {};
+  \end{tikzpicture}
+\end{khboxmodel}
+
+\begin{khboxtrap}
+  \begin{itemize}[leftmargin=14pt, itemsep=1.5pt, topsep=1pt, parsep=0pt]
+    \item \textbf{ភ្លេចគុណតួដែលគ្មានភាគបែង ៖} សិស្សភាគច្រើនគុណតែតួប្រភាគ តែភ្លេចគុណតួលេខឯករាជ្យ (ដូចជាលេខ $1$ នៅអង្គស្ដាំ ត្រូវតែគុណនឹង $12$ ក្លាយជា $12$ ជាដាច់ខាត!)។
+    \item \textbf{គ្រោះថ្នាក់សញ្ញាដកនៅពីមុខប្រភាគ ៖} $-\dfrac{x+2}{4}$ ពេលគុណនឹង $12$ ត្រូវសរសេរ $-3(x + 2) = -3x - 6$ (ហាមសរសេរ $-3x + 6$)។
+  \end{itemize}
+\end{khboxtrap}
+
+% =========================================================================
+% PAGE 4: កម្រងលំហាត់ផ្នែកទី ២ ទាំងមូល (រក្សាទុកលំហាត់ដដែល ១០០%)
+% =========================================================================
+\clearpage
+\khexheader{២}{សមីការដែលមានភាគបែងជាលេខ}
+
+\koreanexhead{1}{ចូរដោះស្រាយសមីការខាងក្រោម ៖}
+
+\begin{multicols}{2}
+  \noindent
+  \khlabel{ក} $\dfrac{x}{2} + \dfrac{1}{3} = \dfrac{3x}{6}$\\[6pt]
+  \khlabel{ខ} $\dfrac{3x}{5} - \dfrac{2}{3} = \dfrac{x}{15}$\\[6pt]
+  \khlabel{គ} $\dfrac{x}{4} - 3 = \dfrac{3x}{2}$\\[6pt]
+  \khlabel{ឃ} $\dfrac{1}{2} + \dfrac{x}{4} = \dfrac{x - 1}{6}$\\[6pt]
+  \khlabel{ង} $\dfrac{x + 1}{2} - \dfrac{2}{3} = \dfrac{2x - 1}{12}$
+  
+  \columnbreak
+  \noindent
+  \khlabel{ច} $\dfrac{-x + 2}{12} + 2 = \dfrac{x + 3}{4} - 1$\\[6pt]
+  \khlabel{ឆ} $2x + \dfrac{4}{3} = \dfrac{x + 3}{4} - 6$\\[6pt]
+  \khlabel{ជ} $\dfrac{2(x - 3)}{15} - \dfrac{x}{3} = \dfrac{2x}{5} + 5$\\[6pt]
+  \khlabel{ឈ} $\dfrac{-3(x + 2)}{20} + \dfrac{2x - 1}{4} = \dfrac{-4x + 2}{10} + \dfrac{3}{10}$\\[6pt]
+  \khlabel{ញ} $3(x + 2) + \dfrac{2x + 5}{15} = \dfrac{2(x + 4)}{6} + \dfrac{x - 10}{20}$
+\end{multicols}
+
+\vspace{1pt}
+\koreanexhead{2}{ចូរដោះស្រាយសមីការខាងក្រោម ៖}
+
+\begin{multicols}{2}
+  \noindent
+  \khlabel{ក} $\dfrac{5x}{3} + \dfrac{9}{8} = \dfrac{7x}{6} + \dfrac{3}{16}$\\[6pt]
+  \khlabel{ខ} $\dfrac{2y + 1}{3} + \dfrac{5 - y}{4} = 1 - \dfrac{3y + 2}{6}$\\[6pt]
+  \khlabel{គ} $\dfrac{2(3z - 8)}{9} - \dfrac{5(z - 3)}{3} = \dfrac{3(z - 8)}{4} + \dfrac{17}{36}$\\[6pt]
+  \khlabel{ឃ} $\dfrac{3t - 5}{8} + \dfrac{t + 12}{12} = 1$\\[6pt]
+  \khlabel{ង} $\dfrac{x + 4}{3} - \dfrac{x - 4}{5} = 2 + \dfrac{3x - 1}{15}$\\[6pt]
+  \khlabel{ច} $1 + \dfrac{2n}{3} - \dfrac{1}{2} - n = \dfrac{1 - n}{3}$\\[6pt]
+  \khlabel{ឆ} $3k + \dfrac{5k - 3}{2} = 37$
+  
+  \columnbreak
+  \noindent
+  \khlabel{ជ} $2.4k + \dfrac{3(x - 1.6)}{5} = \dfrac{8.4x - 4.9}{2}$\\[6pt]
+  \khlabel{ឈ} $\left(\dfrac{3}{4}k - \dfrac{2}{5}\right) + \left(\dfrac{2}{3}x + 0.6\right) - \left(\dfrac{7}{12}x - 0.3\right) = 5.8$\\[6pt]
+  \khlabel{ញ} $x + \dfrac{3}{2} - \dfrac{4x - 3}{4} = 1 - \dfrac{5x - 12}{6}$\\[6pt]
+  \khlabel{ដ} $8(x - 2) + 3 = 7x + \dfrac{2x - 1}{2} - 3$\\[6pt]
+  \khlabel{ឋ} $\dfrac{(2y + 1)^2}{4} - \dfrac{3(y + 2)^2}{6} = \dfrac{y(y - 2)}{2}$\\[6pt]
+  \khlabel{ឌ} $\dfrac{(z - 2)^2}{3} + \dfrac{z(z + 3)}{5} = \dfrac{(8z + 7)(z - 1)}{15} + \dfrac{4}{5}$
+\end{multicols}
+
+\vspace{1pt}
+\koreanphead{3}{ចូរដោះស្រាយសមីការ ៖}
+
+\begin{khboxpractice}
+  \begin{tabularx}{\linewidth}{@{}X@{}X@{}}
+    \khlabel{ក} $\dfrac{3x}{4} + 9 = \dfrac{x}{2} + 15$ &
+    \khlabel{ខ} $\dfrac{x + 7}{6} + \dfrac{2x - 8}{2} = -4$
+  \end{tabularx}
+\end{khboxpractice}
+
+\vspace{1pt}
+\koreanexhead{4}{លំហាត់ពង្រឹងសមត្ថភាព (សមីការប្រភាគចម្រុះ) ៖}
+
+\begin{multicols}{2}
+  \noindent
+  \khlabel{ក} $\dfrac{x + 1}{2} - \dfrac{x - 2}{3} = \dfrac{x + 3}{4}$\\[5pt]
+  \khlabel{ខ} $\dfrac{2x - 3}{5} + \dfrac{x + 1}{2} = \dfrac{3x - 1}{10} + 1$\\[5pt]
+  \khlabel{គ} $\dfrac{3(x - 2)}{4} - \dfrac{2(x + 1)}{3} = \dfrac{x - 6}{12}$
+  
+  \columnbreak
+  \noindent
+  \khlabel{ឃ} $\dfrac{5x - 2}{3} - \dfrac{2x - 1}{4} = \dfrac{3x + 5}{6} + \dfrac{1}{12}$\\[5pt]
+  \khlabel{ង} $\dfrac{x - 1}{2} - \left(\dfrac{x - 2}{3} - \dfrac{x - 3}{4}\right) = 1$\\[5pt]
+  \khlabel{ច} $\dfrac{2(x - 3)}{7} - \dfrac{3(x + 2)}{14} = \dfrac{x - 16}{2}$
+\end{multicols}
+
+\selfcheckcard{សមីការមានភាគបែង}
+
+% =========================================================================
+% SPREAD 3: ផ្នែកទី ៣ - សមីការដែលអង្គទី១ជាផលគុណនៃកត្តា
+% PAGE 5: គំនិតគ្រឹះបែប Feynman + វិធាន + ឧទាហរណ៍គំរូ + ចំណុចប្រុងប្រយ័ត្ន
+% =========================================================================
+\clearpage
+\khsection{៣}{សមីការដែលអង្គទី១ជាផលគុណនៃកត្តា}
+
+\begin{khboxfeynman}
+  \textbf{អំណាចនៃលេខសូន្យ (The Zero Superpower) ៖}
+  \begin{itemize}[leftmargin=14pt, itemsep=2pt, topsep=1pt, parsep=0pt]
+    \item ស្រមៃថាអ្នកមានប្រអប់ពីរ $A$ និង $B$ គុណគ្នាស្មើនឹង $0$ ($A \times B = 0$)។
+    \item \textbf{សំណួរ ៖} តើអាចទៅរួចទេដែលប្រអប់ទាំងពីរគ្មានលេខសូន្យសោះ?
+    \item \textbf{ចម្លើយ ៖} មិនអាចដាច់ខាត! ពីព្រោះចំនួនមិនសូន្យពីរគុណគ្នាមិនដែលចេញ $0$ ឡើយ។ ដូច្នេះ ដាច់ខាតត្រូវតែមានយ៉ាងហោចប្រអប់មួយស្មើ $0$ ជានិច្ច ៖ \koreahl{$A = 0$ ឬ $B = 0$}!
+    \item \textbf{គន្លឹះមាស ៖} គោលការណ៍នេះអនុញ្ញាតឱ្យយើងបំបែកសមីការដឺក្រេទី ២ ស្មុគស្មាញ ឱ្យក្លាយជាសមីការដឺក្រេទី ១ ងាយៗពីរដាច់ដោយឡែកពីគ្នា!
+  \end{itemize}
+\end{khboxfeynman}
+
+\begin{khboxorange}[title={\fontsize{9}{9}\selectfont\kml\color{white}\ding{72}\ លក្ខណៈផលគុណនៃកត្តាស្មើនឹងសូន្យ}]
+  ដើម្បីឱ្យផលគុណនៃកត្តា \koreahl{$A \times B = 0$} លុះត្រាតែកត្តា \koreahl{$A = 0$} ឬ \koreahl{$B = 0$} ។\\
+  \textbf{ដើម្បីដោះស្រាយសមីការដឺក្រេទី ២ ៖}
+  \begin{itemize}[leftmargin=16pt, itemsep=1.5pt, topsep=1pt, parsep=0pt]
+    \item[\color{brandNavy}\ding{228}] សរសេរអង្គទី១ ជា \koreahl{ផលគុណកត្តានៃដឺក្រេទី ១} (ដោយដាក់ជាកត្តារួម ឬប្រើរូបមន្តស្វ័យគុណ $a^2-b^2$)។
+    \item[\color{brandNavy}\ding{228}] ឱ្យកត្តានីមួយៗស្មើនឹងសូន្យ ($0$) រួចដោះស្រាយសមីការដឺក្រេទី១ នីមួយៗ ។
+  \end{itemize}
+\end{khboxorange}
+
+\begin{khboxmodel}
+  \begin{tikzpicture}[>=Latex, every node/.style={inner sep=1pt}]
+    % -------------------------------------------------------------
+    % Left Column (x = 0 to 8.8)
+    % -------------------------------------------------------------
+    % Model 1: Factored form
+    \node[anchor=north west] at (0, 0.25) {\textbf{\color{koreaTeal}\ding{226}\ គំរូទី ១ ៖ $(2x - 6)(x + 4) = 0$}};
+    \node[anchor=north west] at (0.2, -0.32) {$\implies 2x - 6 = 0 \quad\text{ឬ}\quad x + 4 = 0$};
+    \node[anchor=north west] at (0.2, -0.85) {$\implies \mathbf{x = 3} \quad\text{ឬ}\quad \mathbf{x = -4}$};
+
+    % Separator 1
+    \draw[dotted, color=koreaTeal!40, line width=0.6pt] (0, -1.40) -- (8.6, -1.40);
+
+    % Model 3: Difference of Squares a^2 - b^2
+    \node[anchor=north west] at (0, -1.65) {\textbf{\color{brandCrimson}\ding{226}\ គំរូទី ៣ ៖ $4x^2 - 25 = 0$ ($a^2 - b^2$)}};
+    \node[anchor=north west] at (0.2, -2.20) {$\iff (2x - 5)(2x + 5) = 0$};
+    \node[anchor=north west] at (0.2, -2.80) {$\implies 2x = \pm 5 \implies \mathbf{x = \pm\dfrac{5}{2}}$};
+
+    % Separator 2
+    \draw[dotted, color=koreaTeal!40, line width=0.6pt] (0, -3.55) -- (8.6, -3.55);
+
+    % Model 5: (A)^2 - B^2 = 0
+    \node[anchor=north west] at (0, -3.80) {\textbf{\color{brandNavy}\ding{226}\ គំរូទី ៥ ៖ $(x + 1)^2 - 16 = 0$}};
+    \node[anchor=north west] at (0.2, -4.35) {$\iff (x + 1 - 4)(x + 1 + 4) = 0$};
+    \node[anchor=north west] at (0.2, -4.95) {$\iff (x - 3)(x + 5) = 0 \implies \mathbf{x = 3 \ \text{ឬ}\ x = -5}$};
+
+    % -------------------------------------------------------------
+    % Vertical separator line
+    % -------------------------------------------------------------
+    \draw[dashed, color=koreaTeal!35, line width=0.8pt] (8.9, 0.35) -- (8.9, -5.50);
+
+    % -------------------------------------------------------------
+    % Right Column (x = 9.3 to 18.0)
+    % -------------------------------------------------------------
+    % Model 2: Common variable factor
+    \node[anchor=north west] at (9.3, 0.25) {\textbf{\color{koreaTeal}\ding{226}\ គំរូទី ២ ៖ $x^2 - 5x = 0$ (កត្តារួម $x$)}};
+    \node[anchor=north west] at (9.5, -0.32) {$\iff x(x - 5) = 0$};
+    \node[anchor=north west] at (9.5, -0.85) {$\implies x = 0 \ \text{ឬ}\ x - 5 = 0 \implies \mathbf{x = 0 \ \text{ឬ}\ x = 5}$};
+
+    % Separator 1 Right
+    \draw[dotted, color=koreaTeal!40, line width=0.6pt] (9.3, -1.40) -- (18.0, -1.40);
+
+    % Model 4: Common expression factor
+    \node[anchor=north west] at (9.3, -1.65) {\textbf{\color{brandCrimson}\ding{226}\ គំរូទី ៤ ៖ $3x(x+2)-5(x+2)=0$}};
+    \node[anchor=north west] at (9.5, -2.20) {$\iff (x + 2)(3x - 5) = 0$};
+    \node[anchor=north west] at (9.5, -2.80) {$\implies x + 2 = 0 \ \text{ឬ}\ 3x - 5 = 0 \implies \mathbf{x = -2 \ \text{ឬ}\ x = \dfrac{5}{3}}$};
+
+    % Separator 2 Right
+    \draw[dotted, color=koreaTeal!40, line width=0.6pt] (9.3, -3.55) -- (18.0, -3.55);
+
+    % Model 6: Trinomial factoring
+    \node[anchor=north west] at (9.3, -3.80) {\textbf{\color{brandNavy}\ding{226}\ គំរូទី ៦ ៖ $x^2 - 5x + 6 = 0$ (បំបែកតួកណ្តាល)}};
+    \node[anchor=north west] at (9.5, -4.35) {$\iff (x - 2)(x - 3) = 0 \quad\text{\fontsize{7}{8}\selectfont\color{gray}(ផលបូក $-5$, ផលគុណ $6$)}$};
+    \node[anchor=north west] at (9.5, -4.95) {$\implies x - 2 = 0 \ \text{ឬ}\ x - 3 = 0 \implies \mathbf{x = 2 \ \text{ឬ}\ x = 3}$};
+  \end{tikzpicture}
+\end{khboxmodel}
+
+\begin{khboxtrap}
+  \begin{itemize}[leftmargin=14pt, itemsep=1.5pt, topsep=1pt, parsep=0pt]
+    \item \textbf{លក្ខណៈនេះពិតតែពេលអង្គស្ដាំស្មើ ០ ប៉ុណ្ណោះ ៖} បើ $A \times B = 6$ មិនអាចទាញ $A=6$ ឬ $B=6$ បានទេ! ត្រូវតែផ្ទេរមកឆ្វេងឱ្យអង្គស្ដាំស្មើ $0$ សិន។
+    \item \textbf{ហាមចែកសម្រួលអញ្ញាត $x$ ចោល ៖} បើ $x^2 = 4x$ មិនត្រូវសម្រួល $x$ ចោលចេញជា $x = 4$ ទេ ព្រោះនឹងបាត់ឫស $x = 0$! ត្រូវសរសេរ $x^2 - 4x = 0 \iff x(x - 4) = 0$។
+  \end{itemize}
+\end{khboxtrap}
+
+% =========================================================================
+% PAGE 6: កម្រងលំហាត់ផ្នែកទី ៣ ទាំងមូល (រក្សាទុកលំហាត់ដដែល ១០០%)
+% =========================================================================
+\clearpage
+\khexheader{៣}{សមីការដែលអង្គទី១ជាផលគុណនៃកត្តា}
+
+\koreanexhead{1}{ចូរដោះស្រាយសមីការខាងក្រោម ៖}
+
+\begin{multicols}{3}
+  \noindent
+  \khlabel{ក} $x(x - 3) = 0$\\[4pt]
+  \khlabel{ខ} $x(x + 2) = 0$\\[4pt]
+  \khlabel{គ} $2x(x - 5) = 0$
+  
+  \columnbreak
+  \noindent
+  \khlabel{ឃ} $4x(2x - 4) = 0$\\[4pt]
+  \khlabel{ង} $-2x(3x - 1) = 0$\\[4pt]
+  \khlabel{ច} $(x - 1)(x + 2) = 0$
+  
+  \columnbreak
+  \noindent
+  \khlabel{ឆ} $(x + 3)(2x - 3) = 0$\\[4pt]
+  \khlabel{ជ} $(3x - 4)(7x - 14) = 0$\\[4pt]
+  \khlabel{ឈ} $(3x + 4)(-2x - 1) = 0$
+\end{multicols}
+
+\vspace{1pt}
+\solutionsection
+
+\koreanexhead{2}{ចូរដោះស្រាយសមីការខាងក្រោម ៖}
+
+\begin{multicols}{3}
+  \noindent
+  \khlabel{ក} $x^2 - 6x = 0$\\[4pt]
+  \khlabel{ខ} $2x^2 - 2 = 0$\\[4pt]
+  \khlabel{គ} $5x^2 + 20x = 0$\\[4pt]
+  \khlabel{ឃ} $x^2 - 6x - 7 = 0$\\[4pt]
+  \khlabel{ង} $x^2 + 3x - 4 = 0$\\[4pt]
+  \khlabel{ច} $x^2 - 4x + 3 = 0$
+  
+  \columnbreak
+  \noindent
+  \khlabel{ឆ} $x^2 - 2x - 3 = 0$\\[4pt]
+  \khlabel{ជ} $x^2 + 8x - 9 = 0$\\[4pt]
+  \khlabel{ឈ} $x^2 - 7x + 12 = 0$\\[4pt]
+  \khlabel{ញ} $x^2 - 2x + 3 = 0$\\[4pt]
+  \khlabel{ដ} $x^2 - 12x + 32 = 0$\\[4pt]
+  \khlabel{ឋ} $y^2 - 14 = 5y$
+  
+  \columnbreak
+  \noindent
+  \khlabel{ឌ} $x^2 - x = 3x + 12$\\[4pt]
+  \khlabel{ឍ} $(x - 1)^2 - 4 = 0$\\[4pt]
+  \khlabel{ណ} $4(x - 1)^2 - (2x - 3)^2 = 0$\\[4pt]
+  \khlabel{ត} $9(2x + 3)^2 - (x - 5)^2 = 0$\\[4pt]
+  \khlabel{ថ} $(3x - 1)^2 = 16(x + 2)^2$
+\end{multicols}
+
+\koreanphead{3}{ចូរដោះស្រាយសមីការខាងក្រោម ៖}
+
+\begin{khboxpractice}
+  \begin{tabularx}{\linewidth}{@{}X@{}X@{}}
+    \khlabel{ក} $x^2 + 2x - 4x + 8 = 0$ &
+    \khlabel{គ} $3x^2 + 9x = 0$ \\[6pt]
+    \khlabel{ខ} $(2x - 1)^2 - (x - 1)^2 = 0$ &
+    \khlabel{ឃ} $2x^2 + 3x - 5 = 0$
+  \end{tabularx}
+\end{khboxpractice}
+
+\vspace{3pt}
+\koreanexhead{4}{បំបែកផលគុណកត្តាដោយប្រើកត្តារួម ឬរូបមន្ត $a^2 - b^2$ ៖}
+
+\begin{multicols}{3}
+  \noindent
+  \khlabel{ក} $(2x - 3)(x + 4) + (2x - 3)(3x - 1) = 0$\\[4pt]
+  \khlabel{ខ} $5x(x - 2) - (x - 2) = 0$
+  
+  \columnbreak
+  \noindent
+  \khlabel{គ} $4x^2 - 49 = 0$\\[4pt]
+  \khlabel{ឃ} $25x^2 - 16 = 0$
+  
+  \columnbreak
+  \noindent
+  \khlabel{ង} $(x + 5)^2 - 9 = 0$\\[4pt]
+  \khlabel{ច} $(3x + 1)^2 - (x - 2)^2 = 0$
+\end{multicols}
+
+\vspace{2pt}
+\koreanexhead{5}{ដោះស្រាយសមីការដឺក្រេទី ២ ដោយបំបែកតួកណ្តាល ៖}
+
+\begin{multicols}{3}
+  \noindent
+  \khlabel{ក} $x^2 - 8x + 15 = 0$\\[4pt]
+  \khlabel{ខ} $x^2 + 5x + 6 = 0$
+  
+  \columnbreak
+  \noindent
+  \khlabel{គ} $x^2 - x - 12 = 0$\\[4pt]
+  \khlabel{ឃ} $x^2 + 2x - 8 = 0$
+  
+  \columnbreak
+  \noindent
+  \khlabel{ង} $x^2 - 9x + 20 = 0$\\[4pt]
+  \khlabel{ច} $2x^2 + 5x + 2 = 0$
+\end{multicols}
+
+\vspace{2pt}
+\selfcheckcard{ផលគុណកត្តាស្មើ ០}
+
+% =========================================================================
+% SPREAD 4: ផ្នែកទី ៤ - ចំណោទសមីការដឺក្រេទី១មានមួយអញ្ញាត
+% PAGE 7: គំនិតគ្រឹះបែប Feynman + វចនានុក្រមបកប្រែ + ឧទាហរណ៍គំរូ + ចំណុចប្រុងប្រយ័ត្ន
+% =========================================================================
+\clearpage
+\khsection{៤}{ចំណោទសមីការដឺក្រេទី១មានមួយអញ្ញាត}
+
+\begin{khboxfeynman}
+  \textbf{វចនានុក្រមបកប្រែ «ភាសាជីវិត» ទៅជា «ភាសាគណិត» (Life to Math) ៖}
+  \begin{center}
+    \small
+    \begin{tabularx}{0.96\linewidth}{|>{\raggedright\arraybackslash}X|>{\centering\arraybackslash}p{2.8cm}|>{\raggedright\arraybackslash}X|}
+      \hline
+      \rowcolor{koreaTeal!15}
+      \textbf{ពាក្យក្នុងជីវិតប្រចាំថ្ងៃ} & \textbf{សញ្ញាគណិត} & \textbf{ឧទាហរណ៍បកប្រែ} \\
+      \hline
+      មួយចំនួនមិនស្គាល់, ចម្ងាយ, អាយុ & $x, y$ & តាង $x$ ជាចំនួនមិនស្គាល់ \\
+      ច្រើនជាង, ថែម, ផលបូក, ចាស់ជាង & $+$ & ថែម $5$ លើមួយចំនួន $\to x + 5$ \\
+      តិចជាង, បន្ថយ, ផលដក, ក្មេងជាង & $-$ & បន្ថយ $3$ ពីមួយចំនួន $\to x - 3$ \\
+      ពីរដង, បីដង, ផលគុណ, ពាក់កណ្ដាល & $\times, \div$ & ពីរដងនៃមួយចំនួន $\to 2x$ \\
+      ស្មើនឹង, ស្មើ, គឺ, សរុបជា & $=$ & ផលបូកស្មើ $20 \to x + (x+4) = 20$ \\
+      \hline
+    \end{tabularx}
+  \end{center}
+  \vspace{1pt}
+  \textbf{យុទ្ធសាស្ត្រ ៤ ជំហាន ៖} \textbf{១. ស្វែងយល់} (តាង $x$) $\to$ \textbf{២. បកប្រែ} (បង្កើតសមីការ) $\to$ \textbf{៣. ដោះស្រាយ} (រក $x$) $\to$ \textbf{៤. ផ្ទៀងផ្ទាត់ និងសន្និដ្ឋាន}។
+\end{khboxfeynman}
+
+\begin{khboxmodel}
+  \begin{tikzpicture}[>=Latex, every node/.style={inner sep=1pt}]
+    % =============================================================
+    % Model 1: Age problem (TOP)
+    % =============================================================
+    \node[anchor=north west] at (0, 0.25) {
+      \textbf{\color{koreaTeal}\ding{226}\ ចំណោទគំរូទី ១ (អាយុ) ៖} \color{brandNavy}\textbf{ម៉ារីចាស់ជាងបូណា $6$ ឆ្នាំ, ផលបូកអាយុអ្នកទាំងពីរស្មើ $30$ ឆ្នាំ ។ រកអាយុអ្នកទាំងពីរ ។}
+    };
+
+    % Step 1: Definition
+    \node[anchor=north west] at (0.2, -0.35) {
+      \textbf{\color{brandNavy}១. តាងអថេរ ៖} តាង $x$ ជាអាយុបូណា $\implies$ អាយុម៉ារីគឺ $x + 6$
+    };
+
+    % Step 2: Equation & Solving
+    \node[anchor=north west] at (0.2, -0.90) {
+      \textbf{\color{brandNavy}២. បង្កើត \& ដោះស្រាយ ៖} $x + (x + 6) = 30 \iff 2x + 6 = 30 \iff 2x = 24 \implies \mathbf{x = 12}$
+    };
+
+    % Step 3: Conclusion
+    \node[anchor=north west, fill=koreaDarkTeal!8, rounded corners=2pt, draw=koreaDarkTeal!40, inner sep=2.5pt] at (0.2, -1.50) {
+      \textbf{\color{koreaDarkTeal}\ding{51}\ ៣. សន្និដ្ឋាន \& ឆ្លើយ ៖} អាយុបូណាគឺ $\mathbf{12\ \text{ឆ្នាំ}}$ \quad $\bullet$\quad អាយុម៉ារីគឺ $12 + 6 = \mathbf{18\ \text{ឆ្នាំ}}$ \quad \fontsize{7}{8}\selectfont\color{gray}(\ding{51}\ ផ្ទៀងផ្ទាត់ ៖ $12 + 18 = 30\ \text{ឆ្នាំ}$ ពិត)
+    };
+
+    % -------------------------------------------------------------
+    % Horizontal separator line
+    % -------------------------------------------------------------
+    \draw[dotted, color=koreaTeal!40, line width=0.7pt] (0, -2.25) -- (18.0, -2.25);
+
+    % =============================================================
+    % Model 2: Shopping problem (BOTTOM)
+    % =============================================================
+    \node[anchor=north west] at (0, -2.45) {
+      \textbf{\color{brandCrimson}\ding{226}\ ចំណោទគំរូទី ២ (ទិញទំនិញ) ៖} \color{brandNavy}\textbf{ទិញសៀវភៅ $3$ ក្បាល និងប៊ិចមួយដើម $1500\text{៛}$ អស់ $13\,500\text{៛}$ ។ រកតម្លៃសៀវភៅ ១ ក្បាល ។}
+    };
+
+    % Step 1: Definition
+    \node[anchor=north west] at (0.2, -3.05) {
+      \textbf{\color{brandNavy}១. តាងអថេរ ៖} តាង $x$ ជាតម្លៃសៀវភៅមួយក្បាល ($x > 0$, គិតជារៀល)
+    };
+
+    % Step 2: Equation & Solving
+    \node[anchor=north west] at (0.2, -3.60) {
+      \textbf{\color{brandNavy}២. បង្កើត \& ដោះស្រាយ ៖} $3x + 1500 = 13\,500 \iff 3x = 12\,000 \implies \mathbf{x = 4\,000}$
+    };
+
+    % Step 3: Conclusion
+    \node[anchor=north west, fill=brandCrimson!8, rounded corners=2pt, draw=brandCrimson!40, inner sep=2.5pt] at (0.2, -4.20) {
+      \textbf{\color{brandCrimson}\ding{51}\ ៣. សន្និដ្ឋាន \& ឆ្លើយ ៖} តម្លៃសៀវភៅមួយក្បាលគឺ $\mathbf{4\,000\ \text{រៀល}}$ \quad \fontsize{7}{8}\selectfont\color{gray}(\ding{51}\ ផ្ទៀងផ្ទាត់ ៖ $3(4000) + 1500 = 13\,500\text{៛}$ ពិត)
+    };
+
+    \node at (0, -4.80) {};
+  \end{tikzpicture}
+\end{khboxmodel}
+
+\begin{khboxtrap}
+  \begin{itemize}[leftmargin=14pt, itemsep=1.5pt, topsep=1pt, parsep=0pt]
+    \item \textbf{ប្រយ័ត្នរឿងខ្នាត និងឯកតា ៖} កាលណាប្រធានមានល្បឿនគិតជា $\text{km/h}$ ហើយរយៈពេលគិតជា "នាទី" ត្រូវតែប្ដូរនាទីទៅជាម៉ោងសិន (ឧ. $20$ នាទី $= \dfrac{20}{60}\text{h} = \dfrac{1}{3}\text{h}$) មុននឹងយកទៅគណនា!
+    \item \textbf{កុំភ្លេចឆ្លើយសន្និដ្ឋាន ៖} រកឃើញ $x$ ហើយ ត្រូវឆ្លើយនូវអ្វីដែលប្រធានសួរ (កុំឆ្លើយត្រឹម $x=...$ ត្រូវបញ្ជាក់ថាជាអាយុ ឬជាចំនួនណា)។
+  \end{itemize}
+\end{khboxtrap}
+
+% =========================================================================
+% PAGE 8: កម្រងលំហាត់ផ្នែកទី ៤ ទាំងមូល (រក្សាទុកលំហាត់ដដែល ១០០%)
+% =========================================================================
+\clearpage
+\khexheader{៤}{ចំណោទសមីការដឺក្រេទី១មានមួយអញ្ញាត}
+
+\koreannum[13]{1} ផលបូកនៃមួយចំនួនថែមនឹង $25$ ស្មើនឹង $42$ ។ ចូររកមួយចំនួននោះ ។\\[4pt]
+\koreannum[13]{2} ពីរដងនៃមួយចំនួនថែមនឹង $15$ ស្មើនឹង $53$ ។ ចូររកមួយចំនួននោះ ។\\[4pt]
+\koreannum[13]{3} បីដងនៃមួយចំនួនដក $20$ ស្មើមួយចំនួននោះថែម $12$ ។ ចូររកមួយចំនួននោះ ។\\[4pt]
+\koreannum[13]{4} ផលបូកប្រាំចំនួនគត់តគ្នាស្មើនឹង $520$ ។ រកចំនួនគត់ទាំងប្រាំនោះ ។\\[4pt]
+\koreannum[13]{5} កសិករមួយក្រុមកំពុងភ្ជួរស្រែប្រវាស់ដៃគ្នា ។ បើគេរាប់ទាំងគោ និងកសិករមានចំនួនសរុប $36$ តែបើគេរាប់ជើងវិញមានចំនួន $100$ ។ រកចំនួនកសិករ និងចំនួនគោ ។\\[4pt]
+\koreannum[13]{6} ឧត្តមមានអាយុ $51$ ឆ្នាំ ហើយវីរៈមានអាយុ $21$ ឆ្នាំ ។ តើរយៈពេលប៉ុន្មានឆ្នាំទៀតទើបឧត្តមមានអាយុស្មើពីរដងនៃអាយុវីរៈ ?\\[4pt]
+\koreannum[13]{7} បច្ចុប្បន្នកាលនេះឪពុកមានអាយុ $42$ ឆ្នាំ ហើយកូនមានអាយុ $15$ ឆ្នាំ ។ តើនៅប៉ុន្មានឆ្នាំទៀតទើបអាយុឪពុកស្មើនឹងពីរដងនៃអាយុកូន ?
+
+\vspace{3pt}
+\koreanphead{8}{ចូរដោះស្រាយចំណោទខាងក្រោម ៖}
+
+\begin{khboxpractice}
+  \noindent
+  \khlabel{ក} ម៉ារីមានអាយុ $8$ ឆ្នាំច្រើនជាងអាយុបូណា ។ ផលបូកអាយុរបស់ម៉ារី និងបូណាស្មើនឹង $38$ ឆ្នាំ ។ ចូររកអាយុរបស់បូណា ។\\[4pt]
+  \khlabel{ខ} ថែម $7$ លើពីរដងនៃមួយចំនួនស្មើនឹងបន្ថយ $27$ ពីបីដងនៃចំនួននោះ ។ ចូររកចំនួននោះ ។
+\end{khboxpractice}
+
+\vspace{3pt}
+\noindent\tikz[baseline=-0.6ex]{%
+  \node[fill=brandNavy, rounded corners=3pt, inner sep=3.2pt, text=white, font=\fontsize{9}{9}\selectfont\kml\bfseries] {លំហាត់អនុវត្ត};%
+}\par\vspace{3pt}
+
+\noindent
+\koreannum[13]{9} \textbf{លំហាត់ទី១ ៖} ឧទ្ធម្ភាគចក្រមួយគ្រឿងធ្វើដំណើរចេញពីអាកាសយានដ្ឋានអន្តរជាតិភ្នំពេញឆ្ពោះទៅរួមខេត្តសៀមរាបដោយល្បឿន $288\text{km/h}$ ។ $20$ នាទីក្រោយមកមានយន្តហោះមួយគ្រឿងទៀតបានហោះចេញពីកន្លែងតែមួយទៅកាន់ទីរួមខេត្តសៀមរាបដែរក្នុងល្បឿន $480\text{km/h}$ ។ តើយន្តហោះនេះហោះអស់រយៈពេលប៉ុន្មានទើបតាមទាន់ឧទ្ធម្ភាគចក្រ ?\\[4pt]
+\koreannum[13]{10} \textbf{លំហាត់ទី២ ៖} អ្នកជិះកង់ម្នាក់ចេញពីទីក្រុង $A$ ទៅទីក្រុង $B$ ដែលមានចម្ងាយ $50\text{km}$ ។ មួយម៉ោងក្រោយមកអ្នកជិះម៉ូតូម្នាក់ចេញពីទីក្រុង $A$ ដែរ ហើយទៅដល់ទីក្រុង $B$ មុនអ្នកជិះកង់មួយម៉ោង ។ ចូរគណនាល្បឿននៃយានទាំងពីរ បើគេដឹងថាល្បឿនម៉ូតូស្មើនឹង $2.5$ ដងនៃល្បឿនកង់ ។\\[4pt]
+\koreannum[13]{11} \textbf{លំហាត់ទី៣ ៖} ចតុកោណកែងមួយមានបរិមាត្រ $64\text{m}$ ។ ប្រវែងបណ្តោយវែងជាងទទឹង $8\text{m}$ ។ ចូរគណនាវិមាត្រ (បណ្តោយ និងទទឹង) និងផ្ទៃក្រឡានៃចតុកោណកែងនោះ ។\\[4pt]
+\koreannum[13]{12} \textbf{លំហាត់ទី៤ ៖} សិស្សម្នាក់ទិញសៀវភៅ $5$ ក្បាល និងប៊ិច $4$ ដើម អស់ប្រាក់សរុប $19\,000\text{ រៀល}$ ។ បើសៀវភៅមួយក្បាលថ្លៃជាងប៊ិចមួយដើម $2\,000\text{ រៀល}$ ។ ចូររកតម្លៃសៀវភៅមួយក្បាល និងប៊ិចមួយដើម ។\\[4pt]
+\koreannum[13]{13} \textbf{លំហាត់ទី៥ ៖} ទីក្រុង $A$ និងទីក្រុង $B$ មានចម្ងាយពីគ្នា $260\text{km}$ ។ រថយន្តពីរគ្រឿងចេញដំណើរដំណាលគ្នាចេញពីទីក្រុងទាំងពីរបើកបររកគ្នាទៅវិញទៅមក ។ រថយន្តទី១ បើកក្នុងល្បឿន $60\text{km/h}$ ហើយរថយន្តទី២ បើកក្នុងល្បឿន $70\text{km/h}$ ។ តើរយៈពេលប៉ុន្មានម៉ោងទើបរថយន្តទាំងពីរជួបគ្នា ?
+
+
+\end{document}

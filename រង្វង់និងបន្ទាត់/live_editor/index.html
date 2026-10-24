@@ -1,0 +1,2676 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Khmer Math Studio Pro - Live Editor for Math Teachers</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link href="https://fonts.googleapis.com/css2?family=Battambang:wght@400;700&family=Kantumruy+Pro:wght@400;600;700&family=Moul&family=Inter:wght@400;500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+  
+  <!-- KaTeX -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+
+  <style>
+    :root {
+      --primary-teal: #00969B;
+      --dark-teal: #00696E;
+      --navy: #0F2C59;
+      --crimson: #C3233C;
+      --orange: #EB731E;
+      --blue-lvl: #236EBE;
+      --purple-lvl: #7D32A0;
+      --gray-num: #737D87;
+      --gold: #D4A373;
+      --beige-bg: #F7F4EE;
+      --card-border: #DCD4C6;
+      --bg-slate: #0b1120;
+      --panel-bg: #1e293b;
+      --panel-border: #334155;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Kantumruy Pro', 'Inter', sans-serif;
+      background: var(--bg-slate);
+      color: var(--text-main);
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Top Bar */
+    header {
+      background: #0f172a;
+      border-bottom: 1px solid #1e293b;
+      padding: 7px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      z-index: 10;
+    }
+
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand-badge {
+      background: linear-gradient(135deg, var(--primary-teal), var(--dark-teal));
+      color: white;
+      font-weight: 700;
+      padding: 4px 9px;
+      border-radius: 14px;
+      font-size: 11px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      letter-spacing: 0.5px;
+    }
+    .brand-title { font-size: 14.5px; font-weight: 700; color: #fff; }
+
+    .lesson-nav {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #1e293b;
+      padding: 4px 8px;
+      border-radius: 8px;
+      border: 1px solid #334155;
+    }
+
+    select.lesson-select {
+      background: #0f172a;
+      color: #38bdf8;
+      font-weight: 600;
+      border: 1px solid #475569;
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 12.5px;
+      outline: none;
+      cursor: pointer;
+    }
+
+    .btn {
+      padding: 5.5px 11px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.15s ease;
+      border: none;
+      font-family: inherit;
+    }
+    .btn-sm { padding: 3.5px 7px; font-size: 11px; }
+
+    .btn-secondary { background: #334155; color: #e2e8f0; }
+    .btn-secondary:hover { background: #475569; color: #fff; }
+
+    .btn-primary { background: linear-gradient(135deg, #0284c7, #0369a1); color: white; }
+    .btn-primary:hover { background: linear-gradient(135deg, #0369a1, #075985); }
+
+    .btn-success { background: linear-gradient(135deg, #059669, #047857); color: white; }
+    .btn-success:hover { background: linear-gradient(135deg, #047857, #065f46); }
+
+    .btn-orange { background: linear-gradient(135deg, #ea580c, #c2410c); color: white; }
+    .btn-orange:hover { background: #c2410c; }
+
+    .btn-purple { background: linear-gradient(135deg, #9333ea, #7e22ce); color: white; }
+    .btn-purple:hover { background: #7e22ce; }
+
+    .btn-danger { background: #dc2626; color: white; }
+    .btn-danger:hover { background: #b91c1c; }
+
+    /* Solution Toggle Switch */
+    .toggle-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11.5px;
+      color: #e2e8f0;
+      background: #1e293b;
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1px solid #334155;
+      user-select: none;
+      cursor: pointer;
+    }
+    .toggle-wrap input { cursor: pointer; }
+
+    /* App Split */
+    .app-container { display: flex; flex: 1; overflow: hidden; }
+
+    /* Left Pane */
+    .editor-pane {
+      width: 47%;
+      background: #1e293b;
+      border-right: 1px solid var(--panel-border);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    .pane-header {
+      padding: 9px 14px;
+      background: #0f172a;
+      border-bottom: 1px solid var(--panel-border);
+      font-size: 12.5px;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .editor-scroll {
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      overflow-y: auto;
+    }
+
+    .card {
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .card-title {
+      font-size: 12px;
+      font-weight: 700;
+      color: #38bdf8;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .form-group { display: flex; flex-direction: column; gap: 4px; }
+    label { font-size: 11.5px; color: var(--text-muted); font-weight: 500; }
+
+    input, textarea, select {
+      background: #1e293b;
+      border: 1px solid #475569;
+      border-radius: 5px;
+      padding: 6px 8px;
+      color: #f1f5f9;
+      font-size: 12px;
+      font-family: 'Kantumruy Pro', sans-serif;
+      outline: none;
+    }
+    input:focus, textarea:focus { border-color: #38bdf8; }
+    textarea { resize: vertical; min-height: 50px; line-height: 1.45; }
+
+    /* Categorized Math Palette Tabs */
+    .math-tabs {
+      display: flex;
+      gap: 4px;
+      border-bottom: 1px solid #334155;
+      padding-bottom: 6px;
+      margin-bottom: 6px;
+    }
+    .math-tab-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .math-tab-btn.active {
+      background: #0284c7;
+      color: white;
+    }
+
+    .math-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+    }
+
+    .math-btn {
+      background: #334155;
+      color: #f1f5f9;
+      border: 1px solid #475569;
+      padding: 3px 6px;
+      border-radius: 4px;
+      font-size: 11px;
+      cursor: pointer;
+      font-family: 'Fira Code', monospace;
+    }
+    .math-btn:hover { background: #0284c7; color: white; }
+
+    /* Exercise Item Card */
+    .ex-editor-item {
+      background: #162032;
+      border: 1px solid #2d3d54;
+      border-radius: 6px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      position: relative;
+    }
+
+    .ex-editor-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .ex-editor-num-badge {
+      font-weight: 800;
+      font-size: 13.5px;
+      color: var(--orange);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .level-select {
+      background: #0f172a;
+      border: 1px solid #475569;
+      border-radius: 4px;
+      font-size: 11px;
+      padding: 2px 6px;
+      color: #fbbf24;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .diag-select {
+      background: #0f172a;
+      border: 1px solid #475569;
+      border-radius: 4px;
+      font-size: 11px;
+      padding: 2px 6px;
+      color: #38bdf8;
+      cursor: pointer;
+    }
+
+    .sub-input-row {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .badge-input-label {
+      background: var(--crimson);
+      color: white;
+      font-weight: bold;
+      font-size: 11px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      width: 24px;
+      text-align: center;
+    }
+
+    /* Solution Editor Box inside Exercise */
+    .sol-editor-box {
+      background: #091728;
+      border: 1px dashed #0284c7;
+      border-radius: 5px;
+      padding: 6px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .sol-editor-box label {
+      color: #38bdf8;
+      font-size: 11px;
+      font-weight: bold;
+    }
+
+    /* Right Pane: Live Preview */
+    .preview-pane {
+      width: 53%;
+      background: #090e17;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .preview-header {
+      padding: 7px 14px;
+      background: #0f172a;
+      border-bottom: 1px solid var(--panel-border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .tabs { display: flex; gap: 4px; }
+    .tab-btn {
+      padding: 4px 9px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      font-size: 11.5px;
+      font-weight: 600;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .tab-btn.active { background: #334155; color: #fff; }
+
+    .preview-viewport {
+      flex: 1;
+      padding: 18px;
+      overflow-y: auto;
+      display: flex;
+      justify-content: center;
+    }
+
+    /* A4 Korean Book Styling */
+    .paper-page {
+      width: 210mm;
+      min-height: 297mm;
+      background: #ffffff;
+      color: #1e293b;
+      padding: 13mm;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+      font-family: 'Battambang', 'Kantumruy Pro', sans-serif;
+    }
+
+    .book-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 9px;
+    }
+    .header-left { display: flex; align-items: center; gap: 10px; }
+    .pill-badge {
+      background: var(--primary-teal);
+      color: white;
+      font-family: 'Moul', serif;
+      font-size: 11.5px;
+      padding: 5px 15px 4px 15px;
+      border-radius: 18px;
+      box-shadow: 0 2px 4px rgba(0, 150, 155, 0.25);
+    }
+    .lesson-title-text {
+      font-family: 'Moul', serif;
+      font-size: 17px;
+      color: var(--dark-teal);
+    }
+    .club-subtitle { font-size: 10px; color: #64748b; }
+
+    .section-banner {
+      display: flex;
+      align-items: stretch;
+      margin: 7px 0 5px 0;
+      border-radius: 3px;
+      overflow: hidden;
+    }
+    .sec-num-box {
+      background: var(--navy);
+      color: white;
+      font-family: 'Moul', serif;
+      font-size: 12.5px;
+      padding: 4px 11px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .sec-gold-bar { width: 3.5px; background: var(--gold); }
+    .sec-title-box { flex: 1; padding: 4px 11px; display: flex; align-items: center; }
+    .sec-title-text { font-family: 'Moul', serif; font-size: 12.5px; color: var(--crimson); }
+
+    .subsec-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin: 5px 0 7px 0;
+      font-family: 'Moul', serif;
+      font-size: 11.5px;
+      color: var(--navy);
+    }
+    .subsec-bar { width: 3.5px; height: 12px; background: var(--navy); border-radius: 2px; }
+
+    .theory-box {
+      background: var(--beige-bg);
+      border: 1px solid #e2d9cd;
+      border-left: 5px solid var(--navy);
+      border-radius: 5px;
+      padding: 9px 13px;
+      margin-bottom: 11px;
+    }
+    .theory-title {
+      font-family: 'Moul', serif;
+      font-size: 11px;
+      color: var(--dark-teal);
+      margin-bottom: 5px;
+    }
+    .theory-list { list-style: none; display: flex; flex-direction: column; gap: 4px; font-size: 11.5px; line-height: 1.5; }
+    .theory-item { display: flex; align-items: flex-start; gap: 6px; }
+    .theory-bullet { color: var(--navy); font-weight: bold; }
+
+    /* 2-column exercise grid */
+    .exercises-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      column-gap: 16px;
+      row-gap: 15px;
+      position: relative;
+      flex: 1;
+    }
+    .exercises-grid::after {
+      content: "";
+      position: absolute;
+      top: 0; bottom: 0; left: 50%;
+      width: 1px;
+      background: var(--card-border);
+      transform: translateX(-50%);
+    }
+
+    .ex-card { display: flex; flex-direction: column; gap: 4px; }
+    .ex-header { display: flex; align-items: flex-start; gap: 7px; }
+    .ex-num {
+      font-size: 23px;
+      font-weight: 800;
+      line-height: 0.9;
+      font-family: 'Battambang', sans-serif;
+      letter-spacing: -1px;
+      user-select: none;
+    }
+    .num-gray { color: var(--gray-num); }
+    .num-orange { color: var(--orange); }
+
+    .diff-badge {
+      font-size: 9px;
+      font-weight: 700;
+      padding: 1px 4px;
+      border-radius: 3px;
+      color: white;
+      vertical-align: middle;
+      margin-left: 3px;
+    }
+    .diff-easy { background: var(--orange); }
+    .diff-med { background: var(--blue-lvl); }
+    .diff-hard { background: var(--purple-lvl); }
+
+    .ex-question { font-size: 11.5px; line-height: 1.45; flex: 1; }
+    
+    /* Diagram in Preview */
+    .ex-diagram-wrap {
+      display: flex;
+      justify-content: center;
+      margin: 4px 0;
+      padding: 4px;
+      background: #fafaf8;
+      border-radius: 4px;
+      border: 1px solid #eef0f2;
+    }
+
+    .sub-items { display: flex; flex-direction: column; gap: 3.5px; padding-left: 24px; font-size: 11px; }
+    .sub-item { display: flex; align-items: center; gap: 5px; }
+    .badge-crimson {
+      background: var(--crimson);
+      color: white;
+      font-size: 9px;
+      font-weight: 700;
+      padding: 1px 4px;
+      border-radius: 3px;
+      display: inline-block;
+    }
+
+    /* Solution Box in Preview (Teacher Mode) */
+    .preview-sol-box {
+      margin-top: 4px;
+      padding: 5px 8px;
+      background: #f0fdf4;
+      border-left: 3px solid #16a34a;
+      border-radius: 3px;
+      font-size: 10.5px;
+      color: #166534;
+      line-height: 1.4;
+    }
+
+    .motto-banner {
+      background: #e6f5f5;
+      border: 1px solid var(--primary-teal);
+      border-radius: 5px;
+      padding: 5px;
+      text-align: center;
+      color: var(--navy);
+      font-family: 'Moul', serif;
+      font-size: 10.5px;
+      margin-top: 12px;
+      margin-bottom: 8px;
+    }
+
+    .book-footer {
+      border-top: 1px solid var(--primary-teal);
+      padding-top: 4px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 9px;
+      color: var(--dark-teal);
+      font-weight: bold;
+    }
+    .footer-right { color: var(--crimson); }
+
+    /* Modal (Geometry Studio) */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 200;
+    }
+    .modal-box {
+      width: 780px;
+      max-width: 95vw;
+      max-height: 85vh;
+      background: #0f172a;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      box-shadow: 0 20px 30px rgba(0, 0, 0, 0.5);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+    .modal-header {
+      padding: 12px 18px;
+      background: #1e293b;
+      border-bottom: 1px solid #334155;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .modal-title { font-size: 14px; font-weight: 700; color: #38bdf8; display: flex; align-items: center; gap: 8px; }
+    .modal-body {
+      padding: 16px;
+      overflow-y: auto;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+    .diag-card {
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 8px;
+      padding: 10px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      text-align: center;
+    }
+    .diag-card:hover { border-color: #38bdf8; }
+    .diag-preview-box {
+      background: white;
+      border-radius: 6px;
+      padding: 8px;
+      width: 100%;
+      height: 140px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .diag-card-title { font-size: 12px; font-weight: bold; color: #f8fafc; }
+    .diag-card-desc { font-size: 11px; color: var(--text-muted); line-height: 1.35; }
+    .diag-actions { display: flex; gap: 6px; width: 100%; }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #059669;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 6px;
+      font-size: 12px;
+      font-weight: 600;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      transition: all 0.25s ease;
+      z-index: 300;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    .btn-pagebreak-active {
+      background: #7c3aed !important;
+      color: #ffffff !important;
+      border-color: #a78bfa !important;
+      font-weight: bold;
+    }
+    .page-break-divider {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin: 20px 0 15px 0;
+      width: 210mm;
+      max-width: 100%;
+    }
+    .page-break-line {
+      flex: 1;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, #6366f1, transparent);
+    }
+    .page-break-label {
+      background: #4f46e5;
+      color: #ffffff;
+      padding: 4px 16px;
+      border-radius: 20px;
+      font-size: 11.5px;
+      font-weight: 700;
+      box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .draw-tool-btn {
+      background: #1e293b;
+      border: 1px solid #475569;
+      color: #cbd5e1;
+      padding: 4px 9px;
+      font-size: 11.5px;
+      border-radius: 4px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s ease;
+    }
+    .draw-tool-btn:hover {
+      background: #334155;
+      color: #fff;
+    }
+    .draw-tool-btn.active {
+      background: #0284c7;
+      color: #ffffff;
+      border-color: #38bdf8;
+      font-weight: bold;
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.3);
+    }
+    .color-dot {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: inline-block;
+      border: 2px solid transparent;
+      transition: transform 0.15s ease;
+    }
+    .color-dot:hover {
+      transform: scale(1.2);
+    }
+    .color-dot.active {
+      border-color: #ffffff;
+      box-shadow: 0 0 0 2px #38bdf8;
+      transform: scale(1.15);
+    }
+
+    @media print {
+      body { background: white !important; color: black !important; overflow: visible !important; height: auto !important; }
+      header, .editor-pane, .preview-header, .toast, #tabOmml, #viewportOmml, .modal-overlay { display: none !important; }
+      .app-container { display: block !important; overflow: visible !important; }
+      .preview-pane { width: 100% !important; background: white !important; }
+      .preview-viewport { padding: 0 !important; display: block !important; }
+      .paper-page { box-shadow: none !important; margin: 0 auto !important; padding: 6mm 10mm !important; width: 100% !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <header>
+    <div class="brand">
+      <div class="brand-badge">⚡ MATH PRO</div>
+      <div class="brand-title">Khmer Math Studio Pro</div>
+    </div>
+
+    <!-- Lesson Switcher / Navigator -->
+    <div class="lesson-nav">
+      <span style="font-size: 11.5px; color: var(--text-muted);">មេរៀន៖</span>
+      <select id="lessonSelector" class="lesson-select" onchange="onSelectLesson(this.value)"></select>
+      <button class="btn btn-sm btn-orange" onclick="addNewLessonPrompt()">➕ មេរៀនបន្ទាប់</button>
+      <button class="btn btn-sm btn-secondary" onclick="cloneCurrentLesson()">📑 ចម្លង</button>
+      <button class="btn btn-sm btn-secondary" onclick="saveCurrentLesson()">💾 រក្សាទុក</button>
+      <button class="btn btn-sm btn-danger" onclick="deleteCurrentLesson()">🗑️</button>
+    </div>
+
+    <!-- Pro Teacher Controls -->
+    <div style="display: flex; gap: 7px; align-items: center;">
+      <!-- Geometry Studio Modal Button -->
+      <button class="btn btn-purple" onclick="openGeometryModal()">📐 ស្ទូឌីយោធរណីមាត្រ</button>
+
+      <!-- Teacher Solution Toggle -->
+      <label class="toggle-wrap" title="បើកដើម្បីមើលចម្លើយគំរូ">
+        <input type="checkbox" id="toggleSolutions" onchange="onToggleSolutions(this.checked)">
+        <span>👨‍🏫 ចម្លើយគំរូ (Solution Key)</span>
+      </label>
+
+      <button class="btn btn-secondary" onclick="copyActiveOmml()">📋 OMML</button>
+      <button class="btn btn-primary" onclick="exportPdf()">📄 ទាញយកជា PDF</button>
+      <button class="btn btn-success" onclick="exportWordDocx()">📥 Word (.docx)</button>
+      <button class="btn btn-secondary" onclick="window.print()">🖨️ A4</button>
+    </div>
+  </header>
+
+  <!-- App Split -->
+  <div class="app-container">
+    <!-- Left Pane: Editor -->
+    <div class="editor-pane">
+      <div class="pane-header">
+        <span>✏️ បន្ទះគ្រប់គ្រង & កែសម្រួលមេរៀន</span>
+        <span id="saveStatus" style="font-size: 11.5px; color: #34d399;">● Auto-saved locally</span>
+      </div>
+
+      <div class="editor-scroll">
+        <!-- Lesson Header Info -->
+        <div class="card">
+          <div class="card-title">
+            <span>📌 ព័ត៌មានក្បាលទំព័រមេរៀន</span>
+          </div>
+          <div class="input-row">
+            <div class="form-group">
+              <label>លេខមេរៀន (Pill Badge)</label>
+              <input type="text" id="inputLessonNum" oninput="onFieldChange()">
+            </div>
+            <div class="form-group">
+              <label>ចំណងជើងមេរៀន</label>
+              <input type="text" id="inputLessonTitle" oninput="onFieldChange()">
+            </div>
+          </div>
+          <div class="input-row">
+            <div class="form-group">
+              <label>លេខផ្នែកធំ (Section Num)</label>
+              <input type="text" id="inputSectionNum" oninput="onFieldChange()">
+            </div>
+            <div class="form-group">
+              <label>ចំណងជើងផ្នែកធំ (Section Title)</label>
+              <input type="text" id="inputSectionTitle" oninput="onFieldChange()">
+            </div>
+          </div>
+          <div class="input-row">
+            <div class="form-group">
+              <label>ចំណងជើងរង (Subsection)</label>
+              <input type="text" id="inputSubsecTitle" oninput="onFieldChange()">
+            </div>
+            <div class="form-group">
+              <label>គ្រូបង្រៀន & Telegram</label>
+              <input type="text" id="inputTeacher" oninput="onFieldChange()">
+            </div>
+          </div>
+        </div>
+
+        <!-- Categorized Math Palette -->
+        <div class="card">
+          <div class="card-title">
+            <span>🧮 បណ្ណាល័យរូបមន្តរហ័ស (ចុចដើម្បីបញ្ចូល)</span>
+          </div>
+          <div class="math-tabs">
+            <button class="math-tab-btn active" id="tabCatGeo" onclick="switchMathTab('geo')">📐 ធរណីមាត្រ</button>
+            <button class="math-tab-btn" id="tabCatAlg" onclick="switchMathTab('alg')">🧮 ពីជគណិត</button>
+            <button class="math-tab-btn" id="tabCatTrig" onclick="switchMathTab('trig')">📈 ត្រីកោណមាត្រ</button>
+            <button class="math-tab-btn" id="tabCatStat" onclick="switchMathTab('stat')">📊 ស្ថិតិ & ប្រព័ន្ធ</button>
+          </div>
+
+          <div class="math-toolbar" id="mathPaletteButtons">
+            <!-- Populated via switchMathTab -->
+          </div>
+        </div>
+
+        <!-- Instant OMML Scratchpad -->
+        <div class="card" style="background: #070d18;">
+          <div class="card-title" style="color: #34d399;">
+            <span>⚡ បំប្លែងរូបមន្តទៅជា Microsoft Equation (OMML)</span>
+            <span style="color: #38bdf8; cursor: pointer; font-size: 11px;" onclick="copyScratchOmml()">📋 ចម្លង OMML</span>
+          </div>
+          <input type="text" id="scratchMath" value="BC = \sqrt{AB^2 + AC^2}" oninput="convertScratchMath()">
+          <div id="scratchPreview" style="font-size: 14.5px; color: #fff; margin: 3px 0; min-height: 22px;"></div>
+          <div id="scratchOmml" style="background: #030712; padding: 6px; border-radius: 4px; font-family: monospace; font-size: 10px; color: #34d399; max-height: 80px; overflow-y: auto;"></div>
+        </div>
+
+        <!-- Theory Box -->
+        <div class="card">
+          <div class="card-title">
+            <span>★ ប្រអប់ទ្រឹស្តីបទ & រូបមន្តគន្លឹះ</span>
+          </div>
+          <textarea id="inputTheories" oninput="onFieldChange()" rows="4"></textarea>
+        </div>
+
+        <!-- Dynamic Exercises Section -->
+        <div class="card">
+          <div class="card-title">
+            <span>📝 លំហាត់អនុវត្តន៍ (<span id="exCount">0</span> លំហាត់)</span>
+            <button class="btn btn-sm btn-primary" onclick="addNewExercise()">➕ បន្ថែមលំហាត់ថ្មី</button>
+          </div>
+
+          <div id="exerciseListContainer" style="display: flex; flex-direction: column; gap: 10px;"></div>
+
+          <div style="display: flex; gap: 6px; margin-top: 6px;">
+            <button class="btn btn-secondary" style="flex: 1; justify-content: center;" onclick="addNewExercise()">
+              ➕ បន្ថែមលំហាត់
+            </button>
+            <button class="btn btn-purple" style="flex: 1; justify-content: center; font-size: 11.5px;" onclick="addNewPageWithExercise()" title="ចុះទៅទំព័របន្ទាប់ និងបន្ថែមលំហាត់ថ្មី">
+              📄 ➕ ចុះទំព័របន្ទាប់
+            </button>
+          </div>
+        </div>
+
+        <!-- Motto -->
+        <div class="card">
+          <div class="card-title"><span>💬 បដាពាក្យស្លោកខាងក្រោម</span></div>
+          <input type="text" id="inputMotto" oninput="onFieldChange()">
+        </div>
+      </div>
+    </div>
+
+    <!-- Right Pane: Live Preview -->
+    <div class="preview-pane">
+      <div class="preview-header">
+        <div class="tabs">
+          <button class="tab-btn active" id="tabBook" onclick="switchTab('book')">📖 ទិដ្ឋភាពសៀវភៅកូរ៉េ (A4)</button>
+          <button class="tab-btn" id="tabOmml" onclick="switchTab('omml')">💻 បញ្ជីកូដ OMML (Word)</button>
+        </div>
+
+        <!-- Multi-page Pagination & Next/Prev Navigation -->
+        <div id="pageNavigator" style="display: flex; align-items: center; gap: 5px; background: #0b1120; padding: 3px 8px; border-radius: 6px; border: 1px solid #334155;">
+          <button class="btn btn-sm btn-secondary" id="btnPrevPage" onclick="goToPage(1)" title="ត្រឡប់ទៅទំព័រមុន" disabled style="padding: 2px 7px; font-size: 11px;">
+            ❮ មុន
+          </button>
+          <div style="display: flex; gap: 3px;" id="pageNavChips">
+            <button class="btn btn-sm btn-primary" id="btnChipPage1" onclick="goToPage(1)" style="padding: 2px 8px; font-size: 11px; font-weight: bold;">ទំព័រ ១</button>
+            <button class="btn btn-sm btn-secondary" id="btnChipPage2" onclick="goToPage(2)" style="padding: 2px 8px; font-size: 11px; display: none;">ទំព័រ ២</button>
+          </div>
+          <button class="btn btn-sm btn-purple" id="btnNextPage" onclick="goToPage(2)" title="ទៅកាន់ទំព័របន្ទាប់ទៀត" style="padding: 2px 8px; font-size: 11px; display: none; font-weight: bold;">
+            បន្ទាប់ ❯
+          </button>
+        </div>
+
+        <div style="font-size: 11.5px; color: var(--text-muted);" id="previewStatus">A4 Live Preview</div>
+      </div>
+
+      <div class="preview-viewport" id="viewportBook">
+        <div id="paperPagesContainer" style="display: flex; flex-direction: column; align-items: center; width: 100%;">
+          <!-- Paper Page 1 -->
+          <div class="paper-page" id="paperPage1">
+            <!-- Header -->
+            <div class="book-header">
+              <div class="header-left">
+                <div class="pill-badge" id="viewLessonNum"></div>
+                <div class="lesson-title-text" id="viewLessonTitle"></div>
+              </div>
+              <div class="club-subtitle">♣ ក្លឹបសិក្សាគណិតវិទ្យា ភី ស៊ី​ អឹម</div>
+            </div>
+
+            <!-- Section -->
+            <div class="section-banner">
+              <div class="sec-num-box" id="viewSectionNum"></div>
+              <div class="sec-gold-bar"></div>
+              <div class="sec-title-box">
+                <div class="sec-title-text" id="viewSectionTitle"></div>
+              </div>
+            </div>
+
+            <!-- Subsection -->
+            <div class="subsec-header" id="viewSubsecHeader">
+              <div class="subsec-bar"></div>
+              <span id="viewSubsecTitle"></span>
+            </div>
+
+            <!-- Theory Box -->
+            <div class="theory-box" id="viewTheoryBox">
+              <div class="theory-title">★ ជាទូទៅ និងរូបមន្តសំខាន់ៗ</div>
+              <ul class="theory-list" id="viewTheories"></ul>
+            </div>
+
+            <!-- Exercise Header Title -->
+            <div class="subsec-header" style="margin: 4px 0 6px 0;">
+              <div class="subsec-bar"></div>
+              <span>លំហាត់អនុវត្ត</span>
+            </div>
+
+            <!-- 2-Column Exercises for Page 1 -->
+            <div class="exercises-grid" id="viewExercisesGrid1"></div>
+
+            <!-- Motto -->
+            <div class="motto-banner" id="viewMotto"></div>
+
+            <!-- Footer -->
+            <div class="book-footer">
+              <div class="footer-left"><span>1</span> | <span id="viewFootTitle"></span></div>
+              <div class="footer-center">★ បង្រៀនដោយ ៖ <span id="viewFootTeacher"></span> ★</div>
+              <div class="footer-right">Telegram: <span id="viewFootPhone"></span> | 1</div>
+            </div>
+
+            <!-- Bottom Next Page Button on Page 1 -->
+            <div id="page1NextNavRow" style="display: none; justify-content: flex-end; align-items: center; margin-top: 8px; padding-top: 6px; border-top: 1px dashed #cbd5e1;">
+              <button class="btn btn-sm btn-purple" onclick="goToPage(2)" style="font-size: 11px; padding: 4px 12px; font-weight: bold;">
+                ទៅកាន់ទំព័របន្ទាប់ (ទំព័រទី ២) ❯
+              </button>
+            </div>
+          </div>
+
+          <!-- Page 2 Divider (prominent break line) -->
+          <div class="page-break-divider" id="pageDivider2" style="display: none;">
+            <div class="page-break-line"></div>
+            <div class="page-break-label" onclick="goToPage(2)" style="cursor: pointer;" title="ចុចដើម្បីរំកិលទៅទំព័របន្ទាប់">
+              <span>✂ ⎯⎯⎯⎯ បន្ទាត់ខណ្ឌចុះទំព័របន្ទាប់ ៖ ទំព័រទី ២ (Page 2) ⎯⎯⎯⎯ ⬇</span>
+            </div>
+            <div class="page-break-line"></div>
+          </div>
+
+          <!-- Paper Page 2 (shown if exercises break to Page 2) -->
+          <div class="paper-page" id="paperPage2" style="display: none;">
+            <!-- Top navigation on Page 2 -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px dashed #cbd5e1;">
+              <button class="btn btn-sm btn-secondary" onclick="goToPage(1)" style="font-size: 11px; padding: 3px 10px;">
+                ❮ ត្រឡប់ទៅទំព័រទី ១
+              </button>
+              <span style="font-size: 11px; color: #00969b; font-weight: bold;">📄 ទំព័រទី ២ (Page 2)</span>
+            </div>
+
+            <!-- Header Page 2 -->
+            <div class="book-header" style="border-bottom: 2px solid var(--navy); padding-bottom: 6px; margin-bottom: 12px;">
+              <div class="header-left">
+                <div class="pill-badge" id="viewLessonNum2" style="font-size: 10px; padding: 3px 10px;"></div>
+                <div class="lesson-title-text" id="viewLessonTitle2" style="font-size: 14px;"></div>
+              </div>
+              <div class="club-subtitle">♣ ក្លឹបសិក្សាគណិតវិទ្យា ភី ស៊ី​ អឹម</div>
+            </div>
+
+            <div class="subsec-header" style="margin-bottom: 8px;">
+              <div class="subsec-bar"></div>
+              <span>លំហាត់អនុវត្តបន្ត (ទំព័រទី ២)</span>
+            </div>
+
+            <!-- 2-Column Exercises for Page 2 -->
+            <div class="exercises-grid" id="viewExercisesGrid2"></div>
+
+            <!-- Spacer -->
+            <div style="flex: 1;"></div>
+
+            <!-- Motto Page 2 -->
+            <div class="motto-banner" id="viewMotto2"></div>
+
+            <!-- Footer Page 2 -->
+            <div class="book-footer">
+              <div class="footer-left"><span>2</span> | <span id="viewFootTitle2"></span></div>
+              <div class="footer-center">★ បង្រៀនដោយ ៖ <span id="viewFootTeacher2"></span> ★</div>
+              <div class="footer-right">Telegram: <span id="viewFootPhone2"></span> | 2</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- OMML View Tab -->
+      <div style="display: none; flex: 1; overflow-y: auto; padding: 16px;" id="viewportOmml">
+        <div class="card" style="background: #0f172a;">
+          <div class="card-title">
+            <span>បញ្ជីរូបមន្តទាំងអស់ក្នុងមេរៀននេះជា OMML</span>
+            <button class="btn btn-sm btn-secondary" onclick="generateAllOmml()">🔄 Refresh</button>
+          </div>
+          <div id="ommlList" style="display: flex; flex-direction: column; gap: 10px; margin-top: 10px;"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Geometry Studio Modal -->
+  <div class="modal-overlay" id="geoModal" onclick="closeGeometryModal(event)">
+    <div class="modal-box" style="width: 860px; max-width: 96vw; max-height: 92vh;" onclick="event.stopPropagation()">
+      <div class="modal-header">
+        <div class="modal-title">
+          <span>📐 ស្ទូឌីយោធរណីមាត្រ (Geometry Studio)</span>
+        </div>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          <div class="tabs" style="margin: 0;">
+            <button class="tab-btn active" id="btnTabPresets" onclick="switchGeoTab('presets')">📚 គំរូស្រាប់ (Presets)</button>
+            <button class="tab-btn" id="btnTabCanvas" onclick="switchGeoTab('canvas')">🎨 ផ្ទាំងគូសផ្ទាល់ (Draw Canvas)</button>
+          </div>
+          <button class="btn btn-sm btn-secondary" onclick="closeGeometryModal()">✕ បិទ</button>
+        </div>
+      </div>
+
+      <!-- Tab 1: Presets -->
+      <div class="modal-body" id="modalDiagList">
+        <!-- Populated dynamically -->
+      </div>
+
+      <!-- Tab 2: Interactive Drawing Canvas -->
+      <div id="modalCanvasTab" style="display: none; padding: 12px; flex-direction: column; gap: 10px; background: #0f172a; overflow-y: auto;">
+        <!-- Toolbar -->
+        <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center; background: #1e293b; padding: 8px 12px; border-radius: 8px; border: 1px solid #334155;">
+          <!-- Tools -->
+          <div style="display: flex; gap: 4px; align-items: center; border-right: 1px solid #475569; padding-right: 8px;">
+            <button class="draw-tool-btn active" id="toolCircle" onclick="setDrawTool('circle')">⭕ រង្វង់</button>
+            <button class="draw-tool-btn" id="toolLine" onclick="setDrawTool('line')">📏 អង្កត់</button>
+            <button class="draw-tool-btn" id="toolRightAngle" onclick="setDrawTool('right_angle')">📐 មុំកែង</button>
+            <button class="draw-tool-btn" id="toolPoint" onclick="setDrawTool('point')">📍 ចំណុច</button>
+            <button class="draw-tool-btn" id="toolText" onclick="setDrawTool('text')">🔤 អក្សរ</button>
+            <button class="draw-tool-btn" id="toolFreehand" onclick="setDrawTool('freehand')">✏️ គូសដៃ</button>
+          </div>
+
+          <!-- Colors -->
+          <div style="display: flex; gap: 6px; align-items: center; border-right: 1px solid #475569; padding-right: 8px;">
+            <span style="font-size: 11px; color: var(--text-muted);">ពណ៌ ៖</span>
+            <span class="color-dot active" style="background: #0F2C59;" onclick="setDrawColor('#0F2C59', this)" title="ទឹកប៊ិចចាស់"></span>
+            <span class="color-dot" style="background: #C3233C;" onclick="setDrawColor('#C3233C', this)" title="ក្រហម"></span>
+            <span class="color-dot" style="background: #00969B;" onclick="setDrawColor('#00969B', this)" title="បៃតងចាស់"></span>
+            <span class="color-dot" style="background: #EB731E;" onclick="setDrawColor('#EB731E', this)" title="ទឹកក្រូច"></span>
+            <span class="color-dot" style="background: #111827;" onclick="setDrawColor('#111827', this)" title="ខ្មៅ"></span>
+          </div>
+
+          <!-- Stroke & Grid Options -->
+          <div style="display: flex; gap: 6px; align-items: center; border-right: 1px solid #475569; padding-right: 8px;">
+            <select id="drawLineWidth" class="select-box" style="padding: 2px 6px; font-size: 11px;" onchange="setDrawWidth(this.value)">
+              <option value="1.5">ស្តើង 1.5px</option>
+              <option value="2.5" selected>មធ្យម 2.5px</option>
+              <option value="4">ក្រាស់ 4px</option>
+            </select>
+            <label style="font-size: 11px; color: #94a3b8; display: flex; align-items: center; gap: 3px; cursor: pointer;">
+              <input type="checkbox" id="drawDashed" onchange="setDrawDashed(this.checked)"> ដាច់ៗ
+            </label>
+            <label style="font-size: 11px; color: #94a3b8; display: flex; align-items: center; gap: 3px; cursor: pointer;">
+              <input type="checkbox" id="drawShowGrid" checked onchange="toggleDrawGrid(this.checked)"> ក្រឡា
+            </label>
+          </div>
+
+          <!-- Quick Label input -->
+          <div style="display: flex; gap: 4px; align-items: center;">
+            <span style="font-size: 11px; color: var(--text-muted);">ស្លាក ៖</span>
+            <input type="text" id="drawLabelInput" value="O" style="width: 44px; padding: 2px 4px; font-size: 12px; text-align: center; background: #0f172a; color: #38bdf8; border: 1px solid #475569; border-radius: 4px; font-weight: bold;">
+            <div style="display: flex; gap: 2px;">
+              <button class="btn btn-sm btn-secondary" style="padding: 1px 4px; font-size: 10px;" onclick="setQuickLabel('O')">O</button>
+              <button class="btn btn-sm btn-secondary" style="padding: 1px 4px; font-size: 10px;" onclick="setQuickLabel('A')">A</button>
+              <button class="btn btn-sm btn-secondary" style="padding: 1px 4px; font-size: 10px;" onclick="setQuickLabel('B')">B</button>
+              <button class="btn btn-sm btn-secondary" style="padding: 1px 4px; font-size: 10px;" onclick="setQuickLabel('T')">T</button>
+              <button class="btn btn-sm btn-secondary" style="padding: 1px 4px; font-size: 10px;" onclick="setQuickLabel('r')">r</button>
+              <button class="btn btn-sm btn-secondary" style="padding: 1px 4px; font-size: 10px;" onclick="setQuickLabel('d')">d</button>
+              <button class="btn btn-sm btn-secondary" style="padding: 1px 4px; font-size: 10px;" onclick="setQuickLabel('90°')">90°</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Canvas and Insert Panel -->
+        <div style="display: flex; gap: 14px; align-items: flex-start;">
+          <div style="display: flex; flex-direction: column; gap: 6px; align-items: center;">
+            <div style="background: #ffffff; border: 2px solid #38bdf8; border-radius: 6px; box-shadow: 0 4px 15px rgba(0,0,0,0.4); overflow: hidden; cursor: crosshair;">
+              <canvas id="geoCanvas" width="540" height="360" style="width: 540px; height: 360px; display: block;"></canvas>
+            </div>
+            <div style="font-size: 11px; color: #94a3b8; text-align: center;" id="canvasHint">
+              💡 ចុច Mouse ហើយអូសដើម្បីគូសរង្វង់ (Drag from center to draw circle)
+            </div>
+          </div>
+
+          <!-- Actions & Exercise selection -->
+          <div style="flex: 1; display: flex; flex-direction: column; gap: 10px;">
+            <div style="background: #1e293b; padding: 10px; border-radius: 8px; border: 1px solid #334155;">
+              <div style="font-size: 12px; font-weight: bold; color: #38bdf8; margin-bottom: 6px;">⚡ សកម្មភាព</div>
+              <div style="display: flex; gap: 6px;">
+                <button class="btn btn-secondary" style="flex: 1; justify-content: center;" onclick="undoDrawElement()">↶ មិនធ្វើវិញ</button>
+                <button class="btn btn-secondary" style="flex: 1; justify-content: center; color: #f87171;" onclick="clearDrawCanvas()">🗑️ សម្អាត</button>
+              </div>
+            </div>
+
+            <div style="background: #1e293b; padding: 12px; border-radius: 8px; border: 1px solid #00969b; display: flex; flex-direction: column; gap: 8px;">
+              <div style="font-size: 12px; font-weight: bold; color: #00969b;">🎯 ភ្ជាប់រូបនេះក្នុងលំហាត់</div>
+              <label style="font-size: 11px; color: var(--text-muted);">ជ្រើសរើសលំហាត់គោលដៅ ៖</label>
+              <select id="canvasTargetEx" class="select-box" style="padding: 6px 8px; font-size: 12px; width: 100%;">
+                <!-- Populated dynamically with exercises -->
+              </select>
+              <button class="btn btn-primary" style="justify-content: center; font-size: 12.5px; font-weight: bold; padding: 8px 12px; margin-top: 4px;" onclick="insertCanvasToExercise()">
+                💾 ➕ បញ្ចូលរូបគំនូរនេះក្នុងលំហាត់
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">បានជោគជ័យ!</div>
+
+  <script>
+    const STORAGE_KEY = "KHMER_MATH_LESSONS_STORE_V3";
+
+    // Geometry Diagram Presets with SVGs
+    const DIAGRAMS = {
+      "circle_tangent": {
+        title: "រង្វង់ និងបន្ទាត់ប៉ះ (Circle & Tangent)",
+        desc: "រង្វង់ផ្ចិត O កាំ r ប៉ះបន្ទាត់ (d) ត្រង់ចំណុច T (OT ⟂ d)",
+        svg: `<svg viewBox="-70 -70 140 140" width="130" height="130" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="0" cy="0" r="40" fill="none" stroke="#0F2C59" stroke-width="2"/>
+  <line x1="0" y1="0" x2="40" y2="0" stroke="#C3233C" stroke-width="2"/>
+  <line x1="40" y1="-50" x2="40" y2="50" stroke="#00969B" stroke-width="2"/>
+  <rect x="30" y="-10" width="10" height="10" fill="none" stroke="#C3233C" stroke-width="1"/>
+  <circle cx="0" cy="0" r="3" fill="#0F2C59"/>
+  <circle cx="40" cy="0" r="3" fill="#EB731E"/>
+  <text x="-12" y="4" font-size="10" font-weight="bold" fill="#0F2C59">O</text>
+  <text x="18" y="-4" font-size="9" font-weight="bold" fill="#C3233C">r</text>
+  <text x="44" y="4" font-size="10" font-weight="bold" fill="#EB731E">T</text>
+  <text x="44" y="-44" font-size="9" font-weight="bold" fill="#00969B">(d)</text>
+</svg>`
+      },
+      "right_triangle": {
+        title: "ត្រីកោណកែងពីតាករ (Right Triangle)",
+        desc: "ត្រីកោណ ABC កែងត្រង់ A (BC² = AB² + AC²)",
+        svg: `<svg viewBox="-15 -15 150 130" width="130" height="110" xmlns="http://www.w3.org/2000/svg">
+  <polygon points="10,90 100,90 10,15" fill="none" stroke="#0F2C59" stroke-width="2"/>
+  <rect x="10" y="77" width="13" height="13" fill="none" stroke="#C3233C" stroke-width="1"/>
+  <text x="-4" y="100" font-size="10" font-weight="bold" fill="#0F2C59">A</text>
+  <text x="104" y="98" font-size="10" font-weight="bold" fill="#0F2C59">B</text>
+  <text x="4" y="10" font-size="10" font-weight="bold" fill="#0F2C59">C</text>
+  <text x="50" y="104" font-size="9" font-weight="bold" fill="#0F2C59">c</text>
+  <text x="-4" y="55" font-size="9" font-weight="bold" fill="#0F2C59">b</text>
+  <text x="62" y="50" font-size="9" font-weight="bold" fill="#C3233C">a</text>
+</svg>`
+      },
+      "two_tangents": {
+        title: "បន្ទាត់ប៉ះពីរចេញពីចំណុចក្រៅ P",
+        desc: "បន្ទាត់ប៉ះ PA = PB និង OP ជាកន្លះបន្ទាត់ពុះមុំ",
+        svg: `<svg viewBox="-50 -60 160 120" width="140" height="105" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="0" cy="0" r="36" fill="none" stroke="#0F2C59" stroke-width="1.8"/>
+  <line x1="0" y1="0" x2="80" y2="0" stroke="#94a3b8" stroke-dasharray="3,3"/>
+  <line x1="80" y1="0" x2="16" y2="-32" stroke="#00969B" stroke-width="1.8"/>
+  <line x1="80" y1="0" x2="16" y2="32" stroke="#00969B" stroke-width="1.8"/>
+  <line x1="0" y1="0" x2="16" y2="-32" stroke="#C3233C" stroke-width="1.5"/>
+  <line x1="0" y1="0" x2="16" y2="32" stroke="#C3233C" stroke-width="1.5"/>
+  <circle cx="0" cy="0" r="2.5" fill="#0F2C59"/>
+  <circle cx="80" cy="0" r="2.5" fill="#00969B"/>
+  <circle cx="16" cy="-32" r="2.5" fill="#EB731E"/>
+  <circle cx="16" cy="32" r="2.5" fill="#EB731E"/>
+  <text x="-12" y="3" font-size="9" font-weight="bold">O</text>
+  <text x="86" y="3" font-size="9" font-weight="bold" fill="#00969B">P</text>
+  <text x="14" y="-36" font-size="9" font-weight="bold" fill="#EB731E">A</text>
+  <text x="14" y="44" font-size="9" font-weight="bold" fill="#EB731E">B</text>
+</svg>`
+      },
+      "inscribed_angle": {
+        title: "មុំផ្ចិត និងមុំចារឹកក្នុងរង្វង់",
+        desc: "មុំចារឹកស្មើពាក់កណ្តាលមុំផ្ចិត (∠ACB = 1/2 ∠AOB)",
+        svg: `<svg viewBox="-60 -65 120 130" width="120" height="120" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="0" cy="0" r="42" fill="none" stroke="#0F2C59" stroke-width="1.8"/>
+  <line x1="0" y1="0" x2="-32" y2="27" stroke="#C3233C" stroke-width="1.8"/>
+  <line x1="0" y1="0" x2="32" y2="27" stroke="#C3233C" stroke-width="1.8"/>
+  <line x1="0" y1="-42" x2="-32" y2="27" stroke="#00969B" stroke-width="1.8"/>
+  <line x1="0" y1="-42" x2="32" y2="27" stroke="#00969B" stroke-width="1.8"/>
+  <circle cx="0" cy="0" r="2.5" fill="#0F2C59"/>
+  <circle cx="0" cy="-42" r="2.5" fill="#00969B"/>
+  <circle cx="-32" cy="27" r="2.5" fill="#EB731E"/>
+  <circle cx="32" cy="27" r="2.5" fill="#EB731E"/>
+  <text x="3" y="-2" font-size="9" font-weight="bold">O</text>
+  <text x="-4" y="-46" font-size="9" font-weight="bold" fill="#00969B">C</text>
+  <text x="-44" y="34" font-size="9" font-weight="bold" fill="#EB731E">A</text>
+  <text x="36" y="34" font-size="9" font-weight="bold" fill="#EB731E">B</text>
+</svg>`
+      },
+      "two_circles_touch": {
+        title: "រង្វង់ពីរប៉ះគ្នាក្រៅ",
+        desc: "រង្វង់ពីរមានកាំ R និង r ប៉ះគ្នាក្រៅត្រង់ T (O₁O₂ = R + r)",
+        svg: `<svg viewBox="-60 -50 160 100" width="140" height="90" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="0" cy="0" r="38" fill="none" stroke="#0F2C59" stroke-width="1.8"/>
+  <circle cx="64" cy="0" r="26" fill="none" stroke="#00969B" stroke-width="1.8"/>
+  <line x1="0" y1="0" x2="64" y2="0" stroke="#C3233C" stroke-width="1.8"/>
+  <line x1="38" y1="-42" x2="38" y2="42" stroke="#EB731E" stroke-width="1.5"/>
+  <circle cx="0" cy="0" r="2.5" fill="#0F2C59"/>
+  <circle cx="64" cy="0" r="2.5" fill="#00969B"/>
+  <circle cx="38" cy="0" r="2.5" fill="#C3233C"/>
+  <text x="-14" y="3" font-size="9" font-weight="bold">O₁</text>
+  <text x="70" y="3" font-size="9" font-weight="bold" fill="#00969B">O₂</text>
+  <text x="40" y="12" font-size="8.5" font-weight="bold" fill="#C3233C">T</text>
+</svg>`
+      },
+      "intersecting_chords": {
+        title: "អង្កត់ធ្នូពីរជួបគ្នាក្នុងរង្វង់",
+        desc: "អង្កត់ធ្នូ AB និង CD កាត់គ្នាត្រង់ P (PA · PB = PC · PD)",
+        svg: `<svg viewBox="-60 -60 120 120" width="120" height="120" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="0" cy="0" r="42" fill="none" stroke="#0F2C59" stroke-width="1.8"/>
+  <line x1="-36" y1="18" x2="35" y2="-22" stroke="#C3233C" stroke-width="1.8"/>
+  <line x1="-18" y1="-38" x2="22" y2="36" stroke="#00969B" stroke-width="1.8"/>
+  <circle cx="3" cy="-3" r="2.5" fill="#EB731E"/>
+  <text x="-46" y="22" font-size="9" font-weight="bold" fill="#C3233C">A</text>
+  <text x="38" y="-20" font-size="9" font-weight="bold" fill="#C3233C">B</text>
+  <text x="-22" y="-42" font-size="9" font-weight="bold" fill="#00969B">C</text>
+  <text x="24" y="44" font-size="9" font-weight="bold" fill="#00969B">D</text>
+  <text x="6" y="9" font-size="9" font-weight="bold" fill="#EB731E">P</text>
+</svg>`
+      },
+      "coordinate_plane": {
+        title: "ប្លង់កូអរដោនេ Oxy និងបន្ទាត់",
+        desc: "ក្រាបបន្ទាត់ត្រង់ (d): y = ax + b ក្នុងប្លង់កូអរដោនេ",
+        svg: `<svg viewBox="-70 -70 140 140" width="120" height="120" xmlns="http://www.w3.org/2000/svg">
+  <line x1="-55" y1="0" x2="55" y2="0" stroke="#64748b" stroke-width="1"/>
+  <line x1="0" y1="55" x2="0" y2="-55" stroke="#64748b" stroke-width="1"/>
+  <line x1="-42" y1="30" x2="42" y2="-38" stroke="#C3233C" stroke-width="1.8"/>
+  <text x="48" y="12" font-size="9" fill="#64748b">x</text>
+  <text x="5" y="-48" font-size="9" fill="#64748b">y</text>
+  <text x="-10" y="10" font-size="9" fill="#64748b">O</text>
+  <text x="22" y="-42" font-size="9" font-weight="bold" fill="#C3233C">(d)</text>
+</svg>`
+      }
+    };
+
+    // Math symbols palette categories
+    const MATH_PALETTES = {
+      geo: [
+        { label: "△ABC", sym: "\\triangle ABC" },
+        { label: "∠A", sym: "\\angle A" },
+        { label: "⟂", sym: "\\perp" },
+        { label: "∥", sym: "\\parallel" },
+        { label: "⊙O", sym: "\\odot O" },
+        { label: "u⃗", sym: "\\vec{u}" },
+        { label: "AB̂", sym: "\\widehat{AB}" },
+        { label: "≅", sym: "\\cong" },
+        { label: "∼", sym: "\\sim" },
+        { label: "π", sym: "\\pi" },
+        { label: "r²", sym: "r^2" },
+        { label: "S=πr²", sym: "S = \\pi r^2" }
+      ],
+      alg: [
+        { label: "a/b", sym: "\\frac{a}{b}" },
+        { label: "√x", sym: "\\sqrt{x}" },
+        { label: "∛x", sym: "\\sqrt[3]{x}" },
+        { label: "x²", sym: "x^2" },
+        { label: "x₁", sym: "x_1" },
+        { label: "±", sym: "\\pm" },
+        { label: "≈", sym: "\\approx" },
+        { label: "≠", sym: "\\neq" },
+        { label: "≤", sym: "\\le" },
+        { label: "≥", sym: "\\ge" },
+        { label: "⟹", sym: "\\implies" },
+        { label: "⟺", sym: "\\iff" }
+      ],
+      trig: [
+        { label: "sin α", sym: "\\sin\\alpha" },
+        { label: "cos α", sym: "\\cos\\alpha" },
+        { label: "tan α", sym: "\\tan\\alpha" },
+        { label: "cot α", sym: "\\cot\\alpha" },
+        { label: "α", sym: "\\alpha" },
+        { label: "β", sym: "\\beta" },
+        { label: "θ", sym: "\\theta" },
+        { label: "°", sym: "^\\circ" },
+        { label: "f(x)", sym: "f(x)" },
+        { label: "Δ=b²-4ac", sym: "\\Delta = b^2 - 4ac" }
+      ],
+      stat: [
+        { label: "{ x+y=..", sym: "\\begin{cases} x + y = ... \\\\ x - y = ... \\end{cases}" },
+        { label: "x̄ (មធ្យម)", sym: "\\bar{x}" },
+        { label: "∑ (ផលបូក)", sym: "\\sum_{i=1}^n x_i" },
+        { label: "P(A)", sym: "P(A) = \\frac{n(A)}{n(S)}" },
+        { label: "C_n^k", sym: "C_n^k" },
+        { label: "A_n^k", sym: "A_n^k" }
+      ]
+    };
+
+    // Lessons seed store
+    const DEFAULT_LESSONS = {
+      "lesson_12": {
+        id: "lesson_12",
+        lesson_num: "មេរៀនទី ១២",
+        lesson_title: "រង្វង់ និងបន្ទាត់",
+        section_num: "១",
+        section_title: "ទីតាំងធៀបរវាងបន្ទាត់ និងរង្វង់",
+        subsec_title: "១.១ លក្ខណៈបន្ទាត់ប៉ះ និងអង្កត់ធ្នូ",
+        teacher: "ក្រូត រស្មី | 070897540",
+        motto: "➤ ខំរៀនដើម្បីខ្លួនឯង និងអនាគតដ៏ភ្លឺស្វាង ➤",
+        theories: [
+          "ទ្រឹស្តីបទពីតាករ ៖ ក្នុងត្រីកោណកែង $ABC$ កែងត្រង់ $A$ គេបាន $BC^2 = AB^2 + AC^2 \\implies BC = \\sqrt{AB^2 + AC^2}$",
+          "ក្រឡាផ្ទៃ និងបរិមាត្ររង្វង់ ៖ ក្រឡាផ្ទៃ $S = \\pi r^2$ និងបរិមាត្រ $P = 2\\pi r$ (ដែល $r$ ជាកាំនៃរង្វង់)",
+          "សមីការស្ដង់ដារនៃរង្វង់ ៖ $(x - a)^2 + (y - b)^2 = R^2$ ដែលមានផ្ចិត $I(a, b)$ និងកាំ $R$"
+        ],
+        exercises: [
+          {
+            num: "01",
+            level: "ងាយ",
+            diagram: "right_triangle",
+            text: "គេមានត្រីកោណ $ABC$ កែងត្រង់ $A$ ដែលមាន $AB = 6\\text{ cm}$ និង $AC = 8\\text{ cm}$ ៖ គណនាប្រវែងអ៊ីប៉ូតេនុស $BC$ ៖",
+            subs: [{ label: "គ", text: "រូបមន្ត ៖ $BC = \\sqrt{AB^2 + AC^2} = \\sqrt{6^2 + 8^2} = 10\\text{ cm}$" }],
+            solution: "តាមទ្រឹស្តីបទពីតាករ $BC^2 = AB^2 + AC^2 = 6^2 + 8^2 = 100 \\implies BC = 10\\text{ cm}$"
+          },
+          {
+            num: "02",
+            level: "មធ្យម",
+            diagram: "circle_tangent",
+            text: "ក្នុងរូបខាងក្រោម រង្វង់ផ្ចិត $O$ មានកាំ $r = 5\\text{ cm}$ ប៉ះនឹងបន្ទាត់ $(d)$ ត្រង់ $T$ ៖",
+            subs: [
+              { label: "ក", text: "បង្ហាញថាបន្ទាត់ $OT \\perp (d)$" },
+              { label: "ខ", text: "រកចម្ងាយពីផ្ចិត $O$ ទៅបន្ទាត់ $(d)$" }
+            ],
+            solution: "[ក] តាមលក្ខណៈបន្ទាត់ប៉ះ កាំកាត់ត្រង់ចំណុចប៉ះកែងនឹងបន្ទាត់ប៉ះ ដូចនេះ $OT \\perp (d)$ ។ [ខ] ចម្ងាយ $d(O, (d)) = OT = r = 5\\text{ cm}$ ។"
+          },
+          {
+            num: "03",
+            level: "ងាយ",
+            diagram: "inscribed_angle",
+            page_break_before: true,
+            text: "គេមានមុំផ្ចិត $\\angle AOB = 80^\\circ$ នៃរង្វង់ផ្ចិត $O$ ៖",
+            subs: [
+              { label: "ក", text: "គណនារង្វាស់មុំចារឹក $\\angle ACB$" },
+              { label: "ខ", text: "គណនារង្វាស់ធ្នូ $\\widehat{AB}$" }
+            ],
+            solution: "[ក] មុំចារឹក $\\angle ACB = \\frac{1}{2}\\angle AOB = \\frac{80^\\circ}{2} = 40^\\circ$ ។ [ខ] ធ្នូ $\\widehat{AB} = \\angle AOB = 80^\\circ$ ។"
+          },
+          {
+            num: "04",
+            level: "ពិបាក",
+            diagram: "two_tangents",
+            text: "ពីចំណុច $P$ នៅក្រៅរង្វង់ផ្ចិត $O$ គេគូសបន្ទាត់ប៉ះពីរ $PA$ និង $PB$ ដែលមានប្រវែង $PA = 8\\text{ cm}$ និងកាំ $r = 6\\text{ cm}$ ៖",
+            subs: [
+              { label: "ក", text: "គណនាប្រវែង $PB$" },
+              { label: "ខ", text: "គណនាចម្ងាយពី $P$ ទៅផ្ចិត $O$ ($PO$)" }
+            ],
+            solution: "[ក] តាមលក្ខណៈបន្ទាត់ប៉ះពីរចេញពីចំណុចក្រៅ $PB = PA = 8\\text{ cm}$ ។ [ខ] ក្នុងត្រីកោណកែង $OAP$ ៖ $PO = \\sqrt{PA^2 + OA^2} = \\sqrt{8^2 + 6^2} = 10\\text{ cm}$ ។"
+          }
+        ]
+      }
+    };
+
+    let currentLesson = null;
+    let lessonsStore = {};
+    let showSolutions = false;
+
+    function loadStore() {
+      try {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          lessonsStore = JSON.parse(saved);
+        } else {
+          lessonsStore = DEFAULT_LESSONS;
+          saveStore();
+        }
+      } catch (e) {
+        lessonsStore = DEFAULT_LESSONS;
+      }
+    }
+
+    function saveStore() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(lessonsStore));
+        document.getElementById('saveStatus').innerText = "● Auto-saved locally";
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    function populateLessonSelector(selectedId) {
+      const sel = document.getElementById('lessonSelector');
+      sel.innerHTML = '';
+      Object.keys(lessonsStore).forEach(k => {
+        const l = lessonsStore[k];
+        const opt = document.createElement('option');
+        opt.value = l.id;
+        opt.innerText = `${l.lesson_num} ៖ ${l.lesson_title}`;
+        if (l.id === selectedId) opt.selected = true;
+        sel.appendChild(opt);
+      });
+    }
+
+    function onSelectLesson(id) {
+      if (lessonsStore[id]) {
+        currentLesson = JSON.parse(JSON.stringify(lessonsStore[id]));
+        loadLessonToUI(currentLesson);
+      }
+    }
+
+    function loadLessonToUI(lesson) {
+      document.getElementById('inputLessonNum').value = lesson.lesson_num || '';
+      document.getElementById('inputLessonTitle').value = lesson.lesson_title || '';
+      document.getElementById('inputSectionNum').value = lesson.section_num || '';
+      document.getElementById('inputSectionTitle').value = lesson.section_title || '';
+      document.getElementById('inputSubsecTitle').value = lesson.subsec_title || '';
+      document.getElementById('inputTeacher').value = lesson.teacher || 'ក្រូត រស្មី | 070897540';
+      document.getElementById('inputMotto').value = lesson.motto || '➤ ខំរៀនដើម្បីខ្លួនឯង និងអនាគតដ៏ភ្លឺស្វាង ➤';
+      document.getElementById('inputTheories').value = (lesson.theories || []).join('\n');
+
+      renderExerciseEditorList(lesson.exercises || []);
+      updateLivePreview();
+    }
+
+    function renderExerciseEditorList(exList) {
+      const container = document.getElementById('exerciseListContainer');
+      container.innerHTML = '';
+      document.getElementById('exCount').innerText = exList.length;
+
+      exList.forEach((ex, idx) => {
+        const itemDiv = document.createElement('div');
+        itemDiv.className = 'ex-editor-item';
+        const numStr = String(idx + 1).padStart(2, '0');
+
+        let subsHtml = '';
+        (ex.subs || []).forEach((sub, sIdx) => {
+          subsHtml += `
+            <div class="sub-input-row" style="margin-top: 3px;">
+              <span class="badge-input-label">${sub.label || 'ក'}</span>
+              <input type="text" value="${escapeHtml(sub.text || '')}" oninput="updateExSub(${idx}, ${sIdx}, this.value)" placeholder="អនុសំណួរ ${sub.label}" style="flex: 1;">
+              <button class="btn btn-sm btn-secondary" onclick="deleteExSub(${idx}, ${sIdx})" style="padding: 2px 6px;">✕</button>
+            </div>
+          `;
+        });
+
+        // Diagram selector options
+        let diagOpts = `<option value="">-- គ្មានរូបធរណីមាត្រ --</option>`;
+        Object.keys(DIAGRAMS).forEach(k => {
+          diagOpts += `<option value="${k}" ${ex.diagram === k ? 'selected' : ''}>📐 ${DIAGRAMS[k].title}</option>`;
+        });
+
+        // Custom image badge if teacher drew a diagram
+        let customImgHtml = '';
+        if (ex.custom_image) {
+          customImgHtml = `
+            <div style="display: flex; align-items: center; gap: 8px; margin: 4px 0 6px 0; background: #0b1120; padding: 4px 8px; border-radius: 5px; border: 1px solid #00969b;">
+              <img src="${ex.custom_image}" style="width: 40px; height: 40px; object-fit: contain; background: #fff; border-radius: 4px; border: 1px solid #e2e8f0;" alt="រូបគំនូរ">
+              <div style="flex: 1;">
+                <span style="font-size: 11px; font-weight: bold; color: #38bdf8;">🎨 មានរូបគំនូរធរណីមាត្រផ្ទាល់ខ្លួន</span>
+                <div style="font-size: 10px; color: #94a3b8;">រូបនេះនឹងបង្ហាញក្នុង Live Preview, Word DOCX និង XeLaTeX PDF</div>
+              </div>
+              <button class="btn btn-sm btn-secondary" onclick="openDrawingForExercise(${idx})" style="padding: 2px 7px; font-size: 11px;">✏️ កែរូប</button>
+              <button class="btn btn-sm btn-danger" onclick="removeExCustomImage(${idx})" style="padding: 2px 6px; font-size: 11px;">🗑️ ដកចេញ</button>
+            </div>
+          `;
+        }
+
+        itemDiv.innerHTML = `
+          <div class="ex-editor-header">
+            <div class="ex-editor-num-badge">
+              <span>លំហាត់ ${numStr}</span>
+              <select class="level-select" onchange="updateExLevel(${idx}, this.value)">
+                <option value="" ${!ex.level ? 'selected' : ''}>កម្រិតទូទៅ</option>
+                <option value="ងាយ" ${ex.level === 'ងាយ' ? 'selected' : ''}>⭐ ងាយ</option>
+                <option value="មធ្យម" ${ex.level === 'មធ្យម' ? 'selected' : ''}>⭐⭐ មធ្យម</option>
+                <option value="ពិបាក" ${ex.level === 'ពិបាក' ? 'selected' : ''}>⭐⭐⭐ ពិបាក</option>
+              </select>
+            </div>
+            <div style="display: flex; gap: 4px; align-items: center; flex-wrap: wrap;">
+              <button class="btn btn-sm ${ex.page_break_before ? 'btn-pagebreak-active' : 'btn-secondary'}" onclick="togglePageBreak(${idx})" title="កំណត់ចុះទំព័រថ្មីសម្រាប់លំហាត់នេះ">
+                📄 ${ex.page_break_before ? 'ទំព័រថ្មី ★' : 'ចុះទំព័រថ្មី'}
+              </button>
+              <button class="btn btn-sm btn-purple" onclick="openDrawingForExercise(${idx})" title="គូសរូបធរណីមាត្រផ្ទាល់">
+                🎨 គូសរូប
+              </button>
+              <select class="diag-select" onchange="updateExDiagram(${idx}, this.value)">
+                ${diagOpts}
+              </select>
+              <button class="btn btn-sm btn-secondary" onclick="addExSub(${idx})">➕ អនុសំណួរ</button>
+              <button class="btn btn-sm btn-danger" onclick="deleteExercise(${idx})">🗑️</button>
+            </div>
+          </div>
+          ${customImgHtml}
+          <textarea oninput="updateExText(${idx}, this.value)" placeholder="សំណួរលំហាត់ (គាំទ្រ $...$ សម្រាប់រូបមន្ត)">${escapeHtml(ex.text || '')}</textarea>
+          <div id="subsContainer_${idx}">${subsHtml}</div>
+          <div class="sol-editor-box">
+            <label>💡 ដំណោះស្រាយគំរូ (Solution Key សម្រាប់គ្រូ) ៖</label>
+            <textarea oninput="updateExSol(${idx}, this.value)" placeholder="សរសេរដំណោះស្រាយលម្អិតនៅទីនេះ...">${escapeHtml(ex.solution || '')}</textarea>
+          </div>
+        `;
+        container.appendChild(itemDiv);
+      });
+    }
+
+    function togglePageBreak(idx) {
+      if (currentLesson.exercises[idx]) {
+        currentLesson.exercises[idx].page_break_before = !currentLesson.exercises[idx].page_break_before;
+        renderExerciseEditorList(currentLesson.exercises);
+        updateLivePreview();
+        onFieldChange();
+        if (currentLesson.exercises[idx].page_break_before) {
+          showToast(`បានកំណត់លំហាត់ ${idx + 1} ចុះទំព័រថ្មី!`);
+        } else {
+          showToast(`បានដកការចុះទំព័រចេញ!`);
+        }
+      }
+    }
+
+    function removeExCustomImage(idx) {
+      if (currentLesson.exercises[idx]) {
+        delete currentLesson.exercises[idx].custom_image;
+        renderExerciseEditorList(currentLesson.exercises);
+        updateLivePreview();
+        onFieldChange();
+        showToast("បានដករូបគំនូរចេញ!");
+      }
+    }
+
+    function escapeHtml(text) {
+      return (text || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    function updateExText(idx, val) {
+      if (currentLesson.exercises[idx]) {
+        currentLesson.exercises[idx].text = val;
+        onFieldChange();
+      }
+    }
+    function updateExLevel(idx, val) {
+      if (currentLesson.exercises[idx]) {
+        currentLesson.exercises[idx].level = val;
+        onFieldChange();
+      }
+    }
+    function updateExDiagram(idx, val) {
+      if (currentLesson.exercises[idx]) {
+        currentLesson.exercises[idx].diagram = val;
+        onFieldChange();
+      }
+    }
+    function updateExSol(idx, val) {
+      if (currentLesson.exercises[idx]) {
+        currentLesson.exercises[idx].solution = val;
+        onFieldChange();
+      }
+    }
+
+    function updateExSub(exIdx, subIdx, val) {
+      if (currentLesson.exercises[exIdx] && currentLesson.exercises[exIdx].subs[subIdx]) {
+        currentLesson.exercises[exIdx].subs[subIdx].text = val;
+        onFieldChange();
+      }
+    }
+
+    function addExSub(exIdx) {
+      if (currentLesson.exercises[exIdx]) {
+        const labels = ['ក', 'ខ', 'គ', 'ឃ', 'ង'];
+        const existingCount = (currentLesson.exercises[exIdx].subs || []).length;
+        const nextLabel = labels[existingCount % labels.length];
+        if (!currentLesson.exercises[exIdx].subs) currentLesson.exercises[exIdx].subs = [];
+        currentLesson.exercises[exIdx].subs.push({ label: nextLabel, text: '' });
+        renderExerciseEditorList(currentLesson.exercises);
+        onFieldChange();
+      }
+    }
+
+    function deleteExSub(exIdx, subIdx) {
+      if (currentLesson.exercises[exIdx] && currentLesson.exercises[exIdx].subs) {
+        currentLesson.exercises[exIdx].subs.splice(subIdx, 1);
+        renderExerciseEditorList(currentLesson.exercises);
+        onFieldChange();
+      }
+    }
+
+    function addNewExercise() {
+      const nextNum = String(currentLesson.exercises.length + 1).padStart(2, '0');
+      currentLesson.exercises.push({
+        num: nextNum,
+        level: "ងាយ",
+        diagram: "",
+        text: `លំហាត់ទី ${nextNum} ៖ សរសេរសំណួរនៅទីនេះ...`,
+        subs: [
+          { label: 'ក', text: 'រកតម្លៃ $x$' },
+          { label: 'ខ', text: 'គណនាកន្សោម' }
+        ],
+        solution: "ដំណោះស្រាយគំរូ ៖ $x = ...$"
+      });
+      renderExerciseEditorList(currentLesson.exercises);
+      onFieldChange();
+      showToast(`បានបន្ថែមលំហាត់ ${nextNum}!`);
+    }
+
+    function deleteExercise(idx) {
+      if (confirm(`តើលោកគ្រូចង់លុបលំហាត់ទី ${idx + 1} មែនទេ?`)) {
+        currentLesson.exercises.splice(idx, 1);
+        renderExerciseEditorList(currentLesson.exercises);
+        onFieldChange();
+        showToast("បានលុបលំហាត់!");
+      }
+    }
+
+    function addNewLessonPrompt() {
+      let nextNum = 1;
+      Object.keys(lessonsStore).forEach(k => {
+        const match = lessonsStore[k].lesson_num.match(/(\d+)/);
+        if (match) {
+          const n = parseInt(match[1], 10);
+          if (n >= nextNum) nextNum = n + 1;
+        }
+      });
+
+      const newId = `lesson_${nextNum}`;
+      const newLesson = {
+        id: newId,
+        lesson_num: `មេរៀនទី ${nextNum}`,
+        lesson_title: `ចំណងជើងមេរៀនទី ${nextNum}`,
+        section_num: "១",
+        section_title: "ចំណងជើងផ្នែកធំទីមួយ",
+        subsec_title: "១.១ ចំណងជើងផ្នែករង",
+        teacher: currentLesson ? currentLesson.teacher : "ក្រូត រស្មី | 070897540",
+        motto: "➤ ខំរៀនដើម្បីខ្លួនឯង និងអនាគតដ៏ភ្លឺស្វាង ➤",
+        theories: [
+          "រូបមន្តសំខាន់ទី ១ ៖ $f(x) = ...$",
+          "ទ្រឹស្តីបទគន្លឹះទី ២ ៖ $...$"
+        ],
+        exercises: [
+          {
+            num: "01",
+            level: "ងាយ",
+            diagram: "right_triangle",
+            text: "លំហាត់ទី ០១ ៖ គណនាតម្លៃ...",
+            subs: [{ label: "គ", text: "រូបមន្ត ៖ $...$" }],
+            solution: "ដំណោះស្រាយ ៖ ..."
+          },
+          {
+            num: "02",
+            level: "មធ្យម",
+            diagram: "",
+            text: "លំហាត់ទី ០២ ៖ ដោះស្រាយ...",
+            subs: [
+              { label: "ក", text: "សំណួរទីមួយ" },
+              { label: "ខ", text: "សំណួរទីពីរ" }
+            ],
+            solution: "ដំណោះស្រាយ ៖ ..."
+          }
+        ]
+      };
+
+      lessonsStore[newId] = newLesson;
+      saveStore();
+      populateLessonSelector(newId);
+      currentLesson = newLesson;
+      loadLessonToUI(currentLesson);
+      showToast(`បានបង្កើត ${newLesson.lesson_num} ដោយជោគជ័យ!`);
+    }
+
+    function cloneCurrentLesson() {
+      if (!currentLesson) return;
+      const newId = `lesson_${Date.now()}`;
+      const cloned = JSON.parse(JSON.stringify(currentLesson));
+      cloned.id = newId;
+      cloned.lesson_title += " (ចម្លង)";
+      lessonsStore[newId] = cloned;
+      saveStore();
+      populateLessonSelector(newId);
+      currentLesson = cloned;
+      loadLessonToUI(currentLesson);
+      showToast("បានចម្លងមេរៀនថ្មីរួចរាល់!");
+    }
+
+    function saveCurrentLesson() {
+      syncUItoLesson();
+      lessonsStore[currentLesson.id] = JSON.parse(JSON.stringify(currentLesson));
+      saveStore();
+      populateLessonSelector(currentLesson.id);
+      showToast("បានរក្សាទុកមេរៀនដោយជោគជ័យ!");
+    }
+
+    function deleteCurrentLesson() {
+      if (Object.keys(lessonsStore).length <= 1) {
+        alert("មិនអាចលុបបានទេ ត្រូវមានយ៉ាងហោចណាស់មេរៀនមួយ!");
+        return;
+      }
+      if (confirm(`តើលោកគ្រូពិតជាចង់លុប ${currentLesson.lesson_num} (${currentLesson.lesson_title}) មែនទេ?`)) {
+        delete lessonsStore[currentLesson.id];
+        saveStore();
+        const firstKey = Object.keys(lessonsStore)[0];
+        populateLessonSelector(firstKey);
+        currentLesson = lessonsStore[firstKey];
+        loadLessonToUI(currentLesson);
+        showToast("បានលុបមេរៀនរួចរាល់!");
+      }
+    }
+
+    function syncUItoLesson() {
+      if (!currentLesson) return;
+      currentLesson.lesson_num = document.getElementById('inputLessonNum').value;
+      currentLesson.lesson_title = document.getElementById('inputLessonTitle').value;
+      currentLesson.section_num = document.getElementById('inputSectionNum').value;
+      currentLesson.section_title = document.getElementById('inputSectionTitle').value;
+      currentLesson.subsec_title = document.getElementById('inputSubsecTitle').value;
+      currentLesson.teacher = document.getElementById('inputTeacher').value;
+      currentLesson.motto = document.getElementById('inputMotto').value;
+      currentLesson.theories = document.getElementById('inputTheories').value.split('\n').filter(t => t.trim().length > 0);
+    }
+
+    function onFieldChange() {
+      syncUItoLesson();
+      updateLivePreview();
+      saveStore();
+    }
+
+    function onToggleSolutions(checked) {
+      showSolutions = checked;
+      updateLivePreview();
+      showToast(checked ? "👨‍🏫 បើកទិដ្ឋភាពគ្រូ (បង្ហាញចម្លើយ)" : "🎓 បើកទិដ្ឋភាពសិស្ស (លាក់ចម្លើយ)");
+    }
+
+    function renderMathText(rawText) {
+      if (!rawText) return "";
+      return rawText.replace(/\$(.+?)\$/g, function(match, mathCode) {
+        try {
+          return katex.renderToString(mathCode, { throwOnError: false, displayMode: false });
+        } catch (e) {
+          return match;
+        }
+      });
+    }
+
+    function updateLivePreview() {
+      if (!currentLesson) return;
+
+      // Page 1 Header fields
+      document.getElementById('viewLessonNum').innerText = currentLesson.lesson_num || '';
+      document.getElementById('viewLessonTitle').innerText = currentLesson.lesson_title || '';
+      document.getElementById('viewSectionNum').innerText = currentLesson.section_num || '';
+      document.getElementById('viewSectionTitle').innerText = currentLesson.section_title || '';
+      document.getElementById('viewSubsecTitle').innerText = currentLesson.subsec_title || '';
+      document.getElementById('viewMotto').innerText = currentLesson.motto || '';
+      document.getElementById('viewFootTitle').innerText = currentLesson.lesson_title || '';
+
+      const teacherParts = (currentLesson.teacher || '').split('|');
+      const teacherName = (teacherParts[0] || 'ក្រូត រស្មី').trim();
+      const teacherPhone = (teacherParts[1] || '070897540').trim();
+
+      document.getElementById('viewFootTeacher').innerText = teacherName;
+      document.getElementById('viewFootPhone').innerText = teacherPhone;
+
+      // Theories
+      const theoryListEl = document.getElementById('viewTheories');
+      theoryListEl.innerHTML = '';
+      (currentLesson.theories || []).forEach(item => {
+        if (!item.trim()) return;
+        const li = document.createElement('li');
+        li.className = 'theory-item';
+        li.innerHTML = `<span class="theory-bullet">➤</span><span>${renderMathText(item)}</span>`;
+        theoryListEl.appendChild(li);
+      });
+
+      // Split exercises into Page 1 and Page 2
+      const page1Exercises = [];
+      const page2Exercises = [];
+      let onPage2 = false;
+
+      (currentLesson.exercises || []).forEach((ex, idx) => {
+        if (ex.page_break_before && idx > 0) {
+          onPage2 = true;
+        }
+        if (onPage2) {
+          page2Exercises.push({ ex, idx });
+        } else {
+          page1Exercises.push({ ex, idx });
+        }
+      });
+
+      // Render Exercise Cards helper
+      function populateGrid(gridEl, items) {
+        gridEl.innerHTML = '';
+        const colLeft = document.createElement('div');
+        colLeft.style.display = 'flex';
+        colLeft.style.flexDirection = 'column';
+        colLeft.style.gap = '14px';
+
+        const colRight = document.createElement('div');
+        colRight.style.display = 'flex';
+        colRight.style.flexDirection = 'column';
+        colRight.style.gap = '14px';
+
+        items.forEach((item, localIdx) => {
+          const ex = item.ex;
+          const idx = item.idx;
+          const card = document.createElement('div');
+          card.className = 'ex-card';
+          const numStr = String(idx + 1).padStart(2, '0');
+
+          // Level badge
+          let lvlHtml = '';
+          if (ex.level === 'ងាយ') lvlHtml = `<span class="diff-badge diff-easy">ងាយ</span>`;
+          else if (ex.level === 'មធ្យម') lvlHtml = `<span class="diff-badge diff-med">មធ្យម</span>`;
+          else if (ex.level === 'ពិបាក') lvlHtml = `<span class="diff-badge diff-hard">ពិបាក</span>`;
+
+          // Diagram: Custom drawn image or preset SVG
+          let diagHtml = '';
+          if (ex.custom_image) {
+            diagHtml = `<div class="ex-diagram-wrap"><img src="${ex.custom_image}" style="max-width: 140px; max-height: 140px; object-fit: contain; border-radius: 4px; border: 1px solid #e2e8f0; background: #fff;" alt="រូបគំនូរ"></div>`;
+          } else if (ex.diagram && DIAGRAMS[ex.diagram]) {
+            diagHtml = `<div class="ex-diagram-wrap">${DIAGRAMS[ex.diagram].svg}</div>`;
+          }
+
+          // Sub items
+          let subsHtml = '';
+          (ex.subs || []).forEach(sub => {
+            if (sub.text && sub.text.trim()) {
+              subsHtml += `
+                <div class="sub-item">
+                  <span class="badge-crimson">${sub.label || 'ក'}</span>
+                  <span>${renderMathText(sub.text)}</span>
+                </div>
+              `;
+            }
+          });
+
+          // Solution box
+          let solHtml = '';
+          if (showSolutions && ex.solution && ex.solution.trim()) {
+            solHtml = `
+              <div class="preview-sol-box">
+                <strong>💡 ដំណោះស្រាយគំរូ ៖</strong> ${renderMathText(ex.solution)}
+              </div>
+            `;
+          }
+
+          card.innerHTML = `
+            <div class="ex-header">
+              <div class="ex-num"><span class="num-gray">${numStr[0]}</span><span class="num-orange">${numStr[1]}</span>${lvlHtml}</div>
+              <div class="ex-question">${renderMathText(ex.text || '')}</div>
+            </div>
+            ${diagHtml}
+            ${subsHtml ? `<div class="sub-items">${subsHtml}</div>` : ''}
+            ${solHtml}
+          `;
+
+          if (localIdx % 2 === 0) colLeft.appendChild(card);
+          else colRight.appendChild(card);
+        });
+
+        gridEl.appendChild(colLeft);
+        gridEl.appendChild(colRight);
+      }
+
+      // Render Page 1
+      populateGrid(document.getElementById('viewExercisesGrid1'), page1Exercises);
+
+      // Render Page 2 (if exists)
+      const pageDivider2 = document.getElementById('pageDivider2');
+      const paperPage2 = document.getElementById('paperPage2');
+      const btnChipPage2 = document.getElementById('btnChipPage2');
+      const btnNextPage = document.getElementById('btnNextPage');
+      const btnPrevPage = document.getElementById('btnPrevPage');
+      const page1NextNavRow = document.getElementById('page1NextNavRow');
+
+      if (page2Exercises.length > 0) {
+        if (pageDivider2) pageDivider2.style.display = 'flex';
+        if (paperPage2) paperPage2.style.display = 'flex';
+        if (btnChipPage2) btnChipPage2.style.display = 'inline-flex';
+        if (btnNextPage) btnNextPage.style.display = 'inline-flex';
+        if (btnPrevPage) btnPrevPage.style.display = 'inline-flex';
+        if (page1NextNavRow) page1NextNavRow.style.display = 'flex';
+
+        // Page 2 header values
+        document.getElementById('viewLessonNum2').innerText = `${currentLesson.lesson_num} (តចប់)`;
+        document.getElementById('viewLessonTitle2').innerText = currentLesson.lesson_title || '';
+        document.getElementById('viewMotto2').innerText = currentLesson.motto || '';
+        document.getElementById('viewFootTitle2').innerText = currentLesson.lesson_title || '';
+        document.getElementById('viewFootTeacher2').innerText = teacherName;
+        document.getElementById('viewFootPhone2').innerText = teacherPhone;
+
+        populateGrid(document.getElementById('viewExercisesGrid2'), page2Exercises);
+      } else {
+        if (pageDivider2) pageDivider2.style.display = 'none';
+        if (paperPage2) paperPage2.style.display = 'none';
+        if (btnChipPage2) btnChipPage2.style.display = 'none';
+        if (btnNextPage) btnNextPage.style.display = 'none';
+        if (btnPrevPage) btnPrevPage.style.display = 'none';
+        if (page1NextNavRow) page1NextNavRow.style.display = 'none';
+      }
+    }
+
+    let currentPageView = 1;
+
+    function goToPage(pageNum) {
+      currentPageView = pageNum;
+      const target = document.getElementById(`paperPage${pageNum}`);
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        updatePageNavUI(pageNum);
+      }
+    }
+
+    function updatePageNavUI(activePage) {
+      const chip1 = document.getElementById('btnChipPage1');
+      const chip2 = document.getElementById('btnChipPage2');
+      const btnPrev = document.getElementById('btnPrevPage');
+      const btnNext = document.getElementById('btnNextPage');
+      if (chip1) chip1.className = activePage === 1 ? 'btn btn-sm btn-primary' : 'btn btn-sm btn-secondary';
+      if (chip2) chip2.className = activePage === 2 ? 'btn btn-sm btn-primary' : 'btn btn-sm btn-secondary';
+      if (btnPrev) btnPrev.disabled = (activePage === 1);
+      if (btnNext) btnNext.disabled = (activePage === 2);
+    }
+
+    function addNewPageWithExercise() {
+      const nextNum = String((currentLesson.exercises || []).length + 1).padStart(2, '0');
+      if (!currentLesson.exercises) currentLesson.exercises = [];
+      currentLesson.exercises.push({
+        num: nextNum,
+        level: "ងាយ",
+        diagram: "",
+        page_break_before: true,
+        text: `លំហាត់ទី ${nextNum} (ទំព័រថ្មី) ៖ សរសេរសំណួរនៅទីនេះ...`,
+        subs: [
+          { label: 'ក', text: 'រកតម្លៃ $x$' }
+        ],
+        solution: "ដំណោះស្រាយគំរូ ៖ $x = ...$"
+      });
+      renderExerciseEditorList(currentLesson.exercises);
+      updateLivePreview();
+      onFieldChange();
+      showToast(`បានបន្ថែមលំហាត់ ${nextNum} នៅទំព័របន្ទាប់!`);
+      setTimeout(() => goToPage(2), 250);
+    }
+
+    // Geometry Studio & Modal Manager
+    let currentGeoTab = 'presets';
+
+    function switchGeoTab(tab) {
+      currentGeoTab = tab;
+      document.getElementById('btnTabPresets').classList.toggle('active', tab === 'presets');
+      document.getElementById('btnTabCanvas').classList.toggle('active', tab === 'canvas');
+      document.getElementById('modalDiagList').style.display = tab === 'presets' ? 'grid' : 'none';
+      document.getElementById('modalCanvasTab').style.display = tab === 'canvas' ? 'flex' : 'none';
+
+      if (tab === 'canvas') {
+        initGeoCanvasOnce();
+        redrawGeoCanvas();
+      }
+    }
+
+    function openGeometryModal(prefTab = 'presets', targetExIdx = 0) {
+      const modal = document.getElementById('geoModal');
+      const container = document.getElementById('modalDiagList');
+      container.innerHTML = '';
+
+      // Populate Presets list
+      Object.keys(DIAGRAMS).forEach(k => {
+        const d = DIAGRAMS[k];
+        const card = document.createElement('div');
+        card.className = 'diag-card';
+
+        let attachOpts = '';
+        (currentLesson.exercises || []).forEach((ex, eIdx) => {
+          attachOpts += `<option value="${eIdx}" ${eIdx === targetExIdx ? 'selected' : ''}>លំហាត់ ${String(eIdx+1).padStart(2, '0')}</option>`;
+        });
+
+        card.innerHTML = `
+          <div class="diag-preview-box">${d.svg}</div>
+          <div class="diag-card-title">${d.title}</div>
+          <div class="diag-card-desc">${d.desc}</div>
+          <div class="diag-actions">
+            <select id="attachTarget_${k}" class="diag-select" style="flex: 1;">
+              ${attachOpts}
+            </select>
+            <button class="btn btn-sm btn-primary" onclick="attachDiagramFromModal('${k}')">➕ ភ្ជាប់ក្នុងលំហាត់</button>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+
+      // Populate Canvas Target Exercises selector
+      const canvasTargetSel = document.getElementById('canvasTargetEx');
+      canvasTargetSel.innerHTML = '';
+      (currentLesson.exercises || []).forEach((ex, eIdx) => {
+        const opt = document.createElement('option');
+        opt.value = eIdx;
+        opt.innerText = `លំហាត់ ${String(eIdx+1).padStart(2, '0')} ៖ ${ex.text ? ex.text.substring(0, 30) + '...' : ''}`;
+        if (eIdx === targetExIdx) opt.selected = true;
+        canvasTargetSel.appendChild(opt);
+      });
+
+      modal.style.display = 'flex';
+      switchGeoTab(prefTab);
+    }
+
+    function openDrawingForExercise(idx) {
+      openGeometryModal('canvas', idx);
+    }
+
+    function closeGeometryModal(e) {
+      if (!e || e.target.id === 'geoModal') {
+        document.getElementById('geoModal').style.display = 'none';
+      }
+    }
+
+    function attachDiagramFromModal(diagKey) {
+      const selectEl = document.getElementById(`attachTarget_${diagKey}`);
+      if (selectEl) {
+        const exIdx = parseInt(selectEl.value, 10);
+        if (currentLesson.exercises[exIdx]) {
+          currentLesson.exercises[exIdx].diagram = diagKey;
+          delete currentLesson.exercises[exIdx].custom_image;
+          renderExerciseEditorList(currentLesson.exercises);
+          updateLivePreview();
+          onFieldChange();
+          showToast(`បានភ្ជាប់រូបភាពក្នុងលំហាត់ទី ${exIdx + 1}!`);
+          document.getElementById('geoModal').style.display = 'none';
+        }
+      }
+    }
+
+    // ==========================================
+    // Interactive Geometry Drawing Canvas Engine
+    // ==========================================
+    let drawElements = [];
+    let drawTool = 'circle';
+    let drawColor = '#0F2C59';
+    let drawWidth = 2.5;
+    let drawDashed = false;
+    let drawShowGrid = true;
+    let isDrawing = false;
+    let drawStartX = 0, drawStartY = 0;
+    let drawCurX = 0, drawCurY = 0;
+    let freehandPoints = [];
+    let canvasInitialized = false;
+
+    function setDrawTool(tool) {
+      drawTool = tool;
+      document.querySelectorAll('.draw-tool-btn').forEach(b => b.classList.remove('active'));
+      const activeBtn = document.getElementById(`tool${tool.charAt(0).toUpperCase() + tool.slice(1).replace(/_([a-z])/g, (_, c) => c.toUpperCase())}`);
+      if (activeBtn) activeBtn.classList.add('active');
+
+      const hints = {
+        'circle': '💡 ចុច Mouse ហើយអូសដើម្បីគូសរង្វង់ (Drag from center to draw circle)',
+        'line': '💡 ចុច Mouse ហើយអូសដើម្បីគូសបន្ទាត់/អង្កត់ (Drag to draw segment from A to B)',
+        'right_angle': '💡 ចុច Mouse លើទីតាំងកំពូលដើម្បីបោះត្រាមុំកែង (Click to place right angle marker)',
+        'point': '💡 ចុច Mouse ដើម្បីដៅចំណុច + អក្សរស្លាក (Click to place point with label)',
+        'text': '💡 ចុច Mouse ដើម្បីដាក់អក្សរ/រូបមន្ត (Click to place math text label)',
+        'freehand': '💡 ចុច Mouse អូសគូសដោយសេរី (Drag to draw freehand curve or arrow)'
+      };
+      document.getElementById('canvasHint').innerText = hints[tool] || '';
+    }
+
+    function setDrawColor(color, el) {
+      drawColor = color;
+      document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+      if (el) el.classList.add('active');
+    }
+
+    function setDrawWidth(w) {
+      drawWidth = parseFloat(w);
+    }
+
+    function setDrawDashed(val) {
+      drawDashed = !!val;
+    }
+
+    function toggleDrawGrid(val) {
+      drawShowGrid = !!val;
+      redrawGeoCanvas();
+    }
+
+    function setQuickLabel(txt) {
+      document.getElementById('drawLabelInput').value = txt;
+    }
+
+    function initGeoCanvasOnce() {
+      if (canvasInitialized) return;
+      const cvs = document.getElementById('geoCanvas');
+      if (!cvs) return;
+
+      // 2x Retina DPI
+      const rectW = 540;
+      const rectH = 360;
+      cvs.width = rectW * 2;
+      cvs.height = rectH * 2;
+      cvs.style.width = `${rectW}px`;
+      cvs.style.height = `${rectH}px`;
+      const ctx = cvs.getContext('2d');
+      ctx.scale(2, 2);
+
+      function getPos(e) {
+        const r = cvs.getBoundingClientRect();
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+        return {
+          x: (clientX - r.left) * (rectW / r.width),
+          y: (clientY - r.top) * (rectH / r.height)
+        };
+      }
+
+      function handleStart(e) {
+        const p = getPos(e);
+        const labelVal = document.getElementById('drawLabelInput').value.trim();
+
+        if (drawTool === 'point') {
+          drawElements.push({
+            type: 'point',
+            x: p.x,
+            y: p.y,
+            label: labelVal,
+            color: drawColor
+          });
+          // Auto advance next letter if A, B, C...
+          if (/^[A-E]$/.test(labelVal)) {
+            document.getElementById('drawLabelInput').value = String.fromCharCode(labelVal.charCodeAt(0) + 1);
+          } else if (labelVal === 'O') {
+            document.getElementById('drawLabelInput').value = 'A';
+          }
+          redrawGeoCanvas();
+          return;
+        }
+
+        if (drawTool === 'text') {
+          drawElements.push({
+            type: 'text',
+            x: p.x,
+            y: p.y,
+            text: labelVal || 'x',
+            color: drawColor
+          });
+          redrawGeoCanvas();
+          return;
+        }
+
+        if (drawTool === 'right_angle') {
+          drawElements.push({
+            type: 'right_angle',
+            x: p.x,
+            y: p.y,
+            size: 13,
+            color: drawColor
+          });
+          redrawGeoCanvas();
+          return;
+        }
+
+        isDrawing = true;
+        drawStartX = p.x;
+        drawStartY = p.y;
+        drawCurX = p.x;
+        drawCurY = p.y;
+
+        if (drawTool === 'freehand') {
+          freehandPoints = [{ x: p.x, y: p.y }];
+        }
+      }
+
+      function handleMove(e) {
+        if (!isDrawing) return;
+        const p = getPos(e);
+        drawCurX = p.x;
+        drawCurY = p.y;
+
+        if (drawTool === 'freehand') {
+          freehandPoints.push({ x: p.x, y: p.y });
+        }
+        redrawGeoCanvas();
+      }
+
+      function handleEnd() {
+        if (!isDrawing) return;
+        isDrawing = false;
+        const dist = Math.hypot(drawCurX - drawStartX, drawCurY - drawStartY);
+        const labelVal = document.getElementById('drawLabelInput').value.trim();
+
+        if (drawTool === 'circle' && dist > 5) {
+          drawElements.push({
+            type: 'circle',
+            cx: drawStartX,
+            cy: drawStartY,
+            r: dist,
+            color: drawColor,
+            width: drawWidth,
+            dashed: drawDashed,
+            centerLabel: labelVal || 'O'
+          });
+        } else if (drawTool === 'line' && dist > 4) {
+          drawElements.push({
+            type: 'line',
+            x1: drawStartX,
+            y1: drawStartY,
+            x2: drawCurX,
+            y2: drawCurY,
+            color: drawColor,
+            width: drawWidth,
+            dashed: drawDashed
+          });
+        } else if (drawTool === 'freehand' && freehandPoints.length > 1) {
+          drawElements.push({
+            type: 'freehand',
+            points: [...freehandPoints],
+            color: drawColor,
+            width: drawWidth
+          });
+        }
+
+        redrawGeoCanvas();
+      }
+
+      cvs.addEventListener('mousedown', handleStart);
+      window.addEventListener('mousemove', handleMove);
+      window.addEventListener('mouseup', handleEnd);
+
+      cvs.addEventListener('touchstart', (e) => { e.preventDefault(); handleStart(e); }, { passive: false });
+      window.addEventListener('touchmove', (e) => { if (isDrawing) e.preventDefault(); handleMove(e); }, { passive: false });
+      window.addEventListener('touchend', handleEnd);
+
+      canvasInitialized = true;
+    }
+
+    function renderElements(ctx, elements, forExport = false) {
+      // Clear
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, 540, 360);
+
+      // Grid
+      if (!forExport && drawShowGrid) {
+        ctx.save();
+        ctx.strokeStyle = '#f1f5f9';
+        ctx.lineWidth = 1;
+        for (let x = 0; x <= 540; x += 20) {
+          ctx.beginPath();
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, 360);
+          ctx.stroke();
+        }
+        for (let y = 0; y <= 360; y += 20) {
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(540, y);
+          ctx.stroke();
+        }
+        // Major 100px lines
+        ctx.strokeStyle = '#e2e8f0';
+        for (let x = 0; x <= 540; x += 100) {
+          ctx.beginPath();
+          ctx.moveTo(x, 0);
+          ctx.lineTo(x, 360);
+          ctx.stroke();
+        }
+        for (let y = 0; y <= 360; y += 100) {
+          ctx.beginPath();
+          ctx.moveTo(0, y);
+          ctx.lineTo(540, y);
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
+
+      // Render committed elements
+      elements.forEach(el => {
+        ctx.save();
+        ctx.strokeStyle = el.color || '#0F2C59';
+        ctx.fillStyle = el.color || '#0F2C59';
+        ctx.lineWidth = el.width || 2;
+        ctx.lineCap = 'round';
+        ctx.lineJoin = 'round';
+
+        if (el.dashed) ctx.setLineDash([5, 5]);
+        else ctx.setLineDash([]);
+
+        if (el.type === 'circle') {
+          ctx.beginPath();
+          ctx.arc(el.cx, el.cy, el.r, 0, 2 * Math.PI);
+          ctx.stroke();
+
+          // Center dot
+          ctx.setLineDash([]);
+          ctx.beginPath();
+          ctx.arc(el.cx, el.cy, 3, 0, 2 * Math.PI);
+          ctx.fill();
+          if (el.centerLabel) {
+            ctx.font = 'bold 12px "Kantumruy Pro", sans-serif';
+            ctx.fillText(el.centerLabel, el.cx - 14, el.cy - 6);
+          }
+        } else if (el.type === 'line') {
+          ctx.beginPath();
+          ctx.moveTo(el.x1, el.y1);
+          ctx.lineTo(el.x2, el.y2);
+          ctx.stroke();
+        } else if (el.type === 'right_angle') {
+          ctx.setLineDash([]);
+          const s = el.size || 13;
+          ctx.strokeRect(el.x, el.y, s, s);
+        } else if (el.type === 'point') {
+          ctx.setLineDash([]);
+          ctx.beginPath();
+          ctx.arc(el.x, el.y, 3.5, 0, 2 * Math.PI);
+          ctx.fill();
+          if (el.label) {
+            ctx.font = 'bold 13px "Kantumruy Pro", sans-serif';
+            ctx.fillText(el.label, el.x + 6, el.y - 6);
+          }
+        } else if (el.type === 'text') {
+          ctx.setLineDash([]);
+          ctx.font = 'italic bold 14px "Times New Roman", "Kantumruy Pro", serif';
+          ctx.fillText(el.text, el.x, el.y);
+        } else if (el.type === 'freehand' && el.points && el.points.length > 1) {
+          ctx.beginPath();
+          ctx.moveTo(el.points[0].x, el.points[0].y);
+          for (let i = 1; i < el.points.length; i++) {
+            ctx.lineTo(el.points[i].x, el.points[i].y);
+          }
+          ctx.stroke();
+        }
+        ctx.restore();
+      });
+
+      // Active dragging preview
+      if (!forExport && isDrawing) {
+        ctx.save();
+        ctx.strokeStyle = drawColor;
+        ctx.fillStyle = drawColor;
+        ctx.lineWidth = drawWidth;
+        ctx.setLineDash([4, 4]);
+
+        const dist = Math.hypot(drawCurX - drawStartX, drawCurY - drawStartY);
+        if (drawTool === 'circle') {
+          ctx.beginPath();
+          ctx.arc(drawStartX, drawStartY, dist, 0, 2 * Math.PI);
+          ctx.stroke();
+          ctx.beginPath();
+          ctx.arc(drawStartX, drawStartY, 3, 0, 2 * Math.PI);
+          ctx.fill();
+        } else if (drawTool === 'line') {
+          ctx.beginPath();
+          ctx.moveTo(drawStartX, drawStartY);
+          ctx.lineTo(drawCurX, drawCurY);
+          ctx.stroke();
+        } else if (drawTool === 'freehand' && freehandPoints.length > 1) {
+          ctx.beginPath();
+          ctx.moveTo(freehandPoints[0].x, freehandPoints[0].y);
+          for (let i = 1; i < freehandPoints.length; i++) {
+            ctx.lineTo(freehandPoints[i].x, freehandPoints[i].y);
+          }
+          ctx.stroke();
+        }
+        ctx.restore();
+      }
+    }
+
+    function redrawGeoCanvas() {
+      const cvs = document.getElementById('geoCanvas');
+      if (!cvs) return;
+      const ctx = cvs.getContext('2d');
+      renderElements(ctx, drawElements, false);
+    }
+
+    function undoDrawElement() {
+      if (drawElements.length > 0) {
+        drawElements.pop();
+        redrawGeoCanvas();
+        showToast("បានត្រឡប់ក្រោយ 1 ជំហាន");
+      }
+    }
+
+    function clearDrawCanvas() {
+      if (drawElements.length > 0 && confirm("តើលោកគ្រូចង់សម្អាតផ្ទាំងគំនូរទាំងអស់មែនទេ?")) {
+        drawElements = [];
+        redrawGeoCanvas();
+        showToast("បានសម្អាតផ្ទាំងគំនូរ");
+      }
+    }
+
+    function insertCanvasToExercise() {
+      if (drawElements.length === 0) {
+        alert("សូមគូសរូបធរណីមាត្រសិន មុននឹងបញ្ចូលក្នុងលំហាត់!");
+        return;
+      }
+
+      // Create clean offscreen 2x canvas without grid
+      const off = document.createElement('canvas');
+      off.width = 1080;
+      off.height = 720;
+      const offCtx = off.getContext('2d');
+      offCtx.scale(2, 2);
+      renderElements(offCtx, drawElements, true);
+
+      const pngDataUrl = off.toDataURL('image/png');
+      const targetIdx = parseInt(document.getElementById('canvasTargetEx').value, 10);
+
+      if (currentLesson.exercises[targetIdx]) {
+        currentLesson.exercises[targetIdx].custom_image = pngDataUrl;
+        currentLesson.exercises[targetIdx].diagram = ""; // prioritize custom drawing
+        renderExerciseEditorList(currentLesson.exercises);
+        updateLivePreview();
+        onFieldChange();
+        showToast(`បានបញ្ចូលរូបគំនូរក្នុងលំហាត់ទី ${targetIdx + 1} ដោយជោគជ័យ!`);
+        document.getElementById('geoModal').style.display = 'none';
+      }
+    }
+
+    // Math Palette Category Switcher
+    function switchMathTab(cat) {
+      document.getElementById('tabCatGeo').classList.toggle('active', cat === 'geo');
+      document.getElementById('tabCatAlg').classList.toggle('active', cat === 'alg');
+      document.getElementById('tabCatTrig').classList.toggle('active', cat === 'trig');
+      document.getElementById('tabCatStat').classList.toggle('active', cat === 'stat');
+
+      const container = document.getElementById('mathPaletteButtons');
+      container.innerHTML = '';
+      (MATH_PALETTES[cat] || []).forEach(item => {
+        const btn = document.createElement('button');
+        btn.className = 'math-btn';
+        btn.innerText = item.label;
+        btn.onclick = () => insertSymbol(item.sym);
+        container.appendChild(btn);
+      });
+    }
+
+    function insertSymbol(sym) {
+      const activeEl = document.activeElement;
+      if (activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA')) {
+        const start = activeEl.selectionStart;
+        const end = activeEl.selectionEnd;
+        const text = activeEl.value;
+        const insertText = (activeEl.id === 'scratchMath') ? sym : `$${sym}$`;
+        activeEl.value = text.substring(0, start) + insertText + text.substring(end);
+        activeEl.selectionStart = activeEl.selectionEnd = start + insertText.length;
+        activeEl.focus();
+        if (activeEl.id === 'scratchMath') {
+          convertScratchMath();
+        } else {
+          onFieldChange();
+        }
+      } else {
+        const sInput = document.getElementById('scratchMath');
+        sInput.value = sym;
+        convertScratchMath();
+      }
+    }
+
+    // Scratchpad
+    let lastScratchOmml = "";
+    async function convertScratchMath() {
+      const latex = document.getElementById('scratchMath').value.trim();
+      const prevEl = document.getElementById('scratchPreview');
+      const ommlEl = document.getElementById('scratchOmml');
+      
+      try {
+        prevEl.innerHTML = katex.renderToString(latex, { throwOnError: false, displayMode: true });
+      } catch (e) {
+        prevEl.innerText = latex;
+      }
+
+      if (!latex) {
+        ommlEl.innerText = "";
+        lastScratchOmml = "";
+        return;
+      }
+
+      try {
+        const resp = await fetch('/api/convert', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ latex: latex })
+        });
+        const data = await resp.json();
+        if (data.success) {
+          ommlEl.innerText = data.omml;
+          lastScratchOmml = data.omml;
+        } else {
+          ommlEl.innerText = "Error: " + data.error;
+        }
+      } catch (err) {
+        ommlEl.innerText = "Conversion error: " + err;
+      }
+    }
+
+    function copyScratchOmml() {
+      if (lastScratchOmml) {
+        navigator.clipboard.writeText(lastScratchOmml).then(() => {
+          showToast("បានចម្លង OMML សម្រាប់ Word រួចរាល់!");
+        });
+      }
+    }
+    function copyActiveOmml() { copyScratchOmml(); }
+
+    function switchTab(tabName) {
+      document.getElementById('tabBook').classList.toggle('active', tabName === 'book');
+      document.getElementById('tabOmml').classList.toggle('active', tabName === 'omml');
+      document.getElementById('viewportBook').style.display = (tabName === 'book') ? 'flex' : 'none';
+      document.getElementById('viewportOmml').style.display = (tabName === 'omml') ? 'block' : 'none';
+      if (tabName === 'omml') generateAllOmml();
+    }
+
+    async function generateAllOmml() {
+      const listEl = document.getElementById('ommlList');
+      listEl.innerHTML = '<div style="color: #38bdf8;">កំពុងទាញយកបញ្ជីរូបមន្ត OMML...</div>';
+
+      const mathFormulas = [];
+      const regex = /\$(.+?)\$/g;
+      const checkText = (t) => {
+        let m;
+        while ((m = regex.exec(t)) !== null) {
+          if (!mathFormulas.includes(m[1])) mathFormulas.push(m[1]);
+        }
+      };
+
+      (currentLesson.theories || []).forEach(checkText);
+      (currentLesson.exercises || []).forEach(ex => {
+        checkText(ex.text || '');
+        (ex.subs || []).forEach(s => checkText(s.text || ''));
+        checkText(ex.solution || '');
+      });
+
+      if (mathFormulas.length === 0) {
+        listEl.innerHTML = '<div style="color: #94a3b8;">មិនមានរូបមន្តនៅក្នុងមេរៀននេះនៅឡើយទេ។</div>';
+        return;
+      }
+
+      listEl.innerHTML = '';
+      for (const formula of mathFormulas) {
+        try {
+          const resp = await fetch('/api/convert', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ latex: formula })
+          });
+          const resData = await resp.json();
+          const itemCard = document.createElement('div');
+          itemCard.style.background = '#162032';
+          itemCard.style.padding = '8px';
+          itemCard.style.borderRadius = '5px';
+          itemCard.innerHTML = `
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+              <span style="font-size: 14px; color: #fff;">${katex.renderToString(formula, { throwOnError: false })}</span>
+              <button class="btn btn-sm btn-secondary" onclick="navigator.clipboard.writeText(\`${encodeURIComponent(resData.omml)}\`).then(() => showToast('បានចម្លង!'))">📋 ចម្លង OMML</button>
+            </div>
+            <div style="background: #090e17; padding: 6px; border-radius: 4px; font-family: monospace; font-size: 10px; color: #38bdf8; max-height: 80px; overflow-y: auto;">${escapeHtml(resData.omml)}</div>
+          `;
+          listEl.appendChild(itemCard);
+        } catch (e) {
+          console.error(e);
+        }
+      }
+    }
+
+    // Export to Word with diagrams & solutions
+    async function exportWordDocx() {
+      syncUItoLesson();
+      showToast("កំពុងបង្កើតឯកសារ Word (.docx)...");
+      const teacherParts = (currentLesson.teacher || '').split('|');
+
+      const payload = {
+        lesson_num: currentLesson.lesson_num,
+        lesson_title: currentLesson.lesson_title,
+        section_num: currentLesson.section_num,
+        section_title: currentLesson.section_title,
+        subsec_title: currentLesson.subsec_title,
+        teacher: (teacherParts[0] || 'ក្រូត រស្មី').trim(),
+        phone: (teacherParts[1] || '070897540').trim(),
+        motto: currentLesson.motto,
+        theories: currentLesson.theories || [],
+        exercises: currentLesson.exercises || [],
+        show_solutions: showSolutions
+      };
+
+      try {
+        const resp = await fetch('/api/export-docx', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!resp.ok) throw new Error("Export failed");
+        const blob = await resp.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${payload.lesson_num}_${payload.lesson_title}.docx`.replace(/\s+/g, '_');
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        showToast("ទាញយក Word .docx ដោយជោគជ័យ!");
+      } catch (err) {
+        alert("បរាជ័យក្នុងការទាញយក Word ៖ " + err);
+      }
+    }
+
+    // Export to PDF with XeLaTeX
+    async function exportPdf() {
+      syncUItoLesson();
+      showToast("កំពុង compile PDF តាមរយៈ XeLaTeX...");
+      const teacherParts = (currentLesson.teacher || '').split('|');
+
+      const payload = {
+        lesson_num: currentLesson.lesson_num,
+        lesson_title: currentLesson.lesson_title,
+        section_num: currentLesson.section_num,
+        section_title: currentLesson.section_title,
+        subsec_title: currentLesson.subsec_title,
+        teacher: (teacherParts[0] || 'ក្រូត រស្មី').trim(),
+        phone: (teacherParts[1] || '070897540').trim(),
+        motto: currentLesson.motto,
+        theories: currentLesson.theories || [],
+        exercises: currentLesson.exercises || [],
+        show_solutions: showSolutions
+      };
+
+      try {
+        const resp = await fetch('/api/export-pdf', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+        if (!resp.ok) throw new Error("PDF compilation failed");
+        const blob = await resp.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${payload.lesson_num}_${payload.lesson_title}.pdf`.replace(/\s+/g, '_');
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        showToast("ទាញយក PDF ដោយជោគជ័យ!");
+      } catch (err) {
+        alert("បរាជ័យក្នុងការទាញយក PDF ៖ " + err);
+      }
+    }
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      t.innerText = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2200);
+    }
+
+    // Startup
+    window.addEventListener('DOMContentLoaded', () => {
+      loadStore();
+      const firstId = Object.keys(lessonsStore)[0];
+      populateLessonSelector(firstId);
+      currentLesson = JSON.parse(JSON.stringify(lessonsStore[firstId]));
+      loadLessonToUI(currentLesson);
+      switchMathTab('geo');
+      convertScratchMath();
+    });
+  </script>
+</body>
+</html>
